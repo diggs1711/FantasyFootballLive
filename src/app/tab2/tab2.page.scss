@@ -1,1 +1,27 @@
+.league {
 
+    &__player {
+        display: flex;
+        align-items: center;
+        --color: initial;
+        color: var(--color);
+        font-family: var(--ion-font-family, inherit);
+        font-size: inherit;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        border-bottom: rgba(0, 0, 0, 0.13) 1px solid;
+
+        &__name {
+            color: var(--ion-color-step-600, #666);
+            font-size: 14px;
+            line-height: 20px;
+        }
+
+        &__team-name {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+    }
+}

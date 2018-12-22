@@ -1,9 +1,64 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab Two
-    </ion-title>
+    Live Leagues
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ion-title>
+    <h3>{{ league_name }}</h3>
+  </ion-title>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div>
+          Rank
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div>
+          Name
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          GW
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          Total
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="league__player" *ngFor="let item of items" (click)="itemSelected(item)">
+      <ion-col>
+        <div>
+          {{ item.rank }}
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div>
+          <div class="league__player__team-name">
+            {{ item.entry_name }}
+          </div>
+          <div class="league__player__name">
+            {{ item.player_name }}
+          </div>
+
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          {{ item.event_total }}
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          {{ item.total }}
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
