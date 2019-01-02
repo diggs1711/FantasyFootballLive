@@ -1,61 +1,33 @@
 <ion-header>
   <ion-toolbar>
-    <h3>{{ league_name }}</h3>
+    <ion-title>
+      Leagues
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <div>
-          Rank
-        </div>
-      </ion-col>
-      <ion-col size="6">
-        <div>
-          Name
-        </div>
-      </ion-col>
-      <ion-col>
-        <div>
-          GW
-        </div>
-      </ion-col>
-      <ion-col>
-        <div>
-          Total
-        </div>
-      </ion-col>
-    </ion-row>
-    <ion-row class="league__player" *ngFor="let item of items" (click)="itemSelected(item)">
-      <ion-col>
-        <div>
-          <!-- <ion-badge [color]="item[movement]">44</ion-badge> -->
-          {{ item.rank }}
-        </div>
-      </ion-col>
-      <ion-col size="6">
-        <div>
-          <div class="league__player__team-name">
-            {{ item.entry_name }}
-          </div>
-          <div class="league__player__name">
-            {{ item.player_name }}
-          </div>
-
-        </div>
-      </ion-col>
-      <ion-col>
-        <div>
+  <ion-list lines="full">
+    <ion-list-header>
+      <ion-label>{{ league_name }}</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let item of items">
+      <ion-badge color="none" slot="start">{{item.rank}}</ion-badge>
+      <!-- <ion-icon name="{{item.movement}}" slot="start"></ion-icon> -->
+      <ion-label text-wrap>
+        <ion-text>
+          <h3>{{ item.entry_name }}</h3>
+        </ion-text>
+        <p>{{ item.player_name }}</p>
+      </ion-label>
+      <ion-note slot="end" text-wrap>
+        <ion-text>
+          <h6>{{ item.total }}</h6>
+        </ion-text>
+        <p>
           {{ item.event_total }}
-        </div>
-      </ion-col>
-      <ion-col>
-        <div>
-          {{ item.total }}
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        </p>
+      </ion-note>
+    </ion-item>
+  </ion-list>
 </ion-content>

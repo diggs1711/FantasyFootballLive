@@ -80,7 +80,7 @@ export class LeaguePage {
 	}
 
 	updateLeagueList(leagueId) {
-		leagueId = '171842'; //'218801';
+		leagueId = '218801'; //'171842';
 		this.getLeagueData(leagueId)
 			.then((response) => this.parseJsonData(response))
 			.then((json) => {
@@ -138,7 +138,11 @@ export class LeaguePage {
 									this.items.sort((a, b) => b.total - a.total);
 									this.items.map((item, index) => {
 										const newRank = index + 1;
-										item.movement = item.rank > newRank ? 'success' : 'danger';
+										console.log(item.rank, newRank);
+										item.movement =
+											item.rank === newRank
+												? 'square'
+												: item.rank > newRank ? 'arrow-dropup' : 'arrow-dropdown';
 										item.rank = index + 1;
 									});
 									this.changeRef.detectChanges();
