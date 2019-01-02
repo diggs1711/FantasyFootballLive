@@ -3,6 +3,7 @@ import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Http } from '@angular/http';
 import { Device } from '@ionic-native/device/ngx';
 import { ChangeDetectorRef } from '@angular/core';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-tab2',
@@ -19,7 +20,8 @@ export class LeaguePage {
 		private changeRef: ChangeDetectorRef,
 		private http: HTTP,
 		private device: Device,
-		private testHttp: Http
+		private testHttp: Http,
+		public loadingController: LoadingController
 	) {
 		this.http = http;
 		this.testHttp = testHttp;
@@ -33,6 +35,13 @@ export class LeaguePage {
 
 	init() {
 		this.updateLeagueList(0);
+	}
+
+	async createLoadingIcon() {
+		return await this.loadingController.create({
+			message: 'Loading...',
+			duration: 10000
+		});
 	}
 
 	itemSelected(item: string) {}
@@ -80,7 +89,9 @@ export class LeaguePage {
 	}
 
 	updateLeagueList(leagueId) {
-		leagueId = '218801'; //'171842';
+		const loading = this.createLoadingIcon();
+		loading.then((load) => load.present());
+		leagueId = '171842'; // '218801';
 		this.getLeagueData(leagueId)
 			.then((response) => this.parseJsonData(response))
 			.then((json) => {
@@ -151,7 +162,6 @@ export class LeaguePage {
 									this.items.sort((a, b) => b.total - a.total);
 									this.items.map((item, index) => {
 										const newRank = index + 1;
-										console.log(item.rank, newRank);
 										item.movement =
 											item.rank === newRank
 												? 'square'
@@ -159,13 +169,17 @@ export class LeaguePage {
 										item.rank = index + 1;
 									});
 									this.changeRef.detectChanges();
+								})
+								.finally(() => {
+									loading.then((load) => load.dismiss());
 								});
 						});
 				});
 			})
 			.catch((err) => {
 				console.error(err);
-			});
+			})
+			.finally(() => {});
 	}
 
 	clearList() {
