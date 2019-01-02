@@ -96,8 +96,16 @@ export class LeaguePage {
 				players.forEach((player) => {
 					this.getPlayerPicks(player.entry, gameweek)
 						.then((data) => this.parseJsonData(data))
-						.then((json) => json.picks)
-						.then(async (picks) => {
+						.then((json) => {
+							return {
+								picks: json.picks,
+								chip: json.active_chip
+							};
+						})
+						.then(async (result) => {
+							const picks = result.picks;
+							const chip = result.chip;
+
 							if (!this.liveFplData) {
 								const result = await this.getLiveData(gameweek);
 								const parsedData = this.parseJsonData(result);
@@ -106,7 +114,7 @@ export class LeaguePage {
 
 							const totalLivePoints = picks.reduce((acc, pick) => {
 								const totalPoints = this.liveFplData[pick.element]['stats']['total_points'];
-								if (pick.position <= 11) {
+								if (chip === 'bboost' || pick.position <= 11) {
 									if (pick.is_captain) {
 										return totalPoints * pick.multiplier + acc;
 									}
@@ -120,18 +128,23 @@ export class LeaguePage {
 								.then((json) => {
 									return {
 										pointsLW: json.history.find((week) => week.event === gameweek - 1).total_points,
-										transferCost: json.history.find((week) => week.event === gameweek)
-											.event_transfers_cost
+										currentGameweek: json.history.find((week) => week.event === gameweek)
 									};
 								})
 								.then((info) => {
+									const transferCost = info.currentGameweek.event_transfers_cost;
+									const transfers = info.currentGameweek.event_transfers;
+
 									this.items.push({
 										player_name: player.player_name,
 										entry_name: player.entry_name,
-										total: info.pointsLW + totalLivePoints - info.transferCost,
+										total: info.pointsLW + totalLivePoints - transferCost,
 										rank: player.rank,
 										event_total: totalLivePoints,
-										movement: ''
+										transferCost: transferCost,
+										transfers: transfers,
+										movement: '',
+										chip: chip
 									});
 								})
 								.then(() => {
