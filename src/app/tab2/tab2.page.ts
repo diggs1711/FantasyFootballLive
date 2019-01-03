@@ -15,6 +15,9 @@ export class LeaguePage {
 	league_name: string;
 	LEAGUES_URL: string;
 	liveFplData: {};
+	playerInfo: {};
+	loading: Promise<HTMLIonLoadingElement>;
+	gameweek: any;
 
 	constructor(
 		private changeRef: ChangeDetectorRef,
@@ -28,6 +31,7 @@ export class LeaguePage {
 		this.device = device;
 		this.items = [];
 		this.liveFplData = null;
+		this.playerInfo = {};
 		this.league_name = '';
 		this.LEAGUES_URL = 'https://fantasy.premierleague.com/drf/leagues-classic-standings/';
 		this.init();
@@ -53,10 +57,11 @@ export class LeaguePage {
 		return this.testHttp.get(url).toPromise();
 	}
 
-	getCurrentGameweek() {
-		return this.getData('https://fantasy.premierleague.com/drf/bootstrap-static')
-			.then((data) => this.parseJsonData(data))
-			.then((json) => json['current-event']);
+	async getCurrentGameweek() {
+		this.playerInfo = await this.getData('https://fantasy.premierleague.com/drf/bootstrap-static').then((data) =>
+			this.parseJsonData(data)
+		);
+		return this.playerInfo['current-event'];
 	}
 
 	getLeagueData(leagueId): Promise<HTTPResponse> {
@@ -88,98 +93,104 @@ export class LeaguePage {
 		return this.getData(`https://fantasy.premierleague.com/drf/event/${gameweek}/live`);
 	}
 
-	updateLeagueList(leagueId) {
-		const loading = this.createLoadingIcon();
-		loading.then((load) => load.present());
-		leagueId = '171842'; // '218801';
+	showLoadingIcon() {
+		this.loading.then((icon) => icon.present());
+	}
+
+	hideLoadingIcon() {
+		this.loading.then((icon) => icon.dismiss());
+	}
+
+	async createLeaguePlayerObject(player) {
+		const playerHistory = await this.getPlayerHistory(player.entry);
+		const playerPicks = await this.getPlayerPicks(player.entry, this.gameweek).then((res) =>
+			this.parseJsonData(res)
+		);
+		const { picks, chip } = playerPicks;
+		const selctedPlayers = [];
+
+		const totalLivePoints = picks.reduce((acc, pick) => {
+			const totalPoints = this.liveFplData[pick.element]['stats']['total_points'];
+			const playerName = this.getPlayerName(pick.element);
+			selctedPlayers.push(playerName);
+			if (chip === 'bboost' || pick.position <= 11) {
+				if (pick.is_captain) {
+					player.captain = playerName;
+					return totalPoints * pick.multiplier + acc;
+				}
+				return totalPoints + acc;
+			}
+			return acc;
+		}, 0);
+
+		const pHistory = this.parsePlayerHistory(playerHistory, this.gameweek);
+		this.addPlayerToLeague(player, pHistory, chip, totalLivePoints, selctedPlayers);
+		this.sortLeague();
+		this.hideLoadingIcon();
+	}
+
+	async updateLeagueList(leagueId) {
+		this.loading = this.createLoadingIcon();
+		this.showLoadingIcon();
+		this.gameweek = await this.getCurrentGameweek();
+		const liveGameweekData = await this.getLiveData(this.gameweek);
+		const parsedData = this.parseJsonData(liveGameweekData);
+		this.liveFplData = parsedData['elements'];
+		this.clearList();
+
+		leagueId = '171842'; //'218801'; //
+
 		this.getLeagueData(leagueId)
 			.then((response) => this.parseJsonData(response))
 			.then((json) => {
 				this.league_name = json.league.name;
-				return json.standings.results;
-			})
-			.then((results) => {
-				this.clearList();
-				return results;
-			})
-			.then(async (players) => {
-				const gameweek = await this.getCurrentGameweek();
-				players.forEach((player) => {
-					this.getPlayerPicks(player.entry, gameweek)
-						.then((data) => this.parseJsonData(data))
-						.then((json) => {
-							return {
-								picks: json.picks,
-								chip: json.active_chip
-							};
-						})
-						.then(async (result) => {
-							const picks = result.picks;
-							const chip = result.chip;
-
-							if (!this.liveFplData) {
-								const result = await this.getLiveData(gameweek);
-								const parsedData = this.parseJsonData(result);
-								this.liveFplData = parsedData['elements'];
-							}
-
-							const totalLivePoints = picks.reduce((acc, pick) => {
-								const totalPoints = this.liveFplData[pick.element]['stats']['total_points'];
-								if (chip === 'bboost' || pick.position <= 11) {
-									if (pick.is_captain) {
-										return totalPoints * pick.multiplier + acc;
-									}
-									return totalPoints + acc;
-								}
-								return acc;
-							}, 0);
-
-							const playerHistory = this.getPlayerHistory(player.entry);
-							playerHistory
-								.then((json) => {
-									return {
-										pointsLW: json.history.find((week) => week.event === gameweek - 1).total_points,
-										currentGameweek: json.history.find((week) => week.event === gameweek)
-									};
-								})
-								.then((info) => {
-									const transferCost = info.currentGameweek.event_transfers_cost;
-									const transfers = info.currentGameweek.event_transfers;
-
-									this.items.push({
-										player_name: player.player_name,
-										entry_name: player.entry_name,
-										total: info.pointsLW + totalLivePoints - transferCost,
-										rank: player.rank,
-										event_total: totalLivePoints,
-										transferCost: transferCost,
-										transfers: transfers,
-										movement: '',
-										chip: chip
-									});
-								})
-								.then(() => {
-									this.items.sort((a, b) => b.total - a.total);
-									this.items.map((item, index) => {
-										const newRank = index + 1;
-										item.movement =
-											item.rank === newRank
-												? 'square'
-												: item.rank > newRank ? 'arrow-dropup' : 'arrow-dropdown';
-										item.rank = index + 1;
-									});
-									this.changeRef.detectChanges();
-								})
-								.finally(() => {
-									loading.then((load) => load.dismiss());
-								});
-						});
-				});
+				const players = json.standings.results;
+				players.forEach((player) => this.createLeaguePlayerObject(player));
 			})
 			.catch((err) => {
 				console.error(err);
 			})
 			.finally(() => {});
+	}
+
+	parsePlayerHistory(player, gameweek) {
+		return {
+			pointsLW: player.history.find((week) => week.event === gameweek - 1).total_points,
+			currentGameweek: player.history.find((week) => week.event === gameweek)
+		};
+	}
+
+	addPlayerToLeague(player, playerInfo, chip, totalLivePoints, selctedPlayers) {
+		const transferCost = playerInfo.currentGameweek.event_transfers_cost;
+		const transfers = playerInfo.currentGameweek.event_transfers;
+
+		this.items.push({
+			player_name: player.player_name,
+			entry_name: player.entry_name,
+			total: playerInfo.pointsLW + totalLivePoints - transferCost,
+			rank: player.rank,
+			event_total: totalLivePoints,
+			transferCost: transferCost,
+			transfers: transfers,
+			movement: '',
+			chip: chip,
+			captain: player.captain,
+			selectedPlayers: selctedPlayers
+		});
+	}
+
+	sortLeague() {
+		this.items.sort((a, b) => b.total - a.total);
+		this.items.map((item, index) => {
+			const newRank = index + 1;
+			item.movement = item.rank === newRank ? 'square' : item.rank > newRank ? 'arrow-dropup' : 'arrow-dropdown';
+			item.rank = index + 1;
+		});
+		this.changeRef.detectChanges();
+	}
+
+	getPlayerName(playerId) {
+		return this.playerInfo['elements'].find((player) => player.id === playerId).web_name;
 	}
 
 	clearList() {

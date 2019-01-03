@@ -16,11 +16,14 @@
       <!-- <ion-icon name="{{item.movement}}" slot="start"></ion-icon> -->
       <ion-label text-wrap>
         <ion-text>
-          <h3>{{ item.entry_name }}</h3>
+          <h2>{{ item.entry_name }}</h2>
         </ion-text>
-        <p>{{ item.player_name }}</p>
+        <h3>{{ item.player_name }}</h3>
         <ion-badge color="success">{{ item.chip }}</ion-badge>
-        <p> {{ item.transfers }} transfers at the cost of {{ item.transferCost }} points</p>
+        <p> Transfers: {{ item.transfers }} </p>
+        <p> Transfers cost: {{ item.transferCost }} points</p>
+        <p> Captain: <strong>{{ item.captain }}</strong>
+        </p>
       </ion-label>
       <ion-note slot="end" text-wrap>
         <ion-text>
