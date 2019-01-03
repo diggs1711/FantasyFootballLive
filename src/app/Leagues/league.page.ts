@@ -7,8 +7,8 @@ import { LoadingController } from '@ionic/angular';
 
 @Component({
 	selector: 'app-tab2',
-	templateUrl: 'tab2.page.html',
-	styleUrls: [ 'tab2.page.scss' ]
+	templateUrl: 'league.page.html',
+	styleUrls: [ 'league.page.scss' ]
 })
 export class LeaguePage {
 	items: any[];
@@ -18,6 +18,7 @@ export class LeaguePage {
 	playerInfo: {};
 	loading: Promise<HTMLIonLoadingElement>;
 	gameweek: any;
+	leagues: any[];
 
 	constructor(
 		private changeRef: ChangeDetectorRef,
@@ -30,6 +31,7 @@ export class LeaguePage {
 		this.testHttp = testHttp;
 		this.device = device;
 		this.items = [];
+		this.leagues = [ '218801', '171842' ];
 		this.liveFplData = null;
 		this.playerInfo = {};
 		this.league_name = '';
@@ -37,9 +39,7 @@ export class LeaguePage {
 		this.init();
 	}
 
-	init() {
-		this.updateLeagueList(0);
-	}
+	init() {}
 
 	async createLoadingIcon() {
 		return await this.loadingController.create({
@@ -48,7 +48,19 @@ export class LeaguePage {
 		});
 	}
 
-	itemSelected(item: string) {}
+	itemSelected(playerId) {
+		const player = this.items.find((p) => p.id === playerId);
+	}
+
+	addLeague(leagueId) {
+		this.leagues.push(leagueId);
+		this.changeRef.detectChanges();
+	}
+
+	leagueSelected(leagueId) {
+		console.log(leagueId);
+		this.updateLeagueList(leagueId);
+	}
 
 	getData(url): Promise<HTTPResponse> {
 		if (this.device.cordova) {
@@ -138,8 +150,6 @@ export class LeaguePage {
 		this.liveFplData = parsedData['elements'];
 		this.clearList();
 
-		leagueId = '171842'; //'218801'; //
-
 		this.getLeagueData(leagueId)
 			.then((response) => this.parseJsonData(response))
 			.then((json) => {
@@ -175,7 +185,8 @@ export class LeaguePage {
 			movement: '',
 			chip: chip,
 			captain: player.captain,
-			selectedPlayers: selctedPlayers
+			selectedPlayers: selctedPlayers,
+			id: player.id
 		});
 	}
 

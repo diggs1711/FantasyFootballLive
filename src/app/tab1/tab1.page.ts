@@ -11,18 +11,17 @@ export class Tab1Page {
 	}
 
 	login() {
-		console.log('login');
-		fetch('https://fantasy.premierleague.com/', {
-			credentials: 'include',
-			mode: 'no-cors',
-			method: 'GET',
-			headers: {
-				'Access-Control-Allow-Origin': '*'
-			}
-		}).then((resp) => {
-			console.log(resp);
-		});
-
+		// console.log('login');
+		// fetch('https://fantasy.premierleague.com/', {
+		// 	credentials: 'include',
+		// 	mode: 'no-cors',
+		// 	method: 'GET',
+		// 	headers: {
+		// 		'Access-Control-Allow-Origin': '*'
+		// 	}
+		// }).then((resp) => {
+		// 	console.log(resp);
+		// });
 		// 	fetch('https://users.premierleague.com/accounts/login/', {
 		// 		method: 'POST',
 		// 		headers: {

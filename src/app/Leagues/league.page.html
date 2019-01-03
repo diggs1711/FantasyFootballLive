@@ -7,21 +7,40 @@
 </ion-header>
 
 <ion-content>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>
+        My Leagues
+      </ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let item of leagues" (click)="leagueSelected(item)">
+      {{ item }}
+    </ion-item>
+  </ion-list>
+
+  <ion-list inset>
+    <ion-item>
+      <ion-label position="floating">League Id</ion-label>
+      <ion-input [(ngModel)]="leagueId" type="number"></ion-input>
+    </ion-item>
+    <ion-button expand="block" shape="round" color="primary" fill="outline" (click)="addLeague(leagueId)">Add</ion-button>
+  </ion-list>
+
+
   <ion-list lines="full">
     <ion-list-header>
-      <ion-label>{{ league_name }}</ion-label>
+      <ion-label>
+        <h2>{{ league_name }}</h2>
+      </ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let item of items">
+    <ion-item *ngFor="let item of items" (click)="itemSelected(item.id)">
       <ion-badge color="none" slot="start">{{item.rank}}</ion-badge>
-      <!-- <ion-icon name="{{item.movement}}" slot="start"></ion-icon> -->
       <ion-label text-wrap>
         <ion-text>
           <h2>{{ item.entry_name }}</h2>
         </ion-text>
         <h3>{{ item.player_name }}</h3>
         <ion-badge color="success">{{ item.chip }}</ion-badge>
-        <p> Transfers: {{ item.transfers }} </p>
-        <p> Transfers cost: {{ item.transferCost }} points</p>
         <p> Captain: <strong>{{ item.captain }}</strong>
         </p>
       </ion-label>
