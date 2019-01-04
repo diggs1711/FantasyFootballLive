@@ -19,6 +19,7 @@ export class LeaguePage {
 	loading: Promise<HTMLIonLoadingElement>;
 	gameweek: any;
 	leagues: any[];
+	leagueId: string;
 
 	constructor(
 		private changeRef: ChangeDetectorRef,
@@ -31,7 +32,7 @@ export class LeaguePage {
 		this.testHttp = testHttp;
 		this.device = device;
 		this.items = [];
-		this.leagues = [ '218801', '171842' ];
+		this.leagues = [];
 		this.liveFplData = null;
 		this.playerInfo = {};
 		this.league_name = '';
@@ -52,9 +53,16 @@ export class LeaguePage {
 		const player = this.items.find((p) => p.id === playerId);
 	}
 
-	addLeague(leagueId) {
-		this.leagues.push(leagueId);
+	removeLeague(leagueId) {
+		this.leagues = this.leagues.filter((league) => league.id != leagueId);
 		this.changeRef.detectChanges();
+		this.clearList();
+	}
+
+	addLeague(leagueId) {
+		this.updateLeagueList(leagueId);
+		this.changeRef.detectChanges();
+		this.leagueId = '';
 	}
 
 	leagueSelected(leagueId) {
@@ -153,14 +161,21 @@ export class LeaguePage {
 		this.getLeagueData(leagueId)
 			.then((response) => this.parseJsonData(response))
 			.then((json) => {
-				this.league_name = json.league.name;
+				const leagueName = json.league.name;
+				this.league_name = leagueName;
+				if (!this.leagues.find((league) => league.id === leagueId)) {
+					this.leagues.push({
+						id: leagueId,
+						name: leagueName
+					});
+				}
+
 				const players = json.standings.results;
 				players.forEach((player) => this.createLeaguePlayerObject(player));
 			})
 			.catch((err) => {
 				console.error(err);
-			})
-			.finally(() => {});
+			});
 	}
 
 	parsePlayerHistory(player, gameweek) {
@@ -205,6 +220,7 @@ export class LeaguePage {
 	}
 
 	clearList() {
+		this.league_name = '';
 		this.items = [];
 	}
 }
