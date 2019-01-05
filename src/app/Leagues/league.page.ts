@@ -4,6 +4,7 @@ import { Http } from '@angular/http';
 import { Device } from '@ionic-native/device/ngx';
 import { ChangeDetectorRef } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
 	selector: 'app-tab2',
@@ -26,7 +27,8 @@ export class LeaguePage {
 		private http: HTTP,
 		private device: Device,
 		private testHttp: Http,
-		public loadingController: LoadingController
+		public loadingController: LoadingController,
+		private storage: Storage
 	) {
 		this.http = http;
 		this.testHttp = testHttp;
@@ -40,7 +42,18 @@ export class LeaguePage {
 		this.init();
 	}
 
-	init() {}
+	init() {
+		this.loadLeagues();
+	}
+
+	async loadLeagues() {
+		const keys = await this.storage.keys();
+		const leaguesPromises = [];
+		for (const key of keys) {
+			leaguesPromises.push(this.storage.get(key));
+		}
+		Promise.all(leaguesPromises).then((leagues) => leagues.forEach((league) => this.leagues.push(league)));
+	}
 
 	async createLoadingIcon() {
 		return await this.loadingController.create({
@@ -121,6 +134,10 @@ export class LeaguePage {
 		this.loading.then((icon) => icon.dismiss());
 	}
 
+	persistLeague(league) {
+		this.storage.set(league.id, league);
+	}
+
 	async createLeaguePlayerObject(player) {
 		const playerHistory = await this.getPlayerHistory(player.entry);
 		const playerPicks = await this.getPlayerPicks(player.entry, this.gameweek).then((res) =>
@@ -164,10 +181,12 @@ export class LeaguePage {
 				const leagueName = json.league.name;
 				this.league_name = leagueName;
 				if (!this.leagues.find((league) => league.id === leagueId)) {
-					this.leagues.push({
+					const l = {
 						id: leagueId,
 						name: leagueName
-					});
+					};
+					this.leagues.push(l);
+					this.persistLeague(l);
 				}
 
 				const players = json.standings.results;
