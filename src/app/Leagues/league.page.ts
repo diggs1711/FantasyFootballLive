@@ -5,6 +5,8 @@ import { Device } from '@ionic-native/device/ngx';
 import { ChangeDetectorRef } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { PlayState } from '@angular/core/src/render3/interfaces/player';
+import { parseHttpResponse } from 'selenium-webdriver/http';
 
 @Component({
 	selector: 'app-tab2',
@@ -16,11 +18,17 @@ export class LeaguePage {
 	league_name: string;
 	LEAGUES_URL: string;
 	liveFplData: {};
-	playerInfo: {};
+	staticData: {};
 	loading: Promise<HTMLIonLoadingElement>;
-	gameweek: any;
 	leagues: any[];
 	leagueId: string;
+	currentGameweek: any;
+	currentGameweekKey: string;
+	userLeaguesKey: string;
+	staticKey: string;
+	isGameweekUpdated: boolean;
+	playerHistoryKey: any;
+	playerPicksKey: any;
 
 	constructor(
 		private changeRef: ChangeDetectorRef,
@@ -36,23 +44,58 @@ export class LeaguePage {
 		this.items = [];
 		this.leagues = [];
 		this.liveFplData = null;
-		this.playerInfo = {};
+		this.staticData = {};
 		this.league_name = '';
+		this.currentGameweekKey = 'current_gameweek';
+		this.userLeaguesKey = 'user_leagues';
+		this.playerHistoryKey = 'player_history';
+		this.playerPicksKey = 'player_picks';
+		this.staticKey = 'static_data';
 		this.LEAGUES_URL = 'https://fantasy.premierleague.com/drf/leagues-classic-standings/';
 		this.init();
 	}
 
-	init() {
-		this.loadLeagues();
+	async init() {
+		await this.loadLeagues();
+		this.staticData = await this.loadStaticData();
+		this.currentGameweek = this.getCurrentGameweek();
+		this.isGameweekUpdated = await this.isCurrentGameweekUpdated(this.currentGameweek);
+		this.persistStaticData(this.staticData);
+	}
+
+	persistStaticData(data) {
+		if (this.isGameweekUpdated) {
+			this.storage.set(this.staticKey, JSON.stringify(data));
+		}
+	}
+
+	async loadStaticData(): Promise<HTTPResponse> {
+		return await this.getStaticData().then((data) => this.parseJsonData(data));
+	}
+
+	checkCurrentGameweek(gameweek) {
+		if (this.isCurrentGameweekUpdated(gameweek)) {
+			this.saveCurrentGameweek(gameweek);
+		}
+	}
+
+	async isCurrentGameweekUpdated(gameweek) {
+		const oldGameweek = await this.storage.get(this.currentGameweekKey);
+		return oldGameweek != gameweek;
+	}
+
+	async saveCurrentGameweek(gameweek) {
+		this.storage.set('current_gameweek', gameweek);
 	}
 
 	async loadLeagues() {
-		const keys = await this.storage.keys();
-		const leaguesPromises = [];
-		for (const key of keys) {
-			leaguesPromises.push(this.storage.get(key));
+		const leagues = await this.storage.get(this.userLeaguesKey);
+		if (leagues) {
+			const leaguesPromises = [];
+			for (const league of leagues) {
+				this.leagues.push(league);
+			}
 		}
-		Promise.all(leaguesPromises).then((leagues) => leagues.forEach((league) => this.leagues.push(league)));
 	}
 
 	async createLoadingIcon() {
@@ -63,7 +106,7 @@ export class LeaguePage {
 	}
 
 	itemSelected(playerId) {
-		const player = this.items.find((p) => p.id === playerId);
+		return this.items.find((p) => p.id === playerId);
 	}
 
 	removeLeague(leagueId) {
@@ -79,7 +122,6 @@ export class LeaguePage {
 	}
 
 	leagueSelected(leagueId) {
-		console.log(leagueId);
 		this.updateLeagueList(leagueId);
 	}
 
@@ -90,21 +132,25 @@ export class LeaguePage {
 		return this.testHttp.get(url).toPromise();
 	}
 
-	async getCurrentGameweek() {
-		this.playerInfo = await this.getData('https://fantasy.premierleague.com/drf/bootstrap-static').then((data) =>
-			this.parseJsonData(data)
-		);
-		return this.playerInfo['current-event'];
+	async getStaticData() {
+		return await this.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
 	}
 
-	getLeagueData(leagueId): Promise<HTTPResponse> {
-		return this.getData(this.LEAGUES_URL + leagueId);
+	getCurrentGameweek() {
+		return this.staticData['current-event'];
 	}
 
-	getPlayerHistory(playerId) {
-		return this.getData(`https://fantasy.premierleague.com/drf/entry/${playerId}/history`).then((data) =>
-			this.parseJsonData(data)
-		);
+	async getDataAsyncOrRetrieveStored(key, id, url) {
+		const userkey = `${key}-${id}`;
+		const storedData = await this.storage.get(userkey);
+
+		if (!storedData) {
+			const data = await this.getData(url);
+			const parsedData = this.parseJsonData(data);
+			this.storage.set(userkey, parsedData);
+			return parsedData;
+		}
+		return storedData;
 	}
 
 	getTotalPointsLastWeek(data) {
@@ -118,10 +164,11 @@ export class LeaguePage {
 		return data.json();
 	}
 
-	getPlayerPicks(id, gameweek) {
-		return this.getData(`https://fantasy.premierleague.com/drf/entry/${id}/event/${gameweek}/picks`);
+	retrieveStoredPlayerPicks(playerId) {
+		return this.storage.get(`player-${playerId}`);
 	}
 
+	//needs to call each time. Maybe can check if gameweek is live?
 	getLiveData(gameweek) {
 		return this.getData(`https://fantasy.premierleague.com/drf/event/${gameweek}/live`);
 	}
@@ -134,15 +181,11 @@ export class LeaguePage {
 		this.loading.then((icon) => icon.dismiss());
 	}
 
-	persistLeague(league) {
-		this.storage.set(league.id, league);
+	persistLeagues(leagues) {
+		this.storage.set(this.userLeaguesKey, leagues);
 	}
 
-	async createLeaguePlayerObject(player) {
-		const playerHistory = await this.getPlayerHistory(player.entry);
-		const playerPicks = await this.getPlayerPicks(player.entry, this.gameweek).then((res) =>
-			this.parseJsonData(res)
-		);
+	createLeaguePlayerObject(player, playerHistory, playerPicks) {
 		const { picks, chip } = playerPicks;
 		const selctedPlayers = [];
 
@@ -160,7 +203,7 @@ export class LeaguePage {
 			return acc;
 		}, 0);
 
-		const pHistory = this.parsePlayerHistory(playerHistory, this.gameweek);
+		const pHistory = this.parsePlayerHistory(playerHistory, this.currentGameweek);
 		this.addPlayerToLeague(player, pHistory, chip, totalLivePoints, selctedPlayers);
 		this.sortLeague();
 		this.hideLoadingIcon();
@@ -169,32 +212,52 @@ export class LeaguePage {
 	async updateLeagueList(leagueId) {
 		this.loading = this.createLoadingIcon();
 		this.showLoadingIcon();
-		this.gameweek = await this.getCurrentGameweek();
-		const liveGameweekData = await this.getLiveData(this.gameweek);
+		const liveGameweekData = await this.getLiveData(this.currentGameweek);
 		const parsedData = this.parseJsonData(liveGameweekData);
 		this.liveFplData = parsedData['elements'];
 		this.clearList();
 
-		this.getLeagueData(leagueId)
-			.then((response) => this.parseJsonData(response))
+		this.getDataAsyncOrRetrieveStored(this.userLeaguesKey, leagueId, this.composeUserLeaguesUrl(leagueId))
 			.then((json) => {
 				const leagueName = json.league.name;
 				this.league_name = leagueName;
 				if (!this.leagues.find((league) => league.id === leagueId)) {
-					const l = {
+					this.leagues.push({
 						id: leagueId,
 						name: leagueName
-					};
-					this.leagues.push(l);
-					this.persistLeague(l);
+					});
+					this.persistLeagues(this.leagues);
 				}
-
-				const players = json.standings.results;
-				players.forEach((player) => this.createLeaguePlayerObject(player));
+				json.standings.results.map((player) => {
+					return Promise.all([
+						this.getDataAsyncOrRetrieveStored(
+							this.playerHistoryKey,
+							player.entry,
+							this.composePlayerHistoryUrl(player.entry)
+						),
+						this.getDataAsyncOrRetrieveStored(
+							this.playerPicksKey,
+							player.entry,
+							this.composePlayerPicksUrl(player.entry, this.currentGameweek)
+						)
+					]).then(([ history, picks ]) => {
+						const playerPicks = picks;
+						this.createLeaguePlayerObject(player, history, playerPicks);
+					});
+				});
 			})
 			.catch((err) => {
 				console.error(err);
 			});
+	}
+	composeUserLeaguesUrl(leagueId: any): any {
+		return this.LEAGUES_URL + leagueId;
+	}
+	composePlayerPicksUrl(playerId: any, currentGameweek: any): any {
+		return `https://fantasy.premierleague.com/drf/entry/${playerId}/event/${currentGameweek}/picks`;
+	}
+	composePlayerHistoryUrl(playerId: any): any {
+		return `https://fantasy.premierleague.com/drf/entry/${playerId}/history`;
 	}
 
 	parsePlayerHistory(player, gameweek) {
@@ -235,7 +298,7 @@ export class LeaguePage {
 	}
 
 	getPlayerName(playerId) {
-		return this.playerInfo['elements'].find((player) => player.id === playerId).web_name;
+		return this.staticData['elements'].find((player) => player.id === playerId).web_name;
 	}
 
 	clearList() {
