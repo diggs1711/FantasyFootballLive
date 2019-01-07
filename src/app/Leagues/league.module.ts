@@ -4,9 +4,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LeaguePage } from './league.page';
+import { PlayerModal } from './PlayerModal/PlayerModal.page';
 
 @NgModule({
 	imports: [ IonicModule, CommonModule, FormsModule, RouterModule.forChild([ { path: '', component: LeaguePage } ]) ],
-	declarations: [ LeaguePage ]
+	declarations: [ LeaguePage, PlayerModal ],
+	entryComponents: [ PlayerModal ]
 })
 export class LeaguePageModule {}

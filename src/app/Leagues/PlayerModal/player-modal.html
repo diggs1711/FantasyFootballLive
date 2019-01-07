@@ -1,0 +1,16 @@
+<ion-content>
+    <ion-list lines="full">
+        <ion-list-header>
+            <ion-label>
+                <h2>{{ league_name }}</h2>
+            </ion-label>
+        </ion-list-header>
+        <ion-item *ngFor="let pick of playerPicks">
+            {{ pick.name }} - {{ pick.points }}
+        </ion-item>
+    </ion-list>
+</ion-content>
+
+<ion-button (click)="closeModal()">
+    Close
+</ion-button>

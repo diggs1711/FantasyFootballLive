@@ -7,6 +7,9 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refreshLeague($event)">
+    <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
+  </ion-refresher>
   <ion-list>
     <ion-list-header>
       <ion-label>
@@ -24,7 +27,10 @@
       <ion-label position="stacked">League Id</ion-label>
       <ion-input placeholder="Enter League Id" [(ngModel)]="leagueId" type="number"></ion-input>
     </ion-item>
-    <ion-button expand="block" shape="round" color="primary" fill="outline" (click)="addLeague(leagueId)">Add</ion-button>
+    <ion-button expand="block" shape="round" color="primary" fill="outline" (click)="addLeague(leagueId)">
+      <ion-ripple-effect></ion-ripple-effect>
+      Add
+    </ion-button>
   </ion-list>
 
   <ion-list lines="full">
@@ -33,7 +39,7 @@
         <h2>{{ league_name }}</h2>
       </ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let item of items" (click)="itemSelected(item.id)">
+    <ion-item *ngFor="let item of leaguePlayers" (click)="leaguePlayerSelected(item.entry)">
       <ion-badge color="none" slot="start">{{item.rank}}</ion-badge>
       <ion-label text-wrap>
         <ion-text>

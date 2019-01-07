@@ -7,6 +7,8 @@ import { LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { PlayState } from '@angular/core/src/render3/interfaces/player';
 import { parseHttpResponse } from 'selenium-webdriver/http';
+import { ModalController } from '@ionic/angular';
+import { PlayerModal } from './PlayerModal/PlayerModal.page';
 
 @Component({
 	selector: 'app-tab2',
@@ -14,7 +16,7 @@ import { parseHttpResponse } from 'selenium-webdriver/http';
 	styleUrls: [ 'league.page.scss' ]
 })
 export class LeaguePage {
-	items: any[];
+	leaguePlayers: any[];
 	league_name: string;
 	LEAGUES_URL: string;
 	liveFplData: {};
@@ -29,6 +31,7 @@ export class LeaguePage {
 	isGameweekUpdated: boolean;
 	playerHistoryKey: any;
 	playerPicksKey: any;
+	selectedLeague: any;
 
 	constructor(
 		private changeRef: ChangeDetectorRef,
@@ -36,12 +39,13 @@ export class LeaguePage {
 		private device: Device,
 		private testHttp: Http,
 		public loadingController: LoadingController,
+		public modalController: ModalController,
 		private storage: Storage
 	) {
 		this.http = http;
 		this.testHttp = testHttp;
 		this.device = device;
-		this.items = [];
+		this.leaguePlayers = [];
 		this.leagues = [];
 		this.liveFplData = null;
 		this.staticData = {};
@@ -51,6 +55,7 @@ export class LeaguePage {
 		this.playerHistoryKey = 'player_history';
 		this.playerPicksKey = 'player_picks';
 		this.staticKey = 'static_data';
+		this.selectedLeague = null;
 		this.LEAGUES_URL = 'https://fantasy.premierleague.com/drf/leagues-classic-standings/';
 		this.init();
 	}
@@ -79,6 +84,10 @@ export class LeaguePage {
 		}
 	}
 
+	closeModal() {
+		this.modalController.dismiss();
+	}
+
 	async isCurrentGameweekUpdated(gameweek) {
 		const oldGameweek = await this.storage.get(this.currentGameweekKey);
 		return oldGameweek != gameweek;
@@ -98,6 +107,15 @@ export class LeaguePage {
 		}
 	}
 
+	refreshLeague(event) {
+		if (this.selectedLeague) {
+			this.updateLeagueList(this.selectedLeague).then(() => {
+				event.target.complete();
+			});
+		}
+		event.target.complete();
+	}
+
 	async createLoadingIcon() {
 		return await this.loadingController.create({
 			message: 'Loading...',
@@ -105,23 +123,43 @@ export class LeaguePage {
 		});
 	}
 
-	itemSelected(playerId) {
-		return this.items.find((p) => p.id === playerId);
+	async leaguePlayerSelected(playerId) {
+		if (!playerId) return;
+
+		const picks = await this.getDataAsyncOrRetrieveStored(
+			this.playerPicksKey,
+			playerId,
+			this.composePlayerPicksUrl(playerId, this.currentGameweek)
+		);
+
+		const modal = await this.modalController.create({
+			component: PlayerModal,
+			componentProps: { picks: picks, players: this.staticData['elements'], liveData: this.liveFplData }
+		});
+
+		return await modal.present();
 	}
 
-	removeLeague(leagueId) {
-		this.leagues = this.leagues.filter((league) => league.id != leagueId);
-		this.changeRef.detectChanges();
-		this.clearList();
+	async removeLeague(leagueId) {
+		if (leagueId) {
+			this.leagues = this.leagues.filter((league) => league.id != leagueId);
+			this.storage.set(this.userLeaguesKey, this.leagues);
+			this.changeRef.detectChanges();
+			this.clearList();
+		}
 	}
 
 	addLeague(leagueId) {
+		if (!leagueId) {
+			return alert('No League Entered');
+		}
 		this.updateLeagueList(leagueId);
 		this.changeRef.detectChanges();
 		this.leagueId = '';
 	}
 
 	leagueSelected(leagueId) {
+		this.selectedLeague = leagueId;
 		this.updateLeagueList(leagueId);
 	}
 
@@ -206,7 +244,23 @@ export class LeaguePage {
 		const pHistory = this.parsePlayerHistory(playerHistory, this.currentGameweek);
 		this.addPlayerToLeague(player, pHistory, chip, totalLivePoints, selctedPlayers);
 		this.sortLeague();
-		this.hideLoadingIcon();
+	}
+
+	async getLeaguePlayerData(player) {
+		return Promise.all([
+			this.getDataAsyncOrRetrieveStored(
+				this.playerHistoryKey,
+				player.entry,
+				this.composePlayerHistoryUrl(player.entry)
+			),
+			this.getDataAsyncOrRetrieveStored(
+				this.playerPicksKey,
+				player.entry,
+				this.composePlayerPicksUrl(player.entry, this.currentGameweek)
+			)
+		]).then(([ history, picks ]) => {
+			this.createLeaguePlayerObject(player, history, picks);
+		});
 	}
 
 	async updateLeagueList(leagueId) {
@@ -226,25 +280,13 @@ export class LeaguePage {
 						id: leagueId,
 						name: leagueName
 					});
+					//persisting all leagues so I can load them all initially and just loop through without knowing their id
 					this.persistLeagues(this.leagues);
 				}
-				json.standings.results.map((player) => {
-					return Promise.all([
-						this.getDataAsyncOrRetrieveStored(
-							this.playerHistoryKey,
-							player.entry,
-							this.composePlayerHistoryUrl(player.entry)
-						),
-						this.getDataAsyncOrRetrieveStored(
-							this.playerPicksKey,
-							player.entry,
-							this.composePlayerPicksUrl(player.entry, this.currentGameweek)
-						)
-					]).then(([ history, picks ]) => {
-						const playerPicks = picks;
-						this.createLeaguePlayerObject(player, history, playerPicks);
-					});
-				});
+
+				return Promise.all(json.standings.results.map(this.getLeaguePlayerData.bind(this))).then(() =>
+					this.hideLoadingIcon()
+				);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -271,7 +313,7 @@ export class LeaguePage {
 		const transferCost = playerInfo.currentGameweek.event_transfers_cost;
 		const transfers = playerInfo.currentGameweek.event_transfers;
 
-		this.items.push({
+		this.leaguePlayers.push({
 			player_name: player.player_name,
 			entry_name: player.entry_name,
 			total: playerInfo.pointsLW + totalLivePoints - transferCost,
@@ -281,6 +323,7 @@ export class LeaguePage {
 			transfers: transfers,
 			movement: '',
 			chip: chip,
+			entry: player.entry,
 			captain: player.captain,
 			selectedPlayers: selctedPlayers,
 			id: player.id
@@ -288,11 +331,14 @@ export class LeaguePage {
 	}
 
 	sortLeague() {
-		this.items.sort((a, b) => b.total - a.total);
-		this.items.map((item, index) => {
+		this.leaguePlayers.sort((a, b) => b.total - a.total);
+		this.leaguePlayers.map((leaguePlayers, index) => {
 			const newRank = index + 1;
-			item.movement = item.rank === newRank ? 'square' : item.rank > newRank ? 'arrow-dropup' : 'arrow-dropdown';
-			item.rank = index + 1;
+			leaguePlayers.movement =
+				leaguePlayers.rank === newRank
+					? 'square'
+					: leaguePlayers.rank > newRank ? 'arrow-dropup' : 'arrow-dropdown';
+			leaguePlayers.rank = index + 1;
 		});
 		this.changeRef.detectChanges();
 	}
@@ -303,6 +349,6 @@ export class LeaguePage {
 
 	clearList() {
 		this.league_name = '';
-		this.items = [];
+		this.leaguePlayers = [];
 	}
 }
