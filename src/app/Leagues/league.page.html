@@ -1,19 +1,54 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title color="primary">
+    <ion-title>
       Leagues
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-card *ngIf="leagues.length == 0">
+    <ion-card-header color="danger">
+      <ion-card-title>No Leagues Entered</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-card-header>
+        <ion-card-title>What you need</ion-card-title>
+      </ion-card-header>
+      <p> You will need either your FPL Id or the League Id to see your leagues.</p>
+
+      <ion-card-header>
+        <ion-card-title>FPL Id</ion-card-title>
+      </ion-card-header>
+      <p>Your FPL Id can be found in the url when you select the points tab at <a> https://fantasy.premierleague.com/</a>.
+        This will add all the leagues you are entered in at once.
+      </p>
+      <ion-img src="/assets/fpl_id.png"></ion-img>
+
+      <ion-card-header>
+        <ion-card-title>League Id</ion-card-title>
+      </ion-card-header>
+      <p>The league Id can be found in the url when viewing the league standings eg. <a>https://fantasy.premierleague.com/a/leagues/standings/</a>
+        <ion-text color="danger">League ID</ion-text> <a>/classic</a>
+      </p>
+      <ion-img src="/assets/league_id.png"></ion-img>
+
+      <ion-card-header>
+        <ion-card-title>Adding a league</ion-card-title>
+      </ion-card-header>
+      <p>Add a league by selecting the blue button to the right
+      </p>
+    </ion-card-content>
+  </ion-card>
+
   <ion-refresher slot="fixed" (ionRefresh)="refreshLeague($event)">
     <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
   </ion-refresher>
-  <ion-list>
+  <ion-list lines="inset" inset *ngIf="leagues.length > 0">
     <ion-list-header>
       <ion-label>
-        <h2>My Leagues</h2>
+        My Leagues
       </ion-label>
     </ion-list-header>
     <ion-item *ngFor="let item of leagues" (click)="leagueSelected(item.id)">
@@ -22,21 +57,11 @@
     </ion-item>
   </ion-list>
 
-  <ion-list inset>
-    <ion-item>
-      <ion-label position="stacked">League Id</ion-label>
-      <ion-input placeholder="Enter League Id" [(ngModel)]="leagueId" type="number"></ion-input>
-    </ion-item>
-    <ion-button expand="block" shape="round" color="primary" fill="outline" (click)="addLeague(leagueId)">
-      <ion-ripple-effect></ion-ripple-effect>
-      Add
-    </ion-button>
-  </ion-list>
-
-  <ion-list lines="full">
+  <ion-list inset lines="inset" *ngIf="leagues.length > 0">
+    <ion-note slot="end" *ngIf="leaguePlayers.length > 0">Select a player to find more info</ion-note>
     <ion-list-header>
       <ion-label>
-        <h2>{{ league_name }}</h2>
+        {{ league_name }}
       </ion-label>
     </ion-list-header>
     <ion-item *ngFor="let item of leaguePlayers" (click)="leaguePlayerSelected(item.entry)">
@@ -60,4 +85,10 @@
       </ion-note>
     </ion-item>
   </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openAddLeagueModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

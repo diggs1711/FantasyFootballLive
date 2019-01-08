@@ -9,6 +9,7 @@ import { PlayState } from '@angular/core/src/render3/interfaces/player';
 import { parseHttpResponse } from 'selenium-webdriver/http';
 import { ModalController } from '@ionic/angular';
 import { PlayerModal } from './PlayerModal/PlayerModal.page';
+import { InputLeagueModal } from './InputLeagueModal/InputModal.page';
 
 @Component({
 	selector: 'app-tab2',
@@ -118,8 +119,8 @@ export class LeaguePage {
 
 	async createLoadingIcon() {
 		return await this.loadingController.create({
-			message: 'Loading...',
-			duration: 10000
+			message: 'Calculating Live Scores...',
+			duration: 5000
 		});
 	}
 
@@ -134,10 +135,26 @@ export class LeaguePage {
 
 		const modal = await this.modalController.create({
 			component: PlayerModal,
-			componentProps: { picks: picks, players: this.staticData['elements'], liveData: this.liveFplData }
+			componentProps: {
+				picks: picks,
+				players: this.staticData['elements'],
+				liveData: this.liveFplData,
+				player_info: this.leaguePlayers.find((player) => player.entry === playerId)
+			}
 		});
 
 		return await modal.present();
+	}
+
+	async openAddLeagueModal() {
+		const modal = await this.modalController.create({
+			component: InputLeagueModal
+		});
+
+		await modal.present();
+		modal.onDidDismiss().then((data) => {
+			this.addLeague(data.data.leagueId, data.data.teamId);
+		});
 	}
 
 	async removeLeague(leagueId) {
@@ -149,13 +166,37 @@ export class LeaguePage {
 		}
 	}
 
-	addLeague(leagueId) {
-		if (!leagueId) {
-			return alert('No League Entered');
+	addLeague(leagueId, teamId) {
+		if (!leagueId && !teamId) {
+			return;
 		}
-		this.updateLeagueList(leagueId);
-		this.changeRef.detectChanges();
-		this.leagueId = '';
+
+		if (leagueId) {
+			this.updateLeagueList(leagueId);
+			this.changeRef.detectChanges();
+			this.leagueId = '';
+		}
+
+		if (teamId) {
+			this.addLeaguesFromId(teamId);
+		}
+	}
+
+	addLeaguesFromId(playerId) {
+		this.getData(`https://fantasy.premierleague.com/drf/leagues-entered/${playerId}`)
+			.then((json) => this.parseJsonData(json))
+			.then((data) => {
+				const classicLeagues = data.classic;
+				classicLeagues.map((league) => {
+					if (!this.isLeaguePresent(league)) {
+						this.persistLeagues(league.id, league.name);
+					}
+				});
+			});
+	}
+
+	isLeaguePresent(league) {
+		return this.leagues.find((currentLeague) => currentLeague.id === league.id);
 	}
 
 	leagueSelected(leagueId) {
@@ -219,8 +260,12 @@ export class LeaguePage {
 		this.loading.then((icon) => icon.dismiss());
 	}
 
-	persistLeagues(leagues) {
-		this.storage.set(this.userLeaguesKey, leagues);
+	persistLeagues(leagueId, leagueName) {
+		this.leagues.push({
+			id: leagueId,
+			name: leagueName
+		});
+		this.storage.set(this.userLeaguesKey, this.leagues);
 	}
 
 	createLeaguePlayerObject(player, playerHistory, playerPicks) {
@@ -276,12 +321,8 @@ export class LeaguePage {
 				const leagueName = json.league.name;
 				this.league_name = leagueName;
 				if (!this.leagues.find((league) => league.id === leagueId)) {
-					this.leagues.push({
-						id: leagueId,
-						name: leagueName
-					});
 					//persisting all leagues so I can load them all initially and just loop through without knowing their id
-					this.persistLeagues(this.leagues);
+					this.persistLeagues(leagueId, leagueName);
 				}
 
 				return Promise.all(json.standings.results.map(this.getLeaguePlayerData.bind(this))).then(() =>
@@ -292,6 +333,7 @@ export class LeaguePage {
 				console.error(err);
 			});
 	}
+
 	composeUserLeaguesUrl(leagueId: any): any {
 		return this.LEAGUES_URL + leagueId;
 	}
@@ -325,6 +367,7 @@ export class LeaguePage {
 			chip: chip,
 			entry: player.entry,
 			captain: player.captain,
+			value: player.value - player.bank,
 			selectedPlayers: selctedPlayers,
 			id: player.id
 		});

@@ -1,13 +1,92 @@
+<ion-card>
+    <ion-card-header color="primary">
+        <ion-card-title>{{playerInfo.player_name }}</ion-card-title>
+        <ion-card-subtitle>{{ playerInfo.entry_name }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+        <ion-grid>
+            <ion-row>
+                <ion-col size="4">
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Overall Points</h3>
+                            <p>{{ playerInfo.total }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Latest Points</h3>
+                            <p>{{ playerInfo.event_total }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Transfers</h3>
+                            <p>{{ playerData.entry_history.event_transfers }}
+                                <ion-text color="danger" *ngIf="playerData.entry_history.event_transfers_cost > 0">
+                                    (-{{ playerData.entry_history.event_transfers_cost }})</ion-text>
+                            </p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Overall Rank</h3>
+                            <p>{{playerData.entry_history.overall_rank | number:0 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>GW Rank</h3>
+                            <p>{{playerData.entry_history.rank | number:0 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Team Value</h3>
+                            <p>{{ (playerData.entry_history.value - playerData.entry_history.bank) / 10 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-card-content>
+</ion-card>
+
 <ion-content>
-    <ion-list lines="full">
-        <ion-list-header>
-            <ion-label>
-                <h2>{{ league_name }}</h2>
-            </ion-label>
-        </ion-list-header>
-        <ion-item *ngFor="let pick of playerPicks">
-            {{ pick.name }} - {{ pick.points }}
-        </ion-item>
+    <ion-list inset lines="none">
+        <div *ngFor="let position of positions;let i = index">
+            <ion-item-divider *ngIf="i > 0">
+                <ion-label>
+                    {{ getPosition(i) }}
+                </ion-label>
+            </ion-item-divider>
+            <ion-item *ngFor="let pick of position">
+                <ion-avatar slot="start">
+                    <ion-img [src]='pick.photo'></ion-img>
+                </ion-avatar>
+                <ion-label>
+                    <h3>{{ pick.name }}</h3>
+                    <p>{{ pick.points }}</p>
+                </ion-label>
+                <ion-badge *ngIf="pick.is_captain" color="primary" slot="end">Captain</ion-badge>
+                <ion-badge *ngIf="pick.is_vice_captain" color="light" slot="end">Vice</ion-badge>
+            </ion-item>
+        </div>
+
     </ion-list>
 </ion-content>
 

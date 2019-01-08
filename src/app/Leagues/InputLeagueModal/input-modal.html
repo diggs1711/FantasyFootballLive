@@ -1,0 +1,29 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Enter
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list inset>
+        <ion-item>
+            <ion-label position="stacked">Team Id</ion-label>
+            <ion-input placeholder="Enter Team Id" [(ngModel)]="teamId" type="number"></ion-input>
+        </ion-item>
+        <h3 color="primary">OR</h3>
+        <ion-item>
+            <ion-label position="stacked">League Id</ion-label>
+            <ion-input placeholder="Enter League Id" [(ngModel)]="leagueId" type="number"></ion-input>
+        </ion-item>
+        <ion-button expand="block" shape="round" color="primary" fill="outline" (click)="addLeague(leagueId, teamId)">
+            <ion-ripple-effect></ion-ripple-effect>
+            Add
+        </ion-button>
+        <ion-button shape="round" color="primary" (click)="closeModal()">
+            <ion-ripple-effect></ion-ripple-effect>
+            Close
+        </ion-button>
+    </ion-list>
+</ion-content>
