@@ -1,0 +1,8 @@
+ion-card-content {
+    max-height: 1000px;
+    transition: 1s height ease-in-out;
+}
+
+ion-card-content.collapse {
+    max-height: 0;
+}

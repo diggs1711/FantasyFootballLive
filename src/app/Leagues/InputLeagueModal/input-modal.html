@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar>
+    <ion-toolbar color="primary">
         <ion-title>
             Enter
         </ion-title>
@@ -13,7 +13,7 @@
             <ion-input placeholder="Enter Team Id" [(ngModel)]="teamId" type="number"></ion-input>
         </ion-item>
         <h3 color="primary">OR</h3>
-        <ion-item>
+        <ion-item lines="none">
             <ion-label position="stacked">League Id</ion-label>
             <ion-input placeholder="Enter League Id" [(ngModel)]="leagueId" type="number"></ion-input>
         </ion-item>
@@ -21,7 +21,7 @@
             <ion-ripple-effect></ion-ripple-effect>
             Add
         </ion-button>
-        <ion-button shape="round" color="primary" (click)="closeModal()">
+        <ion-button shape="round" color="primary" (click)="closeModal(null, null)">
             <ion-ripple-effect></ion-ripple-effect>
             Close
         </ion-button>

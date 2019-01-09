@@ -1,73 +1,179 @@
 <ion-card>
     <ion-card-header color="primary">
-        <ion-card-title>{{playerInfo.player_name }}</ion-card-title>
-        <ion-card-subtitle>{{ playerInfo.entry_name }}</ion-card-subtitle>
+        <ion-card-title>
+            <ion-item color="primary" lines="none">
+                <ion-label>
+                    <h2> {{playerInfo.player_name }}</h2>
+                    <p>{{ playerInfo.entry_name }}</p>
+                </ion-label>
+                <ion-avatar slot="start">
+                    <img [src]="playerInfo.country_code">
+                </ion-avatar>
+                <ion-icon (click)="showExpandedStats = !showExpandedStats" *ngIf="showExpandedStats" slot="end" color="light"
+                    name="arrow-down"></ion-icon>
+                <ion-icon (click)="showExpandedStats = !showExpandedStats" *ngIf="!showExpandedStats" slot="end" color="light"
+                    name="arrow-up"></ion-icon>
+            </ion-item>
+        </ion-card-title>
     </ion-card-header>
 
-    <ion-card-content>
-        <ion-grid>
-            <ion-row>
-                <ion-col size="4">
-                    <ion-item lines="none">
-                        <ion-label text-wrap>
-                            <h3>Overall Points</h3>
-                            <p>{{ playerInfo.total }}</p>
-                        </ion-label>
-                    </ion-item>
-                </ion-col>
-                <ion-col size="4">
-                    <ion-item lines="none">
-                        <ion-label text-wrap>
-                            <h3>Latest Points</h3>
-                            <p>{{ playerInfo.event_total }}</p>
-                        </ion-label>
-                    </ion-item>
-                </ion-col>
-                <ion-col size="4">
-                    <ion-item lines="none">
-                        <ion-label text-wrap>
-                            <h3>Transfers</h3>
-                            <p>{{ playerData.entry_history.event_transfers }}
-                                <ion-text color="danger" *ngIf="playerData.entry_history.event_transfers_cost > 0">
-                                    (-{{ playerData.entry_history.event_transfers_cost }})</ion-text>
-                            </p>
-                        </ion-label>
-                    </ion-item>
-                </ion-col>
-            </ion-row>
+    <ion-card-content [ngClass]="{'collapse': !showExpandedStats}">
+        <ion-segment [(ngModel)]="showPlayerData">
+            <ion-segment-button value="gameweek" text-wrap>
+                <ion-label>Current GW</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="next" text-wrap>
+                <ion-label>Next Gameweek Info</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+        <div *ngIf="showPlayerData == 'next'">
+            <ion-grid>
+                <ion-row>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Transfers Made</h3>
+                                <p>{{ playerInfo.live_transfers }}
+                                    <ion-text color="danger" *ngIf="playerInfo.live_transfers_cost > 0">
+                                        (-{{ pplayerInfo.live_transfers_cost }})</ion-text>
+                                </p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Live Squad Value</h3>
+                                <p>{{ playerInfo.live_squad_value / 10 }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Live Bank</h3>
+                                <p> {{ playerInfo.live_bank }}
+                                </p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Change in Squad Value</h3>
+                                <p>{{ (playerInfo.live_squad_value - playerData.entry_history.value) / 10 }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <div *ngIf="showPlayerData == 'gameweek'">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="4">
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Overall Points</h3>
+                                <p>{{ playerInfo.total }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="4">
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Latest Points</h3>
+                                <p>{{ playerInfo.event_total }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="4">
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Transfers</h3>
+                                <p>{{ playerData.entry_history.event_transfers }}
+                                    <ion-text color="danger" *ngIf="playerData.entry_history.event_transfers_cost > 0">
+                                        (-{{ playerData.entry_history.event_transfers_cost }})</ion-text>
+                                </p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
 
-            <ion-row>
-                <ion-col>
-                    <ion-item lines="none">
-                        <ion-label text-wrap>
-                            <h3>Overall Rank</h3>
-                            <p>{{playerData.entry_history.overall_rank | number:0 }}</p>
-                        </ion-label>
-                    </ion-item>
-                </ion-col>
-                <ion-col>
-                    <ion-item lines="none">
-                        <ion-label text-wrap>
-                            <h3>GW Rank</h3>
-                            <p>{{playerData.entry_history.rank | number:0 }}</p>
-                        </ion-label>
-                    </ion-item>
-                </ion-col>
-                <ion-col>
-                    <ion-item lines="none">
-                        <ion-label text-wrap>
-                            <h3>Team Value</h3>
-                            <p>{{ (playerData.entry_history.value - playerData.entry_history.bank) / 10 }}</p>
-                        </ion-label>
-                    </ion-item>
-                </ion-col>
-            </ion-row>
-        </ion-grid>
+                <ion-row>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Overall Rank</h3>
+                                <p>{{playerData.entry_history.overall_rank | number:0 }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>GW Rank</h3>
+                                <p>{{playerData.entry_history.rank | number:0 }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Team Value</h3>
+                                <p>{{ (playerData.entry_history.value) / 10 }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-item lines="none">
+                            <ion-label text-wrap>
+                                <h3>Bank</h3>
+                                <p>{{ playerData.entry_history.bank / 10 }}</p>
+                            </ion-label>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+            <ion-badge color="success">{{ playerInfo.chip }}</ion-badge>
+            <ion-chip color="primary">
+                <ion-label>Minimize by pressing the arrow icon</ion-label>
+            </ion-chip>
+        </div>
     </ion-card-content>
 </ion-card>
 
 <ion-content>
+    <ion-list lines="none" *ngIf="gameweekTransfers.length > 0">
+        <ion-list-header>
+            <ion-label>Gameweek Transfers</ion-label>
+        </ion-list-header>
+        <ion-item lines="none" *ngFor="let transfer of gameweekTransfers">
+            <ion-item lines="none" text-wrap>
+                <ion-icon slot="start" color="success" name="person-add"></ion-icon>
+                <ion-label>
+                    <h4>{{ transfer.player_in_name }}</h4>
+                    <p>&pound;{{ transfer.player_in_cost / 10 }} </p>
+                </ion-label>
+            </ion-item>
+            <ion-item lines="none" text-wrap>
+                <ion-icon slot="start" color="danger" name="person-add"></ion-icon>
+                <ion-label>
+                    <h4>{{ transfer.player_out_name }}</h4>
+                    <p>&pound;{{ transfer.player_out_cost / 10 }}</p>
+                </ion-label>
+            </ion-item>
+        </ion-item>
+    </ion-list>
+
     <ion-list inset lines="none">
+        <ion-list-header>
+            <ion-label>Current Gameweek Team</ion-label>
+        </ion-list-header>
         <div *ngFor="let position of positions;let i = index">
             <ion-item-divider *ngIf="i > 0">
                 <ion-label>
