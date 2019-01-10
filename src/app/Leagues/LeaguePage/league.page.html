@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>
-      Leagues
+      LEAGUES
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -29,29 +29,29 @@
 <ion-segment *ngIf="leagues.length > 0" [(ngModel)]="leaguesTab" color="primary">
   <ion-segment-button value="MyLeagues" layout="icon-start">
     <ion-icon name="list"></ion-icon>
-    <ion-label> My Leagues</ion-label>
+    <ion-label>LEAGUES</ion-label>
   </ion-segment-button>
   <ion-segment-button value="Live" layout="icon-start">
     <ion-icon name="pulse"></ion-icon>
-    <ion-label> Live League</ion-label>
+    <ion-label>LIVE</ion-label>
   </ion-segment-button>
 </ion-segment>
 <ion-content>
   <ion-card *ngIf="leagues.length == 0">
     <ion-card-header color="danger">
-      <ion-card-title>No Leagues Entered</ion-card-title>
+      <ion-card-title>No League Entered</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
       <ion-card-header>
-        <ion-card-title>What you need</ion-card-title>
+        <ion-card-title>WHAT DO YOU NEED?</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <p> You will need either your FPL Id or the League Id to see your leagues.</p>
       </ion-card-content>
 
       <ion-card-header>
-        <ion-card-title>FPL Id</ion-card-title>
+        <ion-card-title>FPL ID</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <p>Your FPL Id can be found in the url when you select the points tab at <a> https://fantasy.premierleague.com/</a>.
@@ -60,7 +60,7 @@
         <ion-img src="/assets/fpl_id.png"></ion-img>
       </ion-card-content>
       <ion-card-header>
-        <ion-card-title>League Id</ion-card-title>
+        <ion-card-title>LEAGUE ID</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <p>The league Id can be found in the url when viewing the league standings eg. <a>https://fantasy.premierleague.com/a/leagues/standings/</a>
@@ -70,7 +70,7 @@
       </ion-card-content>
 
       <ion-card-header>
-        <ion-card-title>Adding a league</ion-card-title>
+        <ion-card-title>ADDING A LEAGUE</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <p>Add a league by selecting the blue button to the right
@@ -85,7 +85,7 @@
   <ion-list lines="inset" inset *ngIf="leaguesTab == 'MyLeagues' && leagues.length > 0">
     <ion-list-header>
       <ion-label>
-        My Leagues
+        MY LEAGUES
       </ion-label>
     </ion-list-header>
     <ion-item *ngFor="let item of leagues" (click)="leagueSelected(item.id)">
@@ -134,7 +134,7 @@
   <ion-card *ngIf="leaguesTab === 'Live' && leaguePlayers.length == 0">
     <ion-img src="/assets/neymar.jpg"></ion-img>
     <ion-card-header color="danger">
-      <ion-card-title>No League Selected</ion-card-title>
+      <ion-card-title>NO LEAGUE SELECTED</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
