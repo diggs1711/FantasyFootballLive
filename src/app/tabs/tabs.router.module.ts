@@ -27,6 +27,15 @@ const routes: Routes = [
 				]
 			},
 			{
+				path: 'Stats',
+				children: [
+					{
+						path: '',
+						loadChildren: '../Stats/stats.module#StatsPageModule'
+					}
+				]
+			},
+			{
 				path: '',
 				redirectTo: '/tabs/leagues',
 				pathMatch: 'full'

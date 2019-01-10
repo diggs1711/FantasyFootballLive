@@ -70,7 +70,6 @@ export class LeaguePage {
 		//Need to get current week from static data
 		this.currentGameweek = this.getCurrentGameweek();
 		this.isGameweekUpdated = await this.checkIsGameweekUpdated(this.currentGameweek);
-		console.log('gameweek updated status: ' + this.isGameweekUpdated);
 		this.persistStaticData(this.staticData);
 		this.getShowChipDefaultValue();
 	}

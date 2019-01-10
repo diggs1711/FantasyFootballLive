@@ -1,0 +1,34 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>
+            Stats
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-segment>
+    <ion-segment-button>
+        <ion-label>
+            FIXTURE EASE
+        </ion-label>
+    </ion-segment-button>
+    <ion-segment-button>
+        <ion-label>
+            FORM
+        </ion-label>
+    </ion-segment-button>
+</ion-segment>
+
+<ion-content>
+    <ion-item lines="none">
+        <ion-label>
+            GAMEWEEKS AHEAD
+        </ion-label>
+    </ion-item>
+    <ion-item lines="none">
+
+        <ion-range step="1" snaps="true" value="6" pin="true" min="1" max="12" color="primary">
+            <ion-label slot="end">12</ion-label>
+        </ion-range>
+    </ion-item>
+</ion-content>

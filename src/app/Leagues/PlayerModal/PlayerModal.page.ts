@@ -24,6 +24,7 @@ export class PlayerModal {
 	gameweekTransfers: any;
 	showExpandedStats: boolean;
 	showPlayerData: string;
+	pointsBenched: number;
 
 	constructor(
 		public navParams: NavParams,
@@ -44,9 +45,10 @@ export class PlayerModal {
 		this.defenders = [];
 		this.midfielders = [];
 		this.forwards = [];
-		this.showPlayerData = 'gameweek';
+		this.showPlayerData = 'team';
 		this.gameweekTransfers = [];
 		this.showExpandedStats = true;
+		this.pointsBenched = 0;
 		this.positions = [ [], [], [], [], [], [] ];
 		this.displayPicks(this.playerData);
 		this.getTransfers(this.playerData.entry_history.entry);
@@ -73,9 +75,11 @@ export class PlayerModal {
 					is_vice_captain: pick.is_vice_captain
 				});
 			} else {
+				const playerPoints = this.getPlayerPoints(pick.element, pick.multiplier);
+				this.pointsBenched += playerPoints;
 				this.positions[5].push({
 					name: this.getPlayerName(pick.element),
-					points: this.getPlayerPoints(pick.element, pick.multiplier),
+					points: playerPoints,
 					photo: '/assets/player_images/' + 'p' + this.getPhoto(pick.element),
 					is_captain: pick.is_captain,
 					is_vice_captain: pick.is_vice_captain
@@ -120,6 +124,8 @@ export class PlayerModal {
 			return {
 				player_out_name: this.getPlayerName(transfer.element_out),
 				player_in_name: this.getPlayerName(transfer.element_in),
+				photo_url_in: '/assets/player_images/' + 'p' + this.getPhoto(transfer.element_in),
+				photo_url_out: '/assets/player_images/' + 'p' + this.getPhoto(transfer.element_out),
 				player_in_cost: transfer.element_in_cost,
 				player_out_cost: transfer.element_out_cost
 			};
