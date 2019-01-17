@@ -22,7 +22,7 @@ const routes: Routes = [
 				children: [
 					{
 						path: '',
-						loadChildren: '../Leagues/LeaguePage/league.module#LeaguePageModule'
+						loadChildren: '../Leagues/LeaguesList/league-list.module#LeaguesListModule'
 					}
 				]
 			},

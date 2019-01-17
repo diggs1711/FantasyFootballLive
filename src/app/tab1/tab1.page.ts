@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FplDataService } from '../Services/FplData/fpl-data.service';
 
 @Component({
 	selector: 'app-tab1',
@@ -6,8 +7,21 @@ import { Component } from '@angular/core';
 	styleUrls: [ 'tab1.page.scss' ]
 })
 export class Tab1Page {
-	constructor() {
+	constructor(private fplDataService: FplDataService) {
 		this.login();
+	}
+
+	addLeaguesFromId(playerId) {
+		// this.fplDataService
+		// 	.getData(`https://fantasy.premierleague.com/drf/leagues-entered/${playerId}`)
+		// 	.then((data) => {
+		// 		const classicLeagues = data.classic;
+		// 		classicLeagues.map((league) => {
+		// 			if (!this.isLeaguePresent(league)) {
+		// 				this.persistLeague(league.id, league.name);
+		// 			}
+		// 		});
+		// 	});
 	}
 
 	login() {

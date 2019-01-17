@@ -11,19 +11,16 @@ export class InputLeagueModal {
 	teamId: string;
 	constructor(private modalController: ModalController) {}
 
-	closeModal(leagueId, teamId) {
+	closeModal(leagueId) {
 		this.modalController.dismiss({
-			leagueId: leagueId,
-			teamId: teamId
+			leagueId: leagueId
 		});
 	}
 
-	addLeague(leagueId, teamId) {
-		if (!leagueId && !teamId) {
-			return alert('No League Entered');
+	addLeague(leagueId) {
+		if (leagueId) {
+			this.leagueId = '';
+			this.closeModal(leagueId);
 		}
-		this.leagueId = '';
-		this.teamId = '';
-		this.closeModal(leagueId, teamId);
 	}
 }

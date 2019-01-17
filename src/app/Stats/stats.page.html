@@ -6,7 +6,7 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-segment>
+<!-- <ion-segment>
     <ion-segment-button>
         <ion-label>
             FIXTURE EASE
@@ -17,18 +17,43 @@
             FORM
         </ion-label>
     </ion-segment-button>
-</ion-segment>
+</ion-segment> -->
 
-<ion-content>
-    <ion-item lines="none">
+
+<ion-content padding>
+    <ion-item lines='none'>
         <ion-label>
-            GAMEWEEKS AHEAD
+            FIXTURE EASE
         </ion-label>
     </ion-item>
     <ion-item lines="none">
-
-        <ion-range step="1" snaps="true" value="6" pin="true" min="1" max="12" color="primary">
-            <ion-label slot="end">12</ion-label>
+        <ion-range [(ngModel)]="fixtureRange" step="1" snaps="true" value="6" pin="true" min="1" max="10" color="primary">
+            <ion-label slot="end">10</ion-label>
+            <ion-label slot="start">1</ion-label>
         </ion-range>
     </ion-item>
+    <!-- <ion-item>
+        <ion-label>Rank Teams</ion-label>
+        <ion-toggle (ionChange)="rankTeams()"></ion-toggle>
+    </ion-item> -->
+
+    <ion-grid>
+        <ion-item *ngFor="let fixtures of teams.fixtures; let i = index;" text-wrap>
+            <ion-label position="fixed">
+                {{ getTeamNameStartingAtZeroIndex(i) }}
+            </ion-label>
+
+            <!-- <ion-label nowrap>
+                   
+                </ion-label> -->
+
+            <ion-label class="fixture-difficulty" *ngFor=" let fixture of fixtures?.slice(0, fixtureRange)" [class]="'fixture-difficulty fixture-difficulty-' + fixture.difficulty">
+
+                {{fixture.difficulty}}
+            </ion-label>
+        </ion-item>
+
+    </ion-grid>
+    <ion-list>
+    </ion-list>
 </ion-content>

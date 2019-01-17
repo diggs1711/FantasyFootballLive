@@ -6,27 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<!-- <ion-menu side="start" menuId="second" content-id="menu-content2" swipe-gesture type="overlay">
-  <ion-header>
-    <ion-toolbar color="primary">
-      <ion-title>Menu</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content id="menu-content2">
-    <ion-list>
-      <ion-item>
-        <ion-icon name="Home"></ion-icon>
-        <ion-label> Home</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="list"></ion-icon>
-        <ion-label> Leagues</ion-label>
-      </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu> -->
-
-<ion-segment *ngIf="leagues.length > 0" [(ngModel)]="leaguesTab" color="primary">
+<!-- <ion-segment *ngIf="leagues.length > 0" [(ngModel)]="leaguesTab" color="primary">
   <ion-segment-button value="MyLeagues" layout="icon-start">
     <ion-icon name="list"></ion-icon>
     <ion-label>LEAGUES</ion-label>
@@ -35,103 +15,48 @@
     <ion-icon name="pulse"></ion-icon>
     <ion-label>LIVE</ion-label>
   </ion-segment-button>
-</ion-segment>
-<ion-content>
-  <ion-card *ngIf="leagues.length == 0">
-    <ion-card-header color="danger">
-      <ion-card-title>No League Entered</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <ion-card-header>
-        <ion-card-title>WHAT DO YOU NEED?</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p> You will need either your FPL Id or the League Id to see your leagues.</p>
-      </ion-card-content>
-
-      <ion-card-header>
-        <ion-card-title>FPL ID</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Your FPL Id can be found in the url when you select the points tab at <a> https://fantasy.premierleague.com/</a>.
-          This will add all the leagues you are entered in at once.
-        </p>
-        <ion-img src="/assets/fpl_id.png"></ion-img>
-      </ion-card-content>
-      <ion-card-header>
-        <ion-card-title>LEAGUE ID</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>The league Id can be found in the url when viewing the league standings eg. <a>https://fantasy.premierleague.com/a/leagues/standings/</a>
-          <ion-text color="danger">League ID</ion-text> <a>/classic</a>
-        </p>
-        <ion-img src="/assets/league_id.png"></ion-img>
-      </ion-card-content>
-
-      <ion-card-header>
-        <ion-card-title>ADDING A LEAGUE</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Add a league by selecting the blue button to the right
-        </p>
-      </ion-card-content>
-    </ion-card-content>
-  </ion-card>
-
+</ion-segment> -->
+<ion-content padding>
   <ion-refresher slot="fixed" (ionRefresh)="refreshLeague($event)">
     <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
   </ion-refresher>
-  <ion-list lines="inset" inset *ngIf="leaguesTab == 'MyLeagues' && leagues.length > 0">
-    <ion-list-header>
-      <ion-label>
-        MY LEAGUES
-      </ion-label>
-    </ion-list-header>
-    <ion-item *ngFor="let item of leagues" (click)="leagueSelected(item.id)">
-      <ion-label text-wrap>{{ item.name }}</ion-label>
-      <ion-icon (click)="
-        removeLeague(item.id)" slot="end" color="danger" name="close-circle">
-      </ion-icon>
-    </ion-item>
-  </ion-list>
 
-  <ion-list inset lines="inset" *ngIf="leaguesTab === 'Live' && leagues.length > 0 && leaguePlayers.length > 0">
-    <ion-chip outline color="primary" *ngIf="!hideChip" (click)="hideChipInfo()">
+  <ion-list inset lines="inset" *ngIf="members.length > 0">
+    <!-- <ion-chip outline color="primary" *ngIf="!hideChip" (click)="hideChipInfo()">
       <ion-icon name="information-circle-outline" color="primary"></ion-icon>
       <ion-label>Select a player to find more info</ion-label>
       <ion-icon name="close"></ion-icon>
-    </ion-chip>
+    </ion-chip> -->
     <ion-list-header>
       <ion-label>
-        {{ league_name }}
+        {{ leagueName }}
       </ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let item of leaguePlayers" (click)="leaguePlayerSelected(item.entry)">
-      <ion-badge color="none" slot="start">{{item.rank}}</ion-badge>
+    <ion-item *ngFor="let member of members; let i = index;" (click)="leaguePlayerSelected(member.team.id)">
+      <ion-badge color="none" slot="start">{{ i + 1 }}</ion-badge>
       <ion-label text-wrap>
         <ion-text>
-          <h2>{{ item.entry_name }}</h2>
+          <h2>{{ member.team.name }}</h2>
         </ion-text>
-        <h3>{{ item.player_name }}</h3>
-        <ion-badge color="success">{{ item.chip }}</ion-badge>
-        <p> Captain: <strong>{{ item.captain }}</strong>
-          <p> Transfers: <strong>{{ item.transfers }}</strong>
-            <ion-text color="danger" *ngIf="item.transferCost > 0">
-              (-{{ item.transferCost }})</ion-text>
+        <h3>{{ member.name }}</h3>
+        <ion-badge color="success">{{ member.activeChip }}</ion-badge>
+        <p> Captain: <strong>{{ member.team.captain }}</strong>
+          <p> Transfers: <strong>{{ member.gameweekTransfers }}</strong>
+            <ion-text color="danger" *ngIf="member.gameweekTransfersCost > 0">
+              (-{{ member.gameweekTransfersCost }})</ion-text>
           </p>
       </ion-label>
       <ion-note slot="end" text-wrap>
         <ion-text>
-          <h6>{{ item.total }}</h6>
+          <h6>{{ member.team.overallPoints }}</h6>
         </ion-text>
         <p>
-          {{ item.event_total }}
+          {{ member.team.gameweekPoints }}
         </p>
       </ion-note>
     </ion-item>
   </ion-list>
-  <ion-card *ngIf="leaguesTab === 'Live' && leaguePlayers.length == 0">
+  <ion-card *ngIf="members.length == 0">
     <ion-img src="/assets/neymar.jpg"></ion-img>
     <ion-card-header color="danger">
       <ion-card-title>NO LEAGUE SELECTED</ion-card-title>
@@ -141,9 +66,5 @@
       <p> You need to select a league from the My Leagues tab</p>
     </ion-card-content>
   </ion-card>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="openAddLeagueModal()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+
 </ion-content>

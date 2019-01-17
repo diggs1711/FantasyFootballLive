@@ -15,7 +15,7 @@ export class PlayerModal {
 	goalkeepers: any;
 	gamePlayers: any;
 	liveFplData: any;
-	playerInfo: any;
+	league_player_info: any;
 	defenders: any[];
 	midfielders: any[];
 	forwards: any[];
@@ -39,7 +39,7 @@ export class PlayerModal {
 		this.playerData = navParams.get('picks');
 		this.gamePlayers = navParams.get('players');
 		this.liveFplData = navParams.get('liveData');
-		this.playerInfo = navParams.get('player_info');
+		this.league_player_info = navParams.get('league_player_info');
 		this.currentGameweek = navParams.get('gameweek');
 		this.goalkeepers = [];
 		this.defenders = [];
