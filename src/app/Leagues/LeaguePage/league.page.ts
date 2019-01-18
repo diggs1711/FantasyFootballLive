@@ -18,8 +18,7 @@ import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 	styleUrls: [ 'league.page.scss' ]
 })
 export class LeaguePage {
-	LEAGUES_URL: string;
-	livePremPlayerData: {};
+	liveFplData: {};
 	staticData: {};
 	loading: Promise<HTMLIonLoadingElement>;
 	league: League;
@@ -35,7 +34,9 @@ export class LeaguePage {
 	fantasyPlayer: FantasyPlayer;
 	members: FantasyPlayer[];
 	leagueName: string;
-	soccerPlayers: {};
+	soccerPlayers: any;
+	membersGameweekData: any;
+	membersGameweekHistory: any;
 
 	constructor(
 		private changeRef: ChangeDetectorRef,
@@ -47,10 +48,13 @@ export class LeaguePage {
 		private staticDataService: StaticDataService,
 		private liveDataService: LiveDataService
 	) {
-		this.members = navParams.data.members || [];
-		this.leagueName = navParams.data.name || '';
-		this.livePremPlayerData = null;
-		this.staticData = {};
+		this.members = this.navParams.data.members || [];
+		this.leagueName = this.navParams.data.name || '';
+		this.liveFplData = null;
+		this.membersGameweekData = null;
+		this.membersGameweekHistory = null;
+
+		this.staticData = null;
 		this.currentGameweekKey = 'current_gameweek';
 		this.userLeaguesKey = 'user_leagues';
 		this.playerHistoryKey = 'player_history';
@@ -58,7 +62,7 @@ export class LeaguePage {
 		this.staticKey = 'static_data';
 		this.leaguesTab = 'MyLeagues';
 		this.hideChip = false;
-		this.soccerPlayers = {};
+		this.soccerPlayers = null;
 		this.init();
 	}
 
@@ -67,61 +71,103 @@ export class LeaguePage {
 	}
 
 	loadBootstrapData() {
-		this.staticDataService.getBootstrapData().then(() => {
+		this.createLoadingIcon();
+		this.staticDataService.getBootstrapData().then(async () => {
 			if (this.staticDataService.isDataLoaded()) {
-				const currentGameweek = this.staticDataService.getCurrentGameweek();
-				const soccerPlayers = this.staticDataService.getSoccerPlayers();
+				//If data is stored just retrieve it
+				//otherwise fetch
+				this.currentGameweek = await this.staticDataService.getCurrentGameweek();
+				const membersGameweekDataPromise =
+					this.membersGameweekData ||
+					this.getMembersCurrentGameweekData(this.currentGameweek).catch(() => undefined);
+				const membersGameweekHistoryPromise =
+					this.membersGameweekHistory || this.getMembersGameweekHistory().catch(() => undefined);
+
 				Promise.all([
-					this.getMembersCurrentGameweekData(currentGameweek),
-					this.liveDataService.getLiveData(currentGameweek),
-					this.getMembersGameweekHistory()
-				]).then(([ memberGameweekData, liveData, membersGameweekHistory ]: [[], {}, any]) => {
-					for (let index = 0; index < memberGameweekData.length; index++) {
-						const playerGameweekData: any = memberGameweekData[index];
-						const gameweekHistoryData = membersGameweekHistory[index];
-						const fantasyPlayer = this.members[index];
-
-						//Current Gameweek data
-						const playersPicks = playerGameweekData.picks;
-						fantasyPlayer.gameweekTransfers = playerGameweekData.entry_history.event_transfers;
-						fantasyPlayer.gameweekTransfersCost = playerGameweekData.entry_history.event_transfers_cost;
-						fantasyPlayer.activeChip = playerGameweekData.active_chip;
-
-						//this is actually live data for chips played and transfered played and not the previous gameweek
-						//data from FPL is all over the place
-						const active_chip = playerGameweekData.active_chip;
-						const active_transfers = playerGameweekData.entry_history.event_transfers;
-						const active_transfers_cost = playerGameweekData.entry_history.event_transfers_cost;
-
-						let team = fantasyPlayer.team;
-						team.overallPoints = this.getOverallPointsLastWeek(membersGameweekHistory[index].history);
-						this.createTeamFromPicks(team, playersPicks, soccerPlayers);
-						for (const player of fantasyPlayer.team.players) {
-							player.gameweek_points =
-								this.getLivePlayerPoints(liveData, player.id) * player.multiplier -
-								fantasyPlayer.gameweekTransfersCost;
-						}
-
-						this.calculateGameweekPoints(team);
-					}
-				});
+					membersGameweekDataPromise,
+					this.liveDataService.getLiveData(this.currentGameweek).catch(() => undefined),
+					membersGameweekHistoryPromise
+				])
+					.then(([ membersGameweekData, liveData, membersGameweekHistory ]: [[], {}, any]) =>
+						this.constructLeague(membersGameweekData, liveData, membersGameweekHistory)
+					)
+					.then(() => this.hideLoadingIcon())
+					.catch((err) => console.log(err));
 			}
 		});
 	}
 
-	createTeamFromPicks(team: Team, picks, soccerPlayers: any[]) {
+	constructLeague(membersGameweekData, liveData, membersGameweekHistory) {
+		this.membersGameweekData = this.membersGameweekData || membersGameweekData || [];
+		this.liveFplData = this.liveFplData || liveData || [];
+		this.membersGameweekHistory = this.membersGameweekHistory || membersGameweekHistory || [];
+
+		for (let index = 0; index < membersGameweekData.length; index++) {
+			const playerGameweekData: any = membersGameweekData[index];
+			const gameweekHistoryData = membersGameweekHistory[index];
+			const fantasyPlayer = this.members[index];
+			this.soccerPlayers = this.staticDataService.getSoccerPlayers();
+
+			//Current Gameweek data
+			if (playerGameweekData && gameweekHistoryData) {
+				this.constructTeam(playerGameweekData, fantasyPlayer, gameweekHistoryData);
+			}
+		}
+	}
+
+	constructTeam(playerGameweekData, fantasyPlayer, gameweekHistoryData) {
+		const playersPicks = playerGameweekData.picks;
+		fantasyPlayer.gameweekTransfers = playerGameweekData.entry_history.event_transfers;
+		fantasyPlayer.gameweekTransfersCost = playerGameweekData.entry_history.event_transfers_cost;
+		fantasyPlayer.activeChip = playerGameweekData.active_chip;
+
+		//this is actually live data for chips played and transfered played and not the previous gameweek
+		//data from FPL is all over the place
+		const active_chip = playerGameweekData.active_chip;
+		const active_transfers = playerGameweekData.entry_history.event_transfers;
+		const active_transfers_cost = playerGameweekData.entry_history.event_transfers_cost;
+
+		let team = fantasyPlayer.team;
+		team.overallPoints = this.getOverallPointsLastWeek(gameweekHistoryData.history);
+		team.players = this.createTeamPlayers(team, playersPicks);
+		for (const player of fantasyPlayer.team.players) {
+			player.gameweek_points =
+				this.getLivePlayerPoints(this.liveFplData, player.id) * player.multiplier -
+				fantasyPlayer.gameweekTransfersCost;
+		}
+
+		this.calculateGameweekPoints(team);
+	}
+
+	/**
+	 * 
+	 * @param team A fantasy team 	
+	 * @param picks players selected by the fantasy manager for the current week
+	 * @param soccerPlayers list of soccer players in the game
+	 * @returns array of selected soccer players without relevent data pertaining to the soccer player
+	 */
+	createTeamPlayers(team: Team, picks) {
 		const newPlayers = [];
 		for (const pick of picks) {
-			if (pick.is_captain) team.captainId = pick.element;
-			const newPlayer = new SoccerPlayer(pick.element);
-			const player = soccerPlayers.find((player) => player.id == pick.element);
-			newPlayer.name = player.web_name;
+			const newPlayer = this.createPlayer(pick.element);
 			newPlayer.multiplier = pick.multiplier;
-			newPlayer.image = Team.composePhotoUrl(player.photo);
-			newPlayer.position = player.element_type;
+			newPlayer.position_number = pick.position;
+			if (pick.is_captain) {
+				newPlayer.isCaptain = true;
+				team.captain = newPlayer.name;
+			}
 			newPlayers.push(newPlayer);
 		}
-		team.players = newPlayers;
+		return newPlayers;
+	}
+
+	createPlayer(id) {
+		const newPlayer = new SoccerPlayer(id);
+		const player = this.soccerPlayers.find((player) => player.id == id);
+		newPlayer.name = player.web_name;
+		newPlayer.image = Team.composePhotoUrl(player.photo);
+		newPlayer.position = player.element_type;
+		return newPlayer;
 	}
 
 	getActiveChip() {}
@@ -141,7 +187,7 @@ export class LeaguePage {
 	 * @returns {number} total overall points after last week
 	 */
 	getOverallPointsLastWeek(gameweekHistory) {
-		return gameweekHistory.pop().total_points;
+		return gameweekHistory[gameweekHistory.length - 2].total_points;
 	}
 
 	/**
@@ -153,7 +199,7 @@ export class LeaguePage {
 		team.gameweekPoints = 0;
 
 		for (const player of team.players) {
-			team.gameweekPoints += player.gameweek_points;
+			if (player.position_number < 12) team.gameweekPoints += player.gameweek_points;
 		}
 
 		team.overallPoints += team.gameweekPoints;
@@ -166,7 +212,7 @@ export class LeaguePage {
 	 * @description retrieves all fantasy league players picks from the current selected league for the current gameweek
 	 * @returns promise
 	 */
-	getMembersCurrentGameweekData(gameweek) {
+	async getMembersCurrentGameweekData(gameweek) {
 		return Promise.all(
 			this.members.map((member) => this.getMemberCurrentGameweek(member.team.id, gameweek))
 		).catch((err) => {
@@ -174,8 +220,10 @@ export class LeaguePage {
 		});
 	}
 
-	getMembersGameweekHistory() {
-		return Promise.all(this.members.map((member) => this.getPlayerGameweekHistory(member.team.id)));
+	async getMembersGameweekHistory() {
+		return Promise.all(
+			this.members.map((member) => this.getPlayerGameweekHistory(member.team.id).catch(() => undefined))
+		).catch((err) => console.log('failed to get player history', err));
 	}
 	/**
 	 * 
@@ -218,17 +266,48 @@ export class LeaguePage {
 	}
 
 	refreshLeague(event) {
+		this.refresh();
 		event.target.complete();
 	}
 
+	refresh() {
+		if (this.membersGameweekData && this.membersGameweekHistory) {
+			this.liveDataService.getLiveData(this.currentGameweek).then((result) => {
+				this.liveFplData = result;
+				this.constructLeague(this.membersGameweekData, this.liveFplData, this.membersGameweekHistory);
+			});
+		}
+	}
+
 	async createLoadingIcon() {
-		return await this.loadingController.create({
+		this.loading = this.loadingController.create({
 			message: 'Calculating Live Scores...',
 			duration: 20000
 		});
+
+		this.showLoadingIcon();
 	}
 
-	async leaguePlayerSelected(playerId) {}
+	async leaguePlayerSelected(playerId) {
+		const selectedPlayer = this.members.find((memeber) => memeber.team.id == playerId);
+		const selectedPlayerPicks = selectedPlayer.team.players;
+		const captain = selectedPlayer.team.captain;
+
+		const modal = await this.modalController.create({
+			component: PlayerModal,
+			componentProps: {
+				playerId: playerId,
+				picks: selectedPlayerPicks,
+				gameweek: this.currentGameweek,
+				captain: captain,
+				gameweekPoints: selectedPlayer.team.gameweekPoints,
+				name: selectedPlayer.name,
+				teamName: selectedPlayer.team.name
+			}
+		});
+
+		return await modal.present();
+	}
 
 	removeLeague(leagueId) {
 		if (leagueId) {
@@ -264,27 +343,6 @@ export class LeaguePage {
 		this.fantasyPlayer.addLeague(leagueId, leagueName);
 	}
 
-	createLeaguePlayerObject(player, playerHistory, playerPicks) {
-		const { picks, active_chip } = playerPicks;
-		const selctedPlayers = [];
-
-		const totalLivePoints = picks.reduce((acc, pick) => {
-			const totalPoints = this.livePremPlayerData[pick.element]['stats']['total_points'];
-			const playerName = this.getPlayerName(pick.element);
-			selctedPlayers.push(playerName);
-			if (active_chip === 'bboost' || pick.position <= 11) {
-				if (pick.is_captain) {
-					player.captain = playerName;
-					return totalPoints * pick.multiplier + acc;
-				}
-				return totalPoints + acc;
-			}
-			return acc;
-		}, 0);
-
-		const pHistory = this.parsePlayerHistory(playerHistory, this.currentGameweek);
-	}
-
 	getLeagueData(leagueId) {
 		this.league.getLeagueData();
 	}
@@ -293,29 +351,7 @@ export class LeaguePage {
 		this.leaguesTab = 'Live';
 	}
 
-	/**
-	 * 
-	 * @param player current league player
-	 * @param gameweek current gameweek
-	 * @description returns current gameweek and next gameweek tranfers
-	 */
-	parsePlayerHistory(player, gameweek) {
-		return {
-			country_code: player.entry.player_region_short_iso,
-			live_squad_value: player.entry.value,
-			live_bank: player.entry.bank,
-			live_transfers: player.entry.event_transfers,
-			live_transfers_cost: player.entry.event_transfers_cost,
-			pointsLW: player.history.find((week) => week.event === gameweek - 1).total_points,
-			currentGameweek: player.history.find((week) => week.event === gameweek)
-		};
-	}
-
 	addPlayerToLeague(fantasyPlayer: FantasyPlayer) {
 		this.league.addMember(fantasyPlayer);
-	}
-
-	getPlayerName(playerId) {
-		return this.staticData['elements'].find((player) => player.id === playerId).web_name;
 	}
 }

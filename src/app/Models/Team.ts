@@ -8,6 +8,7 @@ export default class Team {
 	players: SoccerPlayer[];
 	name: string;
 	captainId: number;
+	captain: string;
 
 	constructor(id = -1, name = '', gameweek = 0, players = [], overall = 0) {
 		this.id = id;
@@ -29,10 +30,5 @@ export default class Team {
 		}
 
 		return this.gameweekPoints;
-	}
-
-	get captain() {
-		if (this.players.length > 0) return this.players.find((player) => player.id == this.captainId).name;
-		return '';
 	}
 }

@@ -1,14 +1,38 @@
 import { Component } from '@angular/core';
 import { FplDataService } from '../Services/FplData/fpl-data.service';
+import { Storage } from '@ionic/storage';
+import FantasyPlayer from '../Models/FantasyPlayer';
 
 @Component({
-	selector: 'app-tab1',
-	templateUrl: 'tab1.page.html',
-	styleUrls: [ 'tab1.page.scss' ]
+	selector: 'app-myTeam',
+	templateUrl: 'myTeam.page.html',
+	styleUrls: [ 'myTeam.page.scss' ]
 })
-export class Tab1Page {
-	constructor(private fplDataService: FplDataService) {
+export class MyTeamPage {
+	fantasyPlayerId: any;
+	fplId: string;
+	fantasyPlayer: FantasyPlayer;
+	readonly fplIdKey = 'fplId';
+
+	constructor(private fplDataService: FplDataService, private storage: Storage) {
+		this.fplId = '';
+		this.fantasyPlayerId = null;
+		this.init();
 		this.login();
+	}
+
+	async init() {
+		this.fantasyPlayerId = (await this.loadStoredId()) || null;
+	}
+
+	async loadStoredId() {
+		return await this.storage.get(this.fplIdKey);
+	}
+
+	onTeamIdEntered(id) {
+		this.fantasyPlayerId = id;
+		this.fplId = '';
+		this.storage.set(this.fplIdKey, this.fantasyPlayerId);
 	}
 
 	addLeaguesFromId(playerId) {

@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { NavParams } from '@ionic/angular';
-import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
-import { Http } from '@angular/http';
-import { Device } from '@ionic-native/device/ngx';
-
+import { FplDataService } from '../../Services/FplData/fpl-data.service';
+import { LiveDataService } from '../../Services/LiveData/live.data.service';
+import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 @Component({
 	selector: 'app-my-modal',
 	templateUrl: './player-modal.html',
@@ -25,22 +24,27 @@ export class PlayerModal {
 	showExpandedStats: boolean;
 	showPlayerData: string;
 	pointsBenched: number;
+	playerId: any;
+	playerPicks: any;
+	captain: any;
+	gameweekPoints: any;
+	name: any;
+	teamName: any;
 
 	constructor(
 		public navParams: NavParams,
 		private modalController: ModalController,
-		private http: HTTP,
-		private testHttp: Http,
-		private device: Device
+		private fplDataService: FplDataService,
+		private liveDataService: LiveDataService
 	) {
-		this.http = http;
-		this.testHttp = testHttp;
-		this.device = device;
-		this.playerData = navParams.get('picks');
-		this.gamePlayers = navParams.get('players');
-		this.liveFplData = navParams.get('liveData');
-		this.league_player_info = navParams.get('league_player_info');
+		this.playerId = navParams.get('playerId');
 		this.currentGameweek = navParams.get('gameweek');
+		this.playerPicks = navParams.get('picks');
+		this.captain = navParams.get('captain');
+		this.gameweekPoints = navParams.get('gameweekPoints');
+		this.name = navParams.get('name');
+		this.teamName = navParams.get('name');
+
 		this.goalkeepers = [];
 		this.defenders = [];
 		this.midfielders = [];
@@ -49,110 +53,78 @@ export class PlayerModal {
 		this.gameweekTransfers = [];
 		this.showExpandedStats = true;
 		this.pointsBenched = 0;
-		this.positions = [ [], [], [], [], [], [] ];
-		this.displayPicks(this.playerData);
-		this.getTransfers(this.playerData.entry_history.entry);
+		//need an array to store players so I can loop through them with ngFor
+		// index 0 = goalkeepers, 1 = defenders ,......
+		this.positions = [ [], [], [], [], [] ];
+		this.liveFplData = this.liveDataService.getLiveData(this.currentGameweek);
+		this.displayPicks(this.playerPicks);
+		//this.getTransfers(this.playerData.entry_history.entry);
 	}
 
-	//Need to extract into its own class
-	getData(url): Promise<HTTPResponse> {
-		if (this.device.cordova) {
-			return this.http.get(url, {}, {});
-		}
-		return this.testHttp.get(url).toPromise();
-	}
-
-	displayPicks(picks) {
-		for (const pick of picks.picks) {
-			const type = this.getElementType(pick.element);
-
-			if (pick.position < 12) {
-				this.positions[type].push({
-					name: this.getPlayerName(pick.element),
-					points: this.getPlayerPoints(pick.element, pick.multiplier),
-					photo: '/assets/player_images/' + 'p' + this.getPhoto(pick.element),
-					is_captain: pick.is_captain,
-					is_vice_captain: pick.is_vice_captain
-				});
-			} else {
-				const playerPoints = this.getPlayerPoints(pick.element, pick.multiplier);
-				this.pointsBenched += playerPoints;
-				this.positions[5].push({
-					name: this.getPlayerName(pick.element),
-					points: playerPoints,
-					photo: '/assets/player_images/' + 'p' + this.getPhoto(pick.element),
-					is_captain: pick.is_captain,
-					is_vice_captain: pick.is_vice_captain
-				});
-			}
+	displayPicks(picks: SoccerPlayer[]) {
+		for (const pick of picks) {
+			this.addPlayerToPositionMap(pick);
 		}
 	}
 
-	getPlayerPoints(id, multipler) {
-		return this.liveFplData[id]['stats']['total_points'] * multipler;
-	}
+	getPosition(type: number) {
+		const indx = Number(type);
 
-	getPlayerName(playerId) {
-		return this.gamePlayers.find((player) => player.id === playerId).web_name;
-	}
-
-	getPhoto(playerId) {
-		const photo = this.gamePlayers.find((player) => player.id === playerId).photo;
-		return photo.replace(/jpg/gi, 'png');
-	}
-
-	getElementType(playerId) {
-		return this.gamePlayers.find((player) => player.id === playerId).element_type;
-	}
-
-	parseJsonData(data) {
-		if (this.device.cordova) {
-			return JSON.parse(data.data);
-		}
-		return data.json();
-	}
-
-	async getTransfers(playerId) {
-		const transfersData = await this.getData(`https://fantasy.premierleague.com/drf/entry/${playerId}/transfers`);
-		const parsedTranferData = this.parseJsonData(transfersData);
-		const transfers = parsedTranferData.history;
-		this.gameweekTransfers = transfers.filter((transfer) => {
-			return transfer.event === this.currentGameweek;
-		});
-
-		this.gameweekTransfers = this.gameweekTransfers.map((transfer) => {
-			return {
-				player_out_name: this.getPlayerName(transfer.element_out),
-				player_in_name: this.getPlayerName(transfer.element_in),
-				photo_url_in: '/assets/player_images/' + 'p' + this.getPhoto(transfer.element_in),
-				photo_url_out: '/assets/player_images/' + 'p' + this.getPhoto(transfer.element_out),
-				player_in_cost: transfer.element_in_cost,
-				player_out_cost: transfer.element_out_cost
-			};
-		});
-		const c = transfers;
-	}
-
-	getPosition(type) {
-		switch (type) {
-			case 1:
+		switch (indx) {
+			case 0:
 				return 'Goalkeepers';
 				break;
-			case 2:
+			case 1:
 				return 'Defenders';
 				break;
-			case 3:
+			case 2:
 				return 'Midfielders';
 				break;
-			case 4:
+			case 3:
 				return 'Forwards';
 				break;
-			case 5:
+			case 4:
 				return 'Bench';
 				break;
 			default:
 				break;
 		}
+	}
+
+	addPlayerToPositionMap(pick: SoccerPlayer) {
+		//checks if player is on the starting or on the bench
+		//position 5 signifies the bench
+		const pos: number = pick.position_number < 12 ? pick.position : 5;
+		if (pos == 5) this.pointsBenched += pick.gameweek_points;
+
+		this.positions[pos - 1].push({
+			name: pick.name,
+			points: pick.gameweek_points,
+			photo: pick.image,
+			isCaptain: pick.isCaptain
+			//is_vice_captain: pick.is_vice_captain
+		});
+	}
+
+	async getTransfers(playerId) {
+		const transfersData = await this.fplDataService.getData(
+			`https://fantasy.premierleague.com/drf/entry/${playerId}/transfers`
+		);
+		const transfers = transfersData.history;
+		this.gameweekTransfers = transfers.filter((transfer) => {
+			return transfer.event === this.currentGameweek;
+		});
+
+		// this.gameweekTransfers = this.gameweekTransfers.map((transfer) => {
+		// 	return {
+		// 		player_out_name: this.getPlayerName(transfer.element_out),
+		// 		player_in_name: this.getPlayerName(transfer.element_in),
+		// 		photo_url_in: '/assets/player_images/' + 'p' + this.getPhoto(transfer.element_in),
+		// 		photo_url_out: '/assets/player_images/' + 'p' + this.getPhoto(transfer.element_out),
+		// 		player_in_cost: transfer.element_in_cost,
+		// 		player_out_cost: transfer.element_out_cost
+		// 	};
+		// });
 	}
 
 	closeModal() {

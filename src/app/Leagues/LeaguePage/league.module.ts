@@ -6,10 +6,12 @@ import { FormsModule } from '@angular/forms';
 import { LeaguePage } from './league.page';
 import { PlayerModal } from '../PlayerModal/PlayerModal.page';
 import { InputLeagueModal } from '../InputLeagueModal/InputModal.page';
+import { NgLoopObjectPipe } from '../../Pipes/ng-loop-object.pipe';
 
 @NgModule({
 	imports: [ IonicModule, CommonModule, FormsModule, RouterModule.forChild([ { path: '', component: LeaguePage } ]) ],
-	declarations: [ LeaguePage, PlayerModal, InputLeagueModal ],
+	providers: [],
+	declarations: [ LeaguePage, PlayerModal, InputLeagueModal, NgLoopObjectPipe ],
 	entryComponents: [ PlayerModal, InputLeagueModal ]
 })
 export class LeaguePageModule {}

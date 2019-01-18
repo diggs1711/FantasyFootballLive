@@ -17,8 +17,12 @@ import { Device } from '@ionic-native/device/ngx';
 //Storage
 import { IonicStorageModule } from '@ionic/storage';
 
+//Pipes
+
+import { NgLoopObjectPipe } from './Pipes/ng-loop-object.pipe';
+
 @NgModule({
-	declarations: [ AppComponent ],
+	declarations: [ AppComponent, NgLoopObjectPipe ],
 	entryComponents: [],
 	imports: [ BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpModule, IonicStorageModule.forRoot() ],
 	providers: [ HTTP, Device, StatusBar, SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy } ],

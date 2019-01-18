@@ -30,7 +30,7 @@ export class LeaguesList {
 	}
 
 	initLeagueList() {
-		//this.loadStoredLeagues();
+		this.loadStoredLeagues();
 	}
 
 	loadStoredLeagues() {

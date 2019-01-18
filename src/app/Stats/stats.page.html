@@ -38,17 +38,11 @@
     </ion-item> -->
 
     <ion-grid>
-        <ion-item *ngFor="let fixtures of teams.fixtures; let i = index;" text-wrap>
+        <ion-item lines="none" *ngFor="let fixtures of teams.fixtures; let i = index;" text-wrap>
             <ion-label position="fixed">
                 {{ getTeamNameStartingAtZeroIndex(i) }}
             </ion-label>
-
-            <!-- <ion-label nowrap>
-                   
-                </ion-label> -->
-
             <ion-label class="fixture-difficulty" *ngFor=" let fixture of fixtures?.slice(0, fixtureRange)" [class]="'fixture-difficulty fixture-difficulty-' + fixture.difficulty">
-
                 {{fixture.difficulty}}
             </ion-label>
         </ion-item>

@@ -42,7 +42,16 @@ export class StaticDataService {
 		return this.currentGameweek > 0;
 	}
 
-	getCurrentGameweek() {
+	getPosition(type) {
+		return this.positions.find((position) => position.id === type).plural_name;
+	}
+
+	async getCurrentGameweek() {
+		if (this.currentGameweek) {
+			return this.currentGameweek;
+		}
+
+		const data = await this.getBootstrapData();
 		return this.currentGameweek;
 	}
 

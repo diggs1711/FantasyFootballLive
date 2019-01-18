@@ -1,8 +1,19 @@
 <ion-header>
   <ion-toolbar color="primary">
+
     <ion-title>
-      LEAGUES
+      LEAGUE
     </ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button (click)="refresh()">
+        <ion-icon slot='end' name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -16,7 +27,7 @@
     <ion-label>LIVE</ion-label>
   </ion-segment-button>
 </ion-segment> -->
-<ion-content padding>
+<ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="refreshLeague($event)">
     <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
   </ion-refresher>

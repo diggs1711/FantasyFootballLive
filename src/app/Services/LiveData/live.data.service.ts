@@ -8,6 +8,6 @@ export class LiveDataService {
 	constructor(private fplDataService: FplDataService) {}
 
 	async getLiveData(gameweek) {
-		return this.fplDataService.getData(`https://fantasy.premierleague.com/drf/event/${gameweek}/live`);
+		return await this.fplDataService.getData(`https://fantasy.premierleague.com/drf/event/${gameweek}/live`);
 	}
 }
