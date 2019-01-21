@@ -32,6 +32,8 @@ export class StaticDataService {
 				this.currentGameweek = currentGameweek;
 				this.positions = positions;
 				this.teams = teams;
+
+				return bootstrap;
 			});
 	}
 

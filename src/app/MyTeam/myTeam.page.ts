@@ -37,12 +37,11 @@ export class MyTeamPage {
 		return await this.storage.get(this.fplIdKey);
 	}
 
-	onTeamIdEntered(id) {
+	async onTeamIdEntered(id) {
 		this.fantasyPlayerId = id;
 		this.fplId = '';
 		this.storage.set(this.fplIdKey, this.fantasyPlayerId);
-		const fantasyPlayer = this.fetchFantasyPlayer(this.fantasyPlayerId);
-		console.log(fantasyPlayer);
+		this.fantasyPlayer = await this.fetchFantasyPlayer(this.fantasyPlayerId);
 	}
 
 	fetchFantasyPlayer(id) {

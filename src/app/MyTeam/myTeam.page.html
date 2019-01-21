@@ -49,7 +49,16 @@
 
   <ion-list *ngIf="fantasyPlayer" inset lines="none">
     <ion-list-header>
-      {{ fantasyPlayer.name }}
+      <ion-item>
+        <ion-avatar slot="start">
+          <img [src]="fantasyPlayer.country">
+        </ion-avatar>
+        <ion-label text-wrap>
+          <h1>{{ fantasyPlayer.name }}</h1>
+          <p>{{ fantasyPlayer.team.name }}</p>
+        </ion-label>
+      </ion-item>
+
     </ion-list-header>
     <ion-item>
       <ion-label text-wrap>
@@ -65,24 +74,18 @@
         <p>{{ pointsBenched }}</p>
       </ion-label>
     </ion-item>
-    <div *ngFor="let position of positions | keyvalue;">
-      <ion-item-divider>
-        <ion-label>
-          {{ getPosition(position.key) }}
-        </ion-label>
-      </ion-item-divider>
-      <ion-item *ngFor="let pick of position.value">
-        <ion-avatar slot="start">
-          <ion-img [src]='pick.photo'></ion-img>
-        </ion-avatar>
-        <ion-label>
-          <h3>{{ pick.name }}</h3>
-          <p>{{ pick.points }}</p>
-        </ion-label>
-        <ion-badge *ngIf="pick.isCaptain" color="primary" fill="outline" slot="end">C</ion-badge>
-        <ion-badge *ngIf="pick.is_vice_captain" color="light" slot="end">Vice</ion-badge>
-      </ion-item>
-    </div>
+
+    <ion-item *ngFor="let player of fantasyPlayer.team.players">
+      <ion-avatar slot="start">
+        <ion-img [src]='player.image'></ion-img>
+      </ion-avatar>
+      <ion-label>
+        <h3>{{ player.name }}</h3>
+        <p>{{ player.gameweek_points }}</p>
+      </ion-label>
+      <ion-badge *ngIf="player.isCaptain" color="primary" fill="outline" slot="end">C</ion-badge>
+      <ion-badge *ngIf="player.is_vice_captain" color="light" slot="end">Vice</ion-badge>
+    </ion-item>
   </ion-list>
 
 </ion-content>

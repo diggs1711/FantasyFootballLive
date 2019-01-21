@@ -4,16 +4,21 @@ import { FplDataService } from '../../Services/FplData/fpl-data.service';
 import { StaticDataService } from '../../Services/StaticData/static.data.service';
 import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import Team from 'src/app/Models/Team';
+import SoccerPlayer from 'src/app/Models/SoccerPlayer';
+import { LiveDataService } from '../LiveData/live.data.service';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class FplTeamService {
 	currentGameweek: any;
+	bootstrapData: any;
+	liveData: any;
 	constructor(
 		private staticDataService: StaticDataService,
 		private storage: Storage,
-		private fplDataService: FplDataService
+		private fplDataService: FplDataService,
+		private liveDataService: LiveDataService
 	) {
 		this.init();
 	}
@@ -24,9 +29,12 @@ export class FplTeamService {
 
 	async getCurrentGameweekData(id) {
 		if (!this.currentGameweek) {
-			return this.staticDataService.getCurrentGameweek().then((gameweek) => {
-				return this.getDataAsyncOrRetrieveStored(id, this.composeCurrentGameweekInfoUrl(id, gameweek));
-			});
+			this.bootstrapData = await this.staticDataService.getBootstrapData();
+			this.currentGameweek = this.bootstrapData['current-event'];
+			this.getDataAsyncOrRetrieveStored(
+				id,
+				this.composeCurrentGameweekInfoUrl(id, this.bootstrapData['current-event'])
+			);
 		}
 
 		return this.getDataAsyncOrRetrieveStored(id, this.composeCurrentGameweekInfoUrl(id, this.currentGameweek));
@@ -58,22 +66,55 @@ export class FplTeamService {
 		return await Promise.all([
 			this.getCurrentGameweekData(id),
 			this.getPlayerGameweekHistory(id)
-		]).then(([ gameweekData, gameweekHistory ]) => {
+		]).then(async ([ gameweekData, gameweekHistory ]) => {
+			this.liveData = await this.getLiveData();
 			const leagues = gameweekHistory.leagues.classic;
 			const firstName = gameweekHistory.entry.player_first_name;
 			const lastName = gameweekHistory.entry.player_last_name;
-			const country = gameweekHistory.entry.player_region_short_iso;
+			const country = this.createCountryPhotoUrl(gameweekHistory.entry.player_region_short_iso);
 			const teamName = gameweekHistory.entry.name;
 			const currentGameweek = gameweekHistory.entry.current_event;
 			const lastWeekOverallPoints = gameweekHistory.history[gameweekHistory.history.length - 1].total_points;
-
+			const picks = gameweekData.picks;
 			const team = new Team(id, teamName, currentGameweek, [], lastWeekOverallPoints);
-
 			const fantasyPlayer = new FantasyPlayer(id, leagues, `${firstName} ${lastName}`, team, country);
-			console.log(gameweekData, gameweekHistory);
+
+			//create team of players
+			for (const pick of picks) {
+				const player = this.bootstrapData.elements.find((player) => player.id === pick.element);
+				const newPlayer = new SoccerPlayer(
+					pick.element,
+					player.web_name,
+					this.getLivePoints(player.id),
+					this.createPlayerPhotoUrl(player.photo),
+					pick.position
+				);
+				fantasyPlayer.team.players.push(newPlayer);
+			}
+			console.log(gameweekData, gameweekHistory, this.liveData);
 
 			return fantasyPlayer;
 		});
+	}
+
+	getLivePoints(id) {
+		console.log(this.liveData['elements'][id]['stats']['total_points']);
+		return this.liveData['elements'][id]['stats']['total_points'];
+	}
+	async getLiveData() {
+		return await this.liveDataService.getLiveData(this.currentGameweek);
+	}
+
+	createCountryPhotoUrl(code) {
+		return `/assets/country_flags/${code}.gif`;
+	}
+
+	createPlayerPhotoUrl(photo) {
+		return Team.composePhotoUrl(photo);
+	}
+
+	async getBootstrapData() {
+		return this.fplDataService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
 	}
 
 	async getDataAsyncOrRetrieveStored(id, url) {
