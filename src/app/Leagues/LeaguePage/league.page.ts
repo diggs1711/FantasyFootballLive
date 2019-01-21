@@ -103,7 +103,7 @@ export class LeaguePage {
 		this.membersGameweekHistory = this.membersGameweekHistory || membersGameweekHistory || [];
 
 		for (let index = 0; index < membersGameweekData.length; index++) {
-			const playerGameweekData: any = membersGameweekData[index];
+			const playerGameweekData = membersGameweekData[index];
 			const gameweekHistoryData = membersGameweekHistory[index];
 			const fantasyPlayer = this.members[index];
 			this.soccerPlayers = this.staticDataService.getSoccerPlayers();
@@ -115,7 +115,7 @@ export class LeaguePage {
 		}
 	}
 
-	constructTeam(playerGameweekData, fantasyPlayer, gameweekHistoryData) {
+	constructTeam(playerGameweekData, fantasyPlayer: FantasyPlayer, gameweekHistoryData) {
 		const playersPicks = playerGameweekData.picks;
 		fantasyPlayer.gameweekTransfers = playerGameweekData.entry_history.event_transfers;
 		fantasyPlayer.gameweekTransfersCost = playerGameweekData.entry_history.event_transfers_cost;
@@ -131,12 +131,11 @@ export class LeaguePage {
 		team.overallPoints = this.getOverallPointsLastWeek(gameweekHistoryData.history);
 		team.players = this.createTeamPlayers(team, playersPicks);
 		for (const player of fantasyPlayer.team.players) {
-			player.gameweek_points =
-				this.getLivePlayerPoints(this.liveFplData, player.id) * player.multiplier -
-				fantasyPlayer.gameweekTransfersCost;
+			player.gameweek_points = this.getLivePlayerPoints(this.liveFplData, player.id) * player.multiplier;
 		}
 
 		this.calculateGameweekPoints(team);
+		team.overallPoints += team.gameweekPoints - fantasyPlayer.gameweekTransfersCost;
 	}
 
 	/**
@@ -202,7 +201,6 @@ export class LeaguePage {
 			if (player.position_number < 12) team.gameweekPoints += player.gameweek_points;
 		}
 
-		team.overallPoints += team.gameweekPoints;
 		return team.gameweekPoints;
 	}
 

@@ -35,7 +35,7 @@
     <ion-card-content>
       <p>With this app you can check the live scores of all your mini leagues.
         You can see who they captained, what chips they used and much more. Just Enter
-        your FPL id below to begin.
+        your FPL Id below to begin.
       </p>
     </ion-card-content>
   </ion-card>
@@ -44,12 +44,12 @@
       <ion-label position="floating">Enter Team Id</ion-label>
       <ion-input type="number" [(ngModel)]="fplId"></ion-input>
     </ion-item>
-    <ion-button (click)="onTeamIdEntered(fplId)">Add</ion-button>
+    <ion-button expand="block" shape="round" color="primary" fill="outline" (click)="onTeamIdEntered(fplId)">Add</ion-button>
   </div>
 
-  <ion-list *ngIf="fantasyPlayerId" inset lines="none">
+  <ion-list *ngIf="fantasyPlayer" inset lines="none">
     <ion-list-header>
-      {{ fantasyPlayerId }}
+      {{ fantasyPlayer.name }}
     </ion-list-header>
     <ion-item>
       <ion-label text-wrap>

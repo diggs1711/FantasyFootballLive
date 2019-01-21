@@ -9,12 +9,14 @@ export default class FantasyPlayer {
 	gameweekTransfers: number;
 	gameweekTransfersCost: number;
 	activeChip: string;
+	country: string;
 
-	constructor(id = -1, leagues = [], name = '', team = new Team()) {
+	constructor(id = -1, leagues = [], name = '', team = new Team(), country = '') {
 		this.leagues = leagues;
 		this.name = name;
 		this.team = team;
 		this.id = id;
+		this.country = country;
 	}
 
 	getLeagues() {

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FplDataService } from '../Services/FplData/fpl-data.service';
 import { Storage } from '@ionic/storage';
 import FantasyPlayer from '../Models/FantasyPlayer';
+import { FplTeamService } from '../Services/FplTeamService/fpl-team-service.service';
 
 @Component({
 	selector: 'app-myTeam',
@@ -14,7 +15,11 @@ export class MyTeamPage {
 	fantasyPlayer: FantasyPlayer;
 	readonly fplIdKey = 'fplId';
 
-	constructor(private fplDataService: FplDataService, private storage: Storage) {
+	constructor(
+		private fplDataService: FplDataService,
+		private storage: Storage,
+		private fplTeamService: FplTeamService
+	) {
 		this.fplId = '';
 		this.fantasyPlayerId = null;
 		this.init();
@@ -23,6 +28,9 @@ export class MyTeamPage {
 
 	async init() {
 		this.fantasyPlayerId = (await this.loadStoredId()) || null;
+		const fantasyPlayer = await this.fetchFantasyPlayer(this.fantasyPlayerId);
+		this.fantasyPlayer = fantasyPlayer;
+		console.log(this.fantasyPlayer);
 	}
 
 	async loadStoredId() {
@@ -33,6 +41,12 @@ export class MyTeamPage {
 		this.fantasyPlayerId = id;
 		this.fplId = '';
 		this.storage.set(this.fplIdKey, this.fantasyPlayerId);
+		const fantasyPlayer = this.fetchFantasyPlayer(this.fantasyPlayerId);
+		console.log(fantasyPlayer);
+	}
+
+	fetchFantasyPlayer(id) {
+		if (id) return this.fplTeamService.getTeam(id);
 	}
 
 	addLeaguesFromId(playerId) {

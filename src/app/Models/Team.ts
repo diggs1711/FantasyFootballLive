@@ -4,6 +4,7 @@ import SoccerPlayer from './SoccerPlayer';
 export default class Team {
 	id: number;
 	gameweekPoints: number;
+	gameweek: number;
 	overallPoints: number;
 	players: SoccerPlayer[];
 	name: string;
@@ -13,9 +14,10 @@ export default class Team {
 	constructor(id = -1, name = '', gameweek = 0, players = [], overall = 0) {
 		this.id = id;
 		this.name = name;
-		this.gameweekPoints = gameweek;
+		this.gameweek = gameweek;
 		this.overallPoints = overall;
 		this.players = players;
+		this.gameweekPoints = 0;
 	}
 
 	static composePhotoUrl(photo) {
