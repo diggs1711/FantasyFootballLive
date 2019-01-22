@@ -6,7 +6,7 @@ import { Http } from '@angular/http';
 @Injectable({
 	providedIn: 'root'
 })
-export class FplDataService {
+export class RequestDataService {
 	constructor(private testHttp: Http, private http: HTTP, private device: Device) {
 		this.device = device;
 		this.http = http;

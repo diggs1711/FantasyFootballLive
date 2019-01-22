@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { FplDataService } from '../../Services/FplData/fpl-data.service';
+import { RequestDataService } from '../../Services/FplData/fpl-data.service';
 import { StaticDataService } from '../../Services/StaticData/static.data.service';
 import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import Team from 'src/app/Models/Team';
@@ -18,7 +18,7 @@ export class FplTeamService {
 	constructor(
 		private staticDataService: StaticDataService,
 		private storage: Storage,
-		private fplDataService: FplDataService,
+		private fplDataService: RequestDataService,
 		private liveDataService: LiveDataService
 	) {
 		this.init();

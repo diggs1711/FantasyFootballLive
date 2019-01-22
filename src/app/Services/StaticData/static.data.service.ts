@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FplDataService } from '../FplData/fpl-data.service';
+import { RequestDataService } from '../FplData/fpl-data.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -10,7 +10,7 @@ export class StaticDataService {
 	positions: any;
 	teams: any;
 
-	constructor(private fplDataService: FplDataService) {}
+	constructor(private fplDataService: RequestDataService) {}
 
 	/**
 	 * @Returns returns a promise containing bootstrap data
