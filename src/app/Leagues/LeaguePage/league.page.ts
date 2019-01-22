@@ -150,7 +150,7 @@ export class LeaguePage {
 		for (const pick of picks) {
 			const newPlayer = this.createPlayer(pick.element);
 			newPlayer.multiplier = pick.multiplier;
-			newPlayer.position_number = pick.position;
+			newPlayer.teamPosition = pick.position;
 			if (pick.is_captain) {
 				newPlayer.isCaptain = true;
 				team.captain = newPlayer.name;
@@ -165,7 +165,7 @@ export class LeaguePage {
 		const player = this.soccerPlayers.find((player) => player.id == id);
 		newPlayer.name = player.web_name;
 		newPlayer.image = Team.composePhotoUrl(player.photo);
-		newPlayer.position = player.element_type;
+		newPlayer.position_type = player.element_type;
 		return newPlayer;
 	}
 
@@ -198,7 +198,7 @@ export class LeaguePage {
 		team.gameweekPoints = 0;
 
 		for (const player of team.players) {
-			if (player.position_number < 12) team.gameweekPoints += player.gameweek_points;
+			if (player.teamPosition < 12) team.gameweekPoints += player.gameweek_points;
 		}
 
 		return team.gameweekPoints;

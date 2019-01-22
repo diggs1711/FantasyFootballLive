@@ -1,22 +1,23 @@
-<ion-header>
-    <ion-toolbar color="primary">
-        <ion-title>
-            LEAGUES
+<ion-header translucent="true">
+    <ion-toolbar color="tertiary">
+        <ion-title text-center>
+            Leagues
         </ion-title>
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
-    <ion-list lines="inset" inset>
-        <ion-list-header>
-            <ion-label>
-                MY LEAGUES
-            </ion-label>
-        </ion-list-header>
+<ion-content padding>
+    <ion-list>
         <ion-item *ngFor="let league of leagues" (click)="openLeague(league.id)">
-            <ion-label text-wrap>{{ league.name }}</ion-label>
-            <ion-icon (click)="
-                        removeLeague(league.id)" slot="end" color="danger" name="close-circle">
+            <ion-label text-wrap>
+                <h2>
+                    {{ league.name }}
+                </h2>
+                <p>
+                    <ion-note slot="start"> {{ league.playerRank }} </ion-note>
+                </p>
+            </ion-label>
+            <ion-icon (click)="removeLeague(league.id)" slot="end" color="danger" name="close-circle">
             </ion-icon>
         </ion-item>
     </ion-list>

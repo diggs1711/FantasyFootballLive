@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header translucent="true">
+  <ion-toolbar color="teritary">
 
     <ion-title>
       LEAGUE
@@ -40,7 +40,9 @@
     </ion-chip> -->
     <ion-list-header>
       <ion-label>
-        {{ leagueName }}
+        <h1>
+          {{ leagueName }}
+        </h1>
       </ion-label>
     </ion-list-header>
     <ion-item *ngFor="let member of members; let i = index;" (click)="leaguePlayerSelected(member.team.id)">

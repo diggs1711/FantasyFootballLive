@@ -37,7 +37,9 @@ export class LeaguesList {
 		const getLeaguesPromise = this.storage.get(this.key);
 		getLeaguesPromise
 			.then((leagues) => {
-				this.leagues = leagues || [];
+				for (const league of leagues) {
+					this.leagues.push(new League(league.id, league.name, league.entry_rank));
+				}
 			})
 			.catch((err) => {
 				console.log('Failed to load leagues', err);
@@ -57,9 +59,9 @@ export class LeaguesList {
 			.then(({ data }) => this.fetchLeagueData(data.leagueId))
 			.then((leagueData) => {
 				if (leagueData) {
-					const { name, id } = leagueData.league;
+					const { name, id, entry_rank: rank } = leagueData.league;
 					const members = FantasyPlayer.createFantasyPlayersArray(leagueData.standings.results);
-					this.addLeague(id, name, members);
+					this.addLeague(id, name, rank, members);
 				}
 			})
 			.catch((err) => {
@@ -71,9 +73,9 @@ export class LeaguesList {
 		return this.fplDataService.getData(this.baseLeagueUrl + id);
 	}
 
-	addLeague(id, name, members) {
+	addLeague(id, name, playerRank, members) {
 		if (!this.hasLeague(id)) {
-			const newLeague = new League(id, name, members);
+			const newLeague = new League(id, name, playerRank, members);
 			this.leagues.push(newLeague);
 			this.storage.set(this.key, this.leagues);
 		}
@@ -95,12 +97,15 @@ export class LeaguesList {
 	async openLeague(leagueId) {
 		if (!leagueId) return;
 		const selectedLeague = this.getLeague(leagueId);
+		const leagueData = await this.fetchLeagueData(leagueId);
+		const { name, id } = leagueData.league;
+		const members = FantasyPlayer.createFantasyPlayersArray(leagueData.standings.results);
 
 		const modal = await this.modalController.create({
 			component: LeaguePage,
 			componentProps: {
-				members: selectedLeague.members,
-				name: selectedLeague.name
+				members: members,
+				name: name
 			}
 		});
 

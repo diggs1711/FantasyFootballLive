@@ -6,6 +6,11 @@ export default class Team {
 	gameweekPoints: number;
 	gameweek: number;
 	overallPoints: number;
+	Goalkeepers: SoccerPlayer[];
+	Defenders: SoccerPlayer[];
+	Midfielders: SoccerPlayer[];
+	Forwards: SoccerPlayer[];
+	Bench: SoccerPlayer[];
 	players: SoccerPlayer[];
 	name: string;
 	captainId: number;
@@ -18,6 +23,11 @@ export default class Team {
 		this.overallPoints = overall;
 		this.players = players;
 		this.gameweekPoints = 0;
+		this.Goalkeepers = [];
+		this.Defenders = [];
+		this.Midfielders = [];
+		this.Forwards = [];
+		this.Bench = [];
 	}
 
 	static composePhotoUrl(photo) {

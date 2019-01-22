@@ -14,6 +14,7 @@ export class FplTeamService {
 	currentGameweek: any;
 	bootstrapData: any;
 	liveData: any;
+
 	constructor(
 		private staticDataService: StaticDataService,
 		private storage: Storage,
@@ -24,12 +25,13 @@ export class FplTeamService {
 	}
 
 	async init() {
-		this.currentGameweek = await this.staticDataService.getCurrentGameweek();
+		//this.currentGameweek = await this.staticDataService.getCurrentGameweek();
 	}
 
 	async getCurrentGameweekData(id) {
 		if (!this.currentGameweek) {
 			this.bootstrapData = await this.staticDataService.getBootstrapData();
+			this.storage.set('bootstrap-data', this.bootstrapData);
 			this.currentGameweek = this.bootstrapData['current-event'];
 			this.getDataAsyncOrRetrieveStored(
 				id,
@@ -41,12 +43,7 @@ export class FplTeamService {
 	}
 
 	async getTeam(id) {
-		return await this.storage.get(`team-${id}`).then((team) => {
-			//if team is stored return it
-			if (team) return team;
-
-			return this.loadPlayer(id);
-		});
+		return await this.loadPlayer(id);
 	}
 
 	getPlayerGameweekHistory(id) {
@@ -78,27 +75,49 @@ export class FplTeamService {
 			const picks = gameweekData.picks;
 			const team = new Team(id, teamName, currentGameweek, [], lastWeekOverallPoints);
 			const fantasyPlayer = new FantasyPlayer(id, leagues, `${firstName} ${lastName}`, team, country);
+			const transferCost = gameweekData.entry_history.event_transfers_cost;
 
 			//create team of players
 			for (const pick of picks) {
 				const player = this.bootstrapData.elements.find((player) => player.id === pick.element);
+				const position = this.getElementType(player.element_type);
+
 				const newPlayer = new SoccerPlayer(
 					pick.element,
 					player.web_name,
 					this.getLivePoints(player.id),
 					this.createPlayerPhotoUrl(player.photo),
-					pick.position
+					pick.position,
+					position,
+					player.element_type
 				);
-				fantasyPlayer.team.players.push(newPlayer);
-			}
-			console.log(gameweekData, gameweekHistory, this.liveData);
 
+				newPlayer.isCaptain = pick.is_captain;
+				newPlayer.multiplier = pick.multiplier;
+				fantasyPlayer.team.players.push(newPlayer);
+
+				//addd starters to positions array to display on team page
+				if (pick.position < 12) {
+					fantasyPlayer.team[`${position}s`].push(newPlayer);
+				} else {
+					fantasyPlayer.team.Bench.push(newPlayer);
+				}
+			}
+
+			for (const plaayer of fantasyPlayer.team.players) {
+				fantasyPlayer.team.gameweekPoints += plaayer.gameweek_points * plaayer.multiplier;
+			}
+
+			fantasyPlayer.team.gameweekPoints;
 			return fantasyPlayer;
 		});
 	}
 
+	getElementType(typeId) {
+		return this.bootstrapData.element_types.find((type) => type.id == typeId).singular_name;
+	}
+
 	getLivePoints(id) {
-		console.log(this.liveData['elements'][id]['stats']['total_points']);
 		return this.liveData['elements'][id]['stats']['total_points'];
 	}
 	async getLiveData() {

@@ -4,11 +4,14 @@ export default class League {
 	name: string;
 	members: FantasyPlayer[];
 	baseLeagueUrl: string;
+	r;
+	playerRank: number;
 
-	constructor(id = -1, name = '', members = []) {
+	constructor(id = -1, name = '', playerRank = 0, members = []) {
 		this.id = id;
 		this.name = name;
 		this.members = members;
+		this.playerRank = playerRank;
 		this.baseLeagueUrl = 'https://fantasy.premierleague.com/drf/leagues-classic-standings/';
 	}
 

@@ -94,9 +94,9 @@ export class PlayerModal {
 	addPlayerToPositionMap(pick: SoccerPlayer) {
 		//checks if player is on the starting or on the bench
 		//position 5 signifies the bench
-		const pos: number = pick.position_number < 12 ? pick.position : 5;
+		const pos: number = pick.teamPosition < 12 ? pick.position_type : 5;
 		if (pos == 5) this.pointsBenched += pick.gameweek_points;
-
+		console.log(pos);
 		this.positions[pos - 1].push({
 			name: pick.name,
 			points: pick.gameweek_points,

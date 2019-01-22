@@ -28,9 +28,11 @@ export class MyTeamPage {
 
 	async init() {
 		this.fantasyPlayerId = (await this.loadStoredId()) || null;
-		const fantasyPlayer = await this.fetchFantasyPlayer(this.fantasyPlayerId);
-		this.fantasyPlayer = fantasyPlayer;
-		console.log(this.fantasyPlayer);
+		if (this.fantasyPlayerId) {
+			const fantasyPlayer = await this.fetchFantasyPlayer(this.fantasyPlayerId);
+			this.fantasyPlayer = fantasyPlayer;
+			this.storage.set('player-leagues', this.fantasyPlayer.leagues);
+		}
 	}
 
 	async loadStoredId() {
@@ -42,10 +44,11 @@ export class MyTeamPage {
 		this.fplId = '';
 		this.storage.set(this.fplIdKey, this.fantasyPlayerId);
 		this.fantasyPlayer = await this.fetchFantasyPlayer(this.fantasyPlayerId);
+		this.storage.set('player-leagues', this.fantasyPlayer.leagues);
 	}
 
-	fetchFantasyPlayer(id) {
-		if (id) return this.fplTeamService.getTeam(id);
+	async fetchFantasyPlayer(id) {
+		if (id) return await this.fplTeamService.getTeam(id);
 	}
 
 	addLeaguesFromId(playerId) {
