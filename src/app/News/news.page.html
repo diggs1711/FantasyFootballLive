@@ -1,0 +1,22 @@
+<ion-content padding>
+  <ion-item lines="none">
+    <h1>
+      <strong>NEWS</strong>
+    </h1>
+  </ion-item>
+
+  <ion-list>
+    <ion-card *ngFor="let post of latestPosts">
+      <a [href]="post.url" class="news-link"></a>
+      <ion-img [src]="post.image"></ion-img>
+      <ion-card-header>
+        <ion-card-title>{{ post.title }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>
+          {{ post.url }}
+        </p>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

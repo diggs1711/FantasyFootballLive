@@ -1,0 +1,81 @@
+<!-- <ion-header translucent="true">
+    <ion-toolbar color="teritary">
+  
+      <ion-img class="main-logo" src="../../assets/icon.png"></ion-img>
+      <ion-buttons slot="start">
+        <ion-button (click)="closeModal()">
+          <ion-icon slot="start" name="arrow-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="primary">
+        <ion-button (click)="refresh()">
+          <ion-icon slot='end' name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+</ion-header> -->
+
+<!-- <ion-segment *ngIf="leagues.length > 0" [(ngModel)]="leaguesTab" color="primary">
+    <ion-segment-button value="MyLeagues" layout="icon-start">
+      <ion-icon name="list"></ion-icon>
+      <ion-label>LEAGUES</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Live" layout="icon-start">
+      <ion-icon name="pulse"></ion-icon>
+      <ion-label>LIVE</ion-label>
+    </ion-segment-button>
+  </ion-segment> -->
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refreshLeague($event)">
+    <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list inset lines="inset" *ngIf="members.length > 0">
+    <!-- <ion-chip outline color="primary" *ngIf="!hideChip" (click)="hideChipInfo()">
+        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+        <ion-label>Select a player to find more info</ion-label>
+        <ion-icon name="close"></ion-icon>
+      </ion-chip> -->
+    <ion-list-header>
+      <ion-label text-wrap>
+        <h3>
+          {{ leagueName }}
+        </h3>
+      </ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let member of members; let i = index;" (click)="leaguePlayerSelected(member.team.id)">
+      <ion-badge color="none" slot="start">{{ i + 1 }}</ion-badge>
+      <ion-label text-wrap>
+        <ion-text>
+          <h2>{{ member.team.name }}</h2>
+        </ion-text>
+        <h3>{{ member.name }}</h3>
+        <ion-badge color="success">{{ member.activeChip }}</ion-badge>
+        <p> Captain: <strong>{{ member.team.captain }}</strong>
+          <p> Transfers: <strong>{{ member.gameweekTransfers }}</strong>
+            <ion-text color="danger" *ngIf="member.gameweekTransfersCost > 0">
+              (-{{ member.gameweekTransfersCost }})</ion-text>
+          </p>
+      </ion-label>
+      <ion-note slot="end" text-wrap>
+        <ion-text>
+          <h6>{{ member.team.overallPoints }}</h6>
+        </ion-text>
+        <p>
+          {{ member.team.gameweekPoints }}
+        </p>
+      </ion-note>
+    </ion-item>
+  </ion-list>
+  <ion-card *ngIf="members.length == 0">
+    <ion-img src="/assets/neymar.jpg"></ion-img>
+    <ion-card-header color="danger">
+      <ion-card-title>NO LEAGUE SELECTED</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p> You need to select a league from the My Leagues tab</p>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

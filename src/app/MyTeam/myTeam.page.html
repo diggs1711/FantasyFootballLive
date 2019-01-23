@@ -1,17 +1,18 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button>
+      <ion-button href="/home">
         <ion-icon slot="icon-only" src="../../assets/icons/house-outline.svg"></ion-icon>
       </ion-button>
     </ion-buttons>
-
+    <ion-img class="main-logo" src="../../assets/icon.png"></ion-img>
     <ion-buttons slot="secondary">
       <ion-button>
         <ion-icon slot="icon-only" src="../../assets/icons/tools.svg"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
 </ion-header>
 
 <!-- <ion-menu disabled side="start" menuId="first" content-id="menu-content" swipe-gesture type="overlay">
@@ -47,13 +48,14 @@
       </p>
     </ion-card-content>
   </ion-card>
+  -->
   <div *ngIf="!fantasyPlayerId">
     <ion-item>
       <ion-label position="floating">Enter Team Id</ion-label>
       <ion-input type="number" [(ngModel)]="fplId"></ion-input>
     </ion-item>
     <ion-button expand="block" shape="round" color="primary" fill="outline" (click)="onTeamIdEntered(fplId)">Add</ion-button>
-  </div> -->
+  </div>
 
   <ion-item lines="none" *ngIf="fantasyPlayer">
     <!-- <ion-avatar slot="start">
@@ -62,7 +64,9 @@
     <ion-label text-wrap>
       <!-- <h1 class="fantasy-player__heading">{{ fantasyPlayer.name }}</h1> -->
       <h2 class="fantasy-player__heading" text-uppercase>TEAM - {{ fantasyPlayer.team.name }}</h2>
-      <p class="fantasy-player__heading">Points - <strong>{{ fantasyPlayer.team.gameweekPoints }} </strong>
+      <p class="fantasy-player__heading">GW Points - <strong>{{ fantasyPlayer.team.gameweekPoints }} </strong>
+      </p>
+      <p class="fantasy-player__heading">Overall Points - <strong>{{ fantasyPlayer.team.overallPoints }} </strong>
       </p>
     </ion-label>
     <ion-button shape="round" size="small" color="danger" class="make-transfers__chip" href="https://fantasy.premierleague.com/a/squad/transfers"

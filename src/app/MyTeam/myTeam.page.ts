@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FplDataService } from '../Services/FplData/fpl-data.service';
+import { RequestDataService } from '../Services/FplData/fpl-data.service';
 import { Storage } from '@ionic/storage';
 import FantasyPlayer from '../Models/FantasyPlayer';
 import { FplTeamService } from '../Services/FplTeamService/fpl-team-service.service';
@@ -16,7 +16,7 @@ export class MyTeamPage {
 	readonly fplIdKey = 'fplId';
 
 	constructor(
-		private fplDataService: FplDataService,
+		private fplDataService: RequestDataService,
 		private storage: Storage,
 		private fplTeamService: FplTeamService
 	) {

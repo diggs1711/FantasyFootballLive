@@ -1,0 +1,135 @@
+<ion-content>
+  <div *ngIf="!fantasyPlayerId">
+    <ion-item>
+      <ion-label position="floating">Enter Team Id</ion-label>
+      <ion-input type="number" [(ngModel)]="fplId"></ion-input>
+    </ion-item>
+    <ion-button expand="block" shape="round" color="primary" fill="outline" (click)="onTeamIdEntered(fplId)">Add</ion-button>
+  </div>
+
+  <ion-item lines="none" *ngIf="fantasyPlayer">
+    <!-- <ion-avatar slot="start">
+      <img [src]="fantasyPlayer.country">
+    </ion-avatar> -->
+    <ion-label text-wrap>
+      <!-- <h1 class="fantasy-player__heading">{{ fantasyPlayer.name }}</h1> -->
+      <h2 class="fantasy-player__heading" text-uppercase>TEAM - {{ fantasyPlayer.team.name }}</h2>
+      <p class="fantasy-player__heading">GW Points - <strong>{{ fantasyPlayer.team.gameweekPoints }} </strong>
+      </p>
+      <p class="fantasy-player__heading">Overall Points - <strong>{{ fantasyPlayer.team.overallPoints }} </strong>
+      </p>
+    </ion-label>
+    <ion-button shape="round" size="small" color="danger" class="make-transfers__chip" href="https://fantasy.premierleague.com/a/squad/transfers"
+      slot="end">
+      <ion-label>MAKE TRANSFERS</ion-label>
+    </ion-button>
+  </ion-item>
+
+  <ion-grid *ngIf="fantasyPlayer">
+    <ion-row justify-content-center>
+      <ion-col *ngFor="let keeper of fantasyPlayer.team.Goalkeepers" align-self-center>
+        <div class="player-photo-container">
+          <figure class="player-photo">
+            <img src='{{keeper.image}}' />
+          </figure>
+          <div class="player-text">
+            <h6>{{ keeper.name }}</h6>
+            <p>{{ keeper.gameweek_points }}</p>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col *ngFor="let defender of fantasyPlayer.team.Defenders">
+        <div class="player-photo-container">
+          <figure class="player-photo">
+            <img src='{{defender.image}}' />
+          </figure>
+          <div class="player-text">
+            <h6>{{ defender.name }}</h6>
+            <p>{{ defender.gameweek_points * defender.multiplier }}</p>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col *ngFor="let midfielder of fantasyPlayer.team.Midfielders">
+        <div class="player-photo-container">
+          <figure class="player-photo">
+            <img src='{{midfielder.image}}' />
+          </figure>
+          <div class="player-text">
+            <h6>{{ midfielder.name }}</h6>
+            <p>{{ midfielder.gameweek_points * midfielder.multiplier }}</p>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col *ngFor="let forward of fantasyPlayer.team.Forwards">
+        <div class="player-photo-container">
+          <figure class="player-photo">
+            <img src='{{forward.image}}' />
+          </figure>
+          <div class="player-text">
+            <h6>{{ forward.name }}</h6>
+            <p>{{ forward.gameweek_points * forward.multiplier }}</p>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-item-divider>
+      <ion-label>
+        Bench
+      </ion-label>
+    </ion-item-divider>
+
+    <ion-row>
+      <ion-col *ngFor="let bench of fantasyPlayer.team.Bench">
+        <div class="player-photo-container">
+          <figure class="player-photo">
+            <img src='{{bench.image}}' />
+          </figure>
+          <div class="player-text">
+            <h6>{{ bench.name }}</h6>
+            <p>{{ bench.gameweek_points * bench.multiplier }}</p>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- <ion-list *ngIf="fantasyPlayer" inset lines="none">
+    <ion-item>
+      <ion-label text-wrap>
+        <ion-text color="primary">
+          <h2>Live GW Points</h2>
+        </ion-text>
+        <p>{{ gameweekPoints }}</p>
+      </ion-label>
+      <ion-label text-wrap>
+        <ion-text color="primary">
+          <h2>Points Benched</h2>
+        </ion-text>
+        <p>{{ pointsBenched }}</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item *ngFor="let player of fantasyPlayer.team.players">
+      <ion-avatar slot="start">
+        <ion-img [src]='player.image'></ion-img>
+      </ion-avatar>
+      <ion-label>
+        <h3>{{ player.name }}</h3>
+        <p>{{ player.gameweek_points }}</p>
+      </ion-label>
+      <ion-badge *ngIf="player.isCaptain" color="primary" fill="outline" slot="end">C</ion-badge>
+      <ion-badge *ngIf="player.is_vice_captain" color="light" slot="end">Vice</ion-badge>
+    </ion-item>
+  </ion-list> -->
+
+</ion-content>

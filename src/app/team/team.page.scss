@@ -1,0 +1,44 @@
+.player-photo {
+    height: 50px;
+    width: 50px;
+    border-radius: 50% !important;
+    overflow: hidden;
+    margin-bottom: 0;
+    margin: 0;
+
+    &-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    img {}
+}
+
+.player-text {
+    margin-top: 0.2em;
+
+    p {
+        margin: 0;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    h6 {
+        margin: 0;
+        font-weight: 400;
+        font-size: 12px;
+    }
+}
+
+.fantasy-player {
+    &__heading {
+        font-weight: bold;
+    }
+}
+
+.main-logo {
+    height: 50px;
+}
