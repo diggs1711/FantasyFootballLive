@@ -1,0 +1,12 @@
+import { NgModule } from '@angular/core';
+import { HeaderComponent } from './header/header.component';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { LoadingSpinnerComponent } from './ui/loading-spinner/loading-spinner.component';
+
+@NgModule({
+	imports: [ IonicModule, CommonModule ],
+	declarations: [ HeaderComponent, LoadingSpinnerComponent ],
+	exports: [ HeaderComponent, LoadingSpinnerComponent ]
+})
+export class ComponentsModule {}

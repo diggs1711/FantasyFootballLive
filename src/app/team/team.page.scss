@@ -22,23 +22,45 @@
     p {
         margin: 0;
         text-align: center;
-        font-size: 13px;
+        font-size: 0.75em;
         font-weight: 800;
     }
 
     h6 {
         margin: 0;
-        font-weight: 400;
-        font-size: 12px;
+        font-weight: 600;
+        font-size: .6em;
     }
 }
 
 .fantasy-player {
     &__heading {
+        font-size: 0.7em;
         font-weight: bold;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
     }
 }
 
 .main-logo {
     height: 50px;
+}
+
+.pitch {
+    background: linear-gradient(to left,
+        green 0% 10%,
+        rgb(0, 88, 0) 10% 20%,
+        green 20% 30%,
+        rgb(0, 88, 0) 30% 40%,
+        green 40% 50%,
+        rgb(0, 88, 0) 50% 60%,
+        green 60% 70%,
+        rgb(0, 88, 0) 70% 80%,
+        green 80% 90%,
+        rgb(0, 88, 0) 90% 100%);
+    box-shadow: 6px 9px 13px #ccc;
+    border-radius: 30px;
+    color: #fff;
+    margin-bottom: 20px;
 }

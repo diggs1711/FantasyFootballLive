@@ -8,52 +8,17 @@ const routes: Routes = [
 		path: 'tabs',
 		component: TabsPage,
 		children: [
-			{
-				path: 'team',
-				children: [
-					{
-						path: '',
-						loadChildren: '../team/team.module#TeamPageModule'
-					}
-				]
-			},
-			// {
-			// 	path: 'Leagues',
-			// 	children: [
-			// 		{
-			// 			path: '',
-			// 			loadChildren: '../Leagues/LeaguesList/league-list.module#LeaguesListModule'
-			// 		}
-			// 	]
-			// },
-			// {
-			// 	path: 'Stats',
-			// 	children: [
-			// 		{
-			// 			path: '',
-			// 			loadChildren: '../Stats/stats.module#StatsPageModule'
-			// 		}
-			// 	]
-			// },
-			{
-				path: 'News',
-				children: [
-					{
-						path: '',
-						loadChildren: '../News/news.module#NewsPageModule'
-					}
-				]
-			},
-			{
-				path: '',
-				redirectTo: '/home',
-				pathMatch: 'full'
-			}
+			{ path: 'news', loadChildren: '../News/news.module#NewsPageModule' },
+			{ path: 'home', loadChildren: '../home/home.module#HomePageModule' },
+			{ path: 'team', loadChildren: '../team/team.module#TeamPageModule' },
+			{ path: 'settings', loadChildren: '../settings/settings.module#SettingsPageModule' },
+			{ path: 'leagues', loadChildren: '../leagues/leagues.module#LeaguesPageModule' },
+			{ path: 'live', loadChildren: '../live-scores/live-scores.module#LiveScoresPageModule' }
 		]
 	},
 	{
 		path: '',
-		redirectTo: '/home',
+		redirectTo: '/tabs/home',
 		pathMatch: 'full'
 	}
 ];

@@ -18,13 +18,11 @@ import { Device } from '@ionic-native/device/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
 //Pipes
-import { HeaderComponent } from './header/header.component';
 import { LeagueComponent } from './league/league.component';
 import { PlayerProfileComponent } from './player-profile/player-profile.component';
-import { LiveScoresComponent } from './live-scores/live-scores.component';
 
 @NgModule({
-	declarations: [ AppComponent, LeagueComponent, PlayerProfileComponent, LiveScoresComponent, HeaderComponent ],
+	declarations: [ AppComponent, LeagueComponent, PlayerProfileComponent ],
 	entryComponents: [],
 	imports: [ BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpModule, IonicStorageModule.forRoot() ],
 	providers: [ HTTP, Device, StatusBar, SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy } ],

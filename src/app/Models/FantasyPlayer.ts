@@ -10,13 +10,26 @@ export default class FantasyPlayer {
 	gameweekTransfersCost: number;
 	activeChip: string;
 	country: string;
+	bank: number;
+	overallRank: number = 0;
+	gameweekRank: number = 0;
 
-	constructor(id = -1, leagues = [], name = '', team = new Team(), country = '') {
+	constructor(
+		id = -1,
+		leagues = [],
+		name = '',
+		team = new Team(),
+		country = '',
+		overallRank: number,
+		transfers: number = 0
+	) {
 		this.leagues = leagues;
 		this.name = name;
 		this.team = team;
 		this.id = id;
 		this.country = country;
+		this.overallRank = overallRank;
+		this.gameweekTransfers = transfers;
 	}
 
 	getLeagues() {
@@ -36,7 +49,7 @@ export default class FantasyPlayer {
 		const newArray = [];
 		for (const member of array) {
 			const newTeam = new Team(member.entry, member.entry_name);
-			const newPlayer = new FantasyPlayer(member.id, null, member.player_name, newTeam);
+			const newPlayer = new FantasyPlayer(member.id, null, member.player_name, newTeam, '', 0);
 			newArray.push(newPlayer);
 		}
 		return newArray;

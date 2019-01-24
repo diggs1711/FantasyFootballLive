@@ -1,4 +1,6 @@
-<ion-content padding>
+<app-header [title]="'HOME'"></app-header>
+<app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+<ion-content padding *ngIf="!showSpinner">
   <div *ngIf="!fantasyId" class="input-container">
     <ion-item>
       <ion-label position="stacked">
@@ -14,19 +16,29 @@
 
     <div class="home__card">
       <div class="home__card__badge">
-        <img src="../../assets/Badges/arsenal.png" alt="">
+        <img [src]="fantasyPlayer.country" alt="">
       </div>
       <div class="home__card__name">
-        <h6> David Higgins</h6>
-        <p>Bank: 102</p>
+        <h6> {{ fantasyPlayer.name }} </h6>
+        <p> {{ fantasyPlayer.team.name }}</p>
+      </div>
+
+      <div class="home__card__points">
+        <h6>{{fantasyPlayer.team.overallPoints}}</h6>
+        <p>Total Points</p>
       </div>
     </div>
 
-    <ion-item-divider>
+    <ion-item-divider class="home__divider">
       <ion-label>
         <ion-text color="danger">
-          Transfers:
-        </ion-text>
+          Transfers:</ion-text>
+        {{ fantasyPlayer.gameweekTransfers }}
+      </ion-label>
+      <ion-label slot="end">
+        <ion-text color="danger">
+          Rank:</ion-text>
+        {{ fantasyPlayer.overallRank }}
       </ion-label>
     </ion-item-divider>
 
@@ -53,6 +65,28 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+
+    <ion-list>
+      <ion-list-header>
+        <h6>Fixtures</h6>
+      </ion-list-header>
+      <ion-item *ngFor="let fixture of upcomingFixtures;" lines="none">
+        <ion-avatar slot="start">
+          <img [src]="fixture.badge_home" alt="">
+        </ion-avatar>
+        <ion-label class="home__fixture" text-center>
+          <h6>
+            {{ fixture.home_team }} vs {{ fixture.away_team }}
+          </h6>
+          <p>
+            {{ fixture.time }}
+          </p>
+        </ion-label>
+        <ion-avatar slot="end">
+          <img src="" alt="">
+        </ion-avatar>
+      </ion-item>
+    </ion-list>
   </div>
 
 

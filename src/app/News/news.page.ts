@@ -8,6 +8,9 @@ import { RequestDataService } from '../Services/FplData/fpl-data.service';
 })
 export class NewsPage implements OnInit {
 	latestPosts: any[];
+	title: string = 'NEWS';
+	showSpinner: boolean = true;
+
 	constructor(private requestDataService: RequestDataService) {
 		this.latestPosts = [];
 	}
@@ -25,6 +28,7 @@ export class NewsPage implements OnInit {
 					image: post.data.thumbnail
 				};
 			});
+			this.showSpinner = false;
 		});
 	}
 }

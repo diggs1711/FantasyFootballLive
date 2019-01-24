@@ -74,8 +74,17 @@ export class FplTeamService {
 			const lastWeekOverallPoints = gameweekHistory.history[gameweekHistory.history.length - 1].total_points;
 			const picks = gameweekData.picks;
 			const team = new Team(id, teamName, currentGameweek, [], lastWeekOverallPoints);
-			const fantasyPlayer = new FantasyPlayer(id, leagues, `${firstName} ${lastName}`, team, country);
-			const transferCost = gameweekData.entry_history.event_transfers_cost;
+			const gameweekTransfers = gameweekData.entry_history.event_transfers;
+			const overallRank = gameweekHistory.history.pop().overall_rank;
+			const fantasyPlayer = new FantasyPlayer(
+				id,
+				leagues,
+				`${firstName} ${lastName}`,
+				team,
+				country,
+				overallRank,
+				gameweekTransfers
+			);
 
 			//create team of players
 			for (const pick of picks) {
