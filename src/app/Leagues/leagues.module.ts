@@ -6,21 +6,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { LeaguesPage } from './leagues.page';
+import { ComponentsModule } from '../Components/components.module';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: LeaguesPage
-  }
+	{
+		path: '',
+		component: LeaguesPage
+	}
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [LeaguesPage]
+	imports: [ CommonModule, FormsModule, IonicModule, ComponentsModule, RouterModule.forChild(routes) ],
+	declarations: [ LeaguesPage ]
 })
 export class LeaguesPageModule {}
