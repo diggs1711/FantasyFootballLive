@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { FantasyPlayerService } from '../Services/fantasy-player.service';
 import FantasyPlayer from '../Models/FantasyPlayer';
 import { RequestDataService } from '../Services/FplData/fpl-data.service';
 import { FplTeamService } from '../Services/FplTeamService/fpl-team-service.service';
@@ -18,12 +16,11 @@ export class HomePage implements OnInit {
 	fantasyPlayer: FantasyPlayer;
 	upcomingFixtures: [];
 	showSpinner: boolean = true;
+	playerLeaguesKey: string = 'player-leagues';
 
 	constructor(
 		private storage: Storage,
-		private plt: Platform,
 		private router: Router,
-		private fantasyPlayerService: FantasyPlayerService,
 		private requestDataService: RequestDataService,
 		private fplTeamService: FplTeamService
 	) {}
@@ -32,25 +29,27 @@ export class HomePage implements OnInit {
 		Promise.all([ this.checkForFantasyId(), this.getUpcomingFixtures() ])
 			.then(([ id, bootstrap ]) => {
 				let { next_event_fixtures: fixtures, teams } = bootstrap;
-				this.upcomingFixtures = fixtures.map((fixture) => {
-					const homeTeam = this.getTeamName(teams, fixture.team_h);
-					const awayTeam = this.getTeamName(teams, fixture.team_a);
 
-					return {
-						home_team: homeTeam,
-						away_team: awayTeam,
-						time: fixture.kickoff_time_formatted,
-						badge_home: this.getBadge(homeTeam)
-					};
-				});
-
+				this.createFixtureList(fixtures, teams);
 				this.fantasyId = id;
-				return this.getPlayerData(id);
+				return id ? this.getPlayerData(id) : null;
 			})
-			.then((player) => {
-				this.fantasyPlayer = player;
-				this.showSpinner = false;
-			});
+			.then((player) => this.updateUserData(this.fantasyId, player))
+			.finally(() => (this.showSpinner = false));
+	}
+
+	createFixtureList(fixtures, teams) {
+		this.upcomingFixtures = fixtures.map((fixture) => {
+			const homeTeam = this.getTeamName(teams, fixture.team_h);
+			const awayTeam = this.getTeamName(teams, fixture.team_a);
+
+			return {
+				home_team: homeTeam,
+				away_team: awayTeam,
+				time: fixture.kickoff_time_formatted,
+				badge_home: this.getBadge(homeTeam)
+			};
+		});
 	}
 
 	isAuthenticated() {}
@@ -60,8 +59,22 @@ export class HomePage implements OnInit {
 	}
 
 	onFantasyIdEntered(id) {
-		this.fantasyId = id;
+		this.showSpinner = true;
+		this.getPlayerData(id).then((player) => {
+			this.updateUserData(id, player);
+			this.showSpinner = false;
+		});
+	}
+
+	updateUserData(id: number, player: FantasyPlayer) {
 		this.storeFantasyId(id);
+		this.storePlayerLeagues(player.leagues);
+		this.fantasyPlayer = player;
+		this.fantasyId = id;
+	}
+
+	storePlayerLeagues(leagues) {
+		this.storage.set(this.playerLeaguesKey, leagues);
 	}
 
 	storeFantasyId(id: number) {

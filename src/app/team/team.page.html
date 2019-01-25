@@ -24,7 +24,7 @@
       <ion-row justify-content-center>
         <ion-col *ngFor="let keeper of fantasyPlayer.team.Goalkeepers" align-self-center>
           <div class="player-photo-container">
-            <figure class="player-photo">
+            <figure class="player-photo player-photo--box-shadow" [ngClass]="{'player-photo__captain': keeper.isCaptain }">
               <img src='{{keeper.image}}' />
             </figure>
             <div class="player-text">
@@ -38,7 +38,7 @@
       <ion-row>
         <ion-col *ngFor="let defender of fantasyPlayer.team.Defenders">
           <div class="player-photo-container">
-            <figure class="player-photo">
+            <figure class="player-photo player-photo--box-shadow" [ngClass]="{'player-photo__captain': defender.isCaptain }">
               <img src='{{defender.image}}' />
             </figure>
             <div class="player-text">
@@ -52,7 +52,7 @@
       <ion-row>
         <ion-col *ngFor="let midfielder of fantasyPlayer.team.Midfielders">
           <div class="player-photo-container">
-            <figure class="player-photo">
+            <figure class="player-photo player-photo--box-shadow" [ngClass]="{'player-photo__captain': midfielder.isCaptain }">
               <img src='{{midfielder.image}}' />
             </figure>
             <div class="player-text">
@@ -66,7 +66,7 @@
       <ion-row>
         <ion-col *ngFor="let forward of fantasyPlayer.team.Forwards">
           <div class="player-photo-container">
-            <figure class="player-photo">
+            <figure class="player-photo player-photo--box-shadow" [ngClass]="{'player-photo__captain': forward.isCaptain }">
               <img src='{{forward.image}}' />
             </figure>
             <div class="player-text">

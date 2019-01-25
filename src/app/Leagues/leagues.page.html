@@ -2,17 +2,19 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item *ngFor="let league of leagues" lines="none" (click)="openLeague(league.id)">
-      <ion-label text-wrap>
+    <ion-item *ngFor="let league of leagues" lines="none" (click)="openLeague(league.id)" detail>
+      <ion-label class="leagues" text-wrap>
         <h2>
-          <strong> {{ league.name }}</strong> - <ion-text color="danger"><strong> {{
-              getOrdinalNum(league.playerRank.toLocaleString()) }}</strong></ion-text>
+          <strong> {{ league.name }}</strong>
         </h2>
+        <p>
+          <ion-text color="danger"><strong> {{
+              getOrdinalNum(league.playerRank.toLocaleString()) }}</strong></ion-text>
+        </p>
       </ion-label>
-      <ion-button (click)="removeLeague(league.id)" shape="round" size="small" color="danger" class="make-transfers__chip"
-        slot="end">
+      <!-- <ion-button (click)="removeLeague(league.id)" shape="round" size="small" color="danger" slot="end">
         <ion-label>REMOVE</ion-label>
-      </ion-button>
+      </ion-button> -->
     </ion-item>
   </ion-list>
 </ion-content>

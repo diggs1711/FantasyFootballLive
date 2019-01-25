@@ -6,6 +6,11 @@
     margin-bottom: 0;
     margin: 0;
 
+    &--box-shadow {
+        box-shadow: 1px 9px 20px 0px black;
+        background: #fffffff0;
+    }
+
     &-container {
         display: flex;
         flex-direction: column;
@@ -14,7 +19,27 @@
     }
 
     img {}
+
+    &__captain::after {
+        content: "C";
+        width: 20px;
+        position: absolute;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 37px;
+        margin-left: -10px;
+        /* left: -1px; */
+        border-radius: 50%;
+        background: #FBFF12;
+        font-weight: 600;
+        font-size: 0.8em;
+        color: black;
+    }
 }
+
+
 
 .player-text {
     margin-top: 0.2em;
@@ -59,8 +84,8 @@
         rgb(0, 88, 0) 70% 80%,
         green 80% 90%,
         rgb(0, 88, 0) 90% 100%);
-    box-shadow: 6px 9px 13px #ccc;
+    box-shadow: 6px 9px 13px 6px #ccc;
     border-radius: 30px;
     color: #fff;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }

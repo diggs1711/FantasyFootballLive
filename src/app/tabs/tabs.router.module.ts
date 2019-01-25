@@ -13,8 +13,7 @@ const routes: Routes = [
 			{ path: 'team', loadChildren: '../team/team.module#TeamPageModule' },
 			{ path: 'settings', loadChildren: '../settings/settings.module#SettingsPageModule' },
 			{ path: 'leagues', loadChildren: '../leagues/leagues.module#LeaguesPageModule' },
-			{ path: 'stats', loadChildren: '../stats/stats.module#StatsPageModule' },
-			{ path: 'live', loadChildren: '../live-scores/live-scores.module#LiveScoresPageModule' }
+			{ path: 'stats', loadChildren: '../stats/stats.module#StatsPageModule' }
 		]
 	},
 	{

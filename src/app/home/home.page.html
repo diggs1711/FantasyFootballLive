@@ -4,12 +4,12 @@
   <div *ngIf="!fantasyId" class="input-container">
     <ion-item>
       <ion-label position="stacked">
-        Enter FPL Id
+        Enter your FPL Id to begin...
       </ion-label>
       <ion-input type="number" [(ngModel)]="FplId">
       </ion-input>
     </ion-item>
-    <ion-button (click)="onFantasyIdEntered(FplId)" shape="round" color="danger">Enter</ion-button>
+    <ion-button (click)="onFantasyIdEntered(FplId)" shape="round" expand="block" color="danger">Enter</ion-button>
   </div>
 
   <div *ngIf="fantasyId">
