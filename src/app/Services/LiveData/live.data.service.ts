@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { RequestDataService } from '../FplData/fpl-data.service';
+import { HttpRequestService } from '../HttpRequestService/http-request.service';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class LiveDataService {
-	constructor(private fplDataService: RequestDataService) {}
+	constructor(private httpRequestService: HttpRequestService) {}
 
 	async getLiveData(gameweek) {
-		return await this.fplDataService.getData(`https://fantasy.premierleague.com/drf/event/${gameweek}/live`);
+		return await this.httpRequestService.getData(`https://fantasy.premierleague.com/drf/event/${gameweek}/live`);
 	}
 }

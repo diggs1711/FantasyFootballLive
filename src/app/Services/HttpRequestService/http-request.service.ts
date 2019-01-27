@@ -1,17 +1,13 @@
 import { Injectable } from '@angular/core';
+import { Http } from '@angular/http';
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Device } from '@ionic-native/device/ngx';
-import { Http } from '@angular/http';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class RequestDataService {
-	constructor(private testHttp: Http, private http: HTTP, private device: Device) {
-		this.device = device;
-		this.http = http;
-		this.testHttp = testHttp;
-	}
+export class HttpRequestService {
+	constructor(private testHttp: Http, private http: HTTP, private device: Device) {}
 
 	public async getData(url) {
 		const data = await this.fetchData(url);

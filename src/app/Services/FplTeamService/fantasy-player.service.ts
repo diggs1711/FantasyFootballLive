@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { RequestDataService } from '../../Services/FplData/fpl-data.service';
-import { StaticDataService } from '../../Services/StaticData/static.data.service';
+import { StaticDataService } from '../StaticData/static.data.service';
 import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import Team from 'src/app/Models/Team';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 import { LiveDataService } from '../LiveData/live.data.service';
+import { HttpRequestService } from '../HttpRequestService/http-request.service';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class FplTeamService {
+export class FantasyPlayerService {
 	currentGameweek: any;
 	bootstrapData: any;
 	liveData: any;
@@ -18,7 +18,7 @@ export class FplTeamService {
 	constructor(
 		private staticDataService: StaticDataService,
 		private storage: Storage,
-		private fplDataService: RequestDataService,
+		private httpRequestService: HttpRequestService,
 		private liveDataService: LiveDataService
 	) {}
 
@@ -49,7 +49,7 @@ export class FplTeamService {
    * @param id fpl id from user input
    * @description get all data needed to display and current live score
    */
-	async loadPlayer(id): Promise<FantasyPlayer> {
+	createPlayer(id): Promise<FantasyPlayer> {
 		return this.getBootstrapData()
 			.then((bootstrap) => {
 				const { 'current-event': currentGameweek } = bootstrap;
@@ -145,7 +145,7 @@ export class FplTeamService {
 	}
 
 	async getBootstrapData() {
-		return this.fplDataService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
+		return this.httpRequestService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
 	}
 
 	async getDataAsyncOrRetrieveStored(id, url) {
@@ -154,7 +154,7 @@ export class FplTeamService {
 		const storedData = await this.storage.get(userkey);
 
 		if (!storedData) {
-			const data = await this.fplDataService.getData(url);
+			const data = await this.httpRequestService.getData(url);
 			//this.storage.set(userkey, data);
 			return data;
 		}

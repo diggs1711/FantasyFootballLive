@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RequestDataService } from '../FplData/fpl-data.service';
+import { HttpRequestService } from '../HttpRequestService/http-request.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -10,7 +10,7 @@ export class StaticDataService {
 	positions: any;
 	teams: any;
 
-	constructor(private fplDataService: RequestDataService) {}
+	constructor(private httpRequestService: HttpRequestService) {}
 
 	/**
 	 * @Returns returns a promise containing bootstrap data
@@ -18,7 +18,7 @@ export class StaticDataService {
 	 */
 
 	async getBootstrapData() {
-		return await this.fplDataService
+		return await this.httpRequestService
 			.getData('https://fantasy.premierleague.com/drf/bootstrap-static')
 			.then((bootstrap) => {
 				const {

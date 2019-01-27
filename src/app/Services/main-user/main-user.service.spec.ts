@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FantasyPlayerService } from './fantasy-player.service';
+import { MainUserService } from './main-user.service';
 
-describe('FantasyPlayerService', () => {
+describe('MainUserService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: FantasyPlayerService = TestBed.get(FantasyPlayerService);
+    const service: MainUserService = TestBed.get(MainUserService);
     expect(service).toBeTruthy();
   });
 });
