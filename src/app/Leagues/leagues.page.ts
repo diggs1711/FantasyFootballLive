@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
 import { RequestDataService } from '../Services/FplData/fpl-data.service';
 import League from '../Models/League';
 import FantasyPlayer from '../Models/FantasyPlayer';
+import { LeagueComponent } from '../league/league.component';
 
 @Component({
 	selector: 'app-leagues',
@@ -105,14 +106,15 @@ export class LeaguesPage implements OnInit {
 		const { name } = leagueData.league;
 		const members = FantasyPlayer.createFantasyPlayersArray(leagueData.standings.results);
 
-		// const modal = await this.modalController.create({
-		// 	component: LeaguePage,
-		// 	componentProps: {
-		// 		members: members,
-		// 		name: name
-		// 	}
-		// });
+		const modal = await this.modalController.create({
+			component: LeagueComponent,
+			animated: true,
+			componentProps: {
+				members: members,
+				name: name
+			}
+		});
 
-		// return await modal.present();
+		return await modal.present();
 	}
 }

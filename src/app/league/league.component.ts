@@ -10,6 +10,7 @@ import Team from 'src/app/Models/Team';
 import { LiveDataService } from '../Services/LiveData/live.data.service';
 import { StaticDataService } from '../Services/StaticData/static.data.service';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
+import { PitchComponent } from '../Components/ui/pitch/pitch.component';
 
 @Component({
 	selector: 'app-league',
@@ -23,28 +24,24 @@ export class LeagueComponent implements OnInit {
 	league: League;
 	currentGameweek: any;
 	currentGameweekKey: string;
-	userLeaguesKey: string;
 	staticKey: string;
 	isGameweekUpdated: boolean;
 	playerHistoryKey: any;
 	playerPicksKey: any;
-	leaguesTab: string;
-	hideChip: boolean;
 	fantasyPlayer: FantasyPlayer;
 	members: FantasyPlayer[];
 	leagueName: string;
 	soccerPlayers: any;
 	membersGameweekData: any;
 	membersGameweekHistory: any;
+	showSpinner: boolean = true;
 
 	constructor(
-		private changeRef: ChangeDetectorRef,
 		public loadingController: LoadingController,
 		public modalController: ModalController,
-		private fplDataService: RequestDataService,
+		private requestDataService: RequestDataService,
 		private storage: Storage,
 		private navParams: NavParams,
-		private staticDataService: StaticDataService,
 		private liveDataService: LiveDataService
 	) {
 		this.members = this.navParams.data.members || [];
@@ -52,50 +49,40 @@ export class LeagueComponent implements OnInit {
 		this.liveFplData = null;
 		this.membersGameweekData = null;
 		this.membersGameweekHistory = null;
-
 		this.staticData = null;
 		this.currentGameweekKey = 'current_gameweek';
-		this.userLeaguesKey = 'user_leagues';
 		this.playerHistoryKey = 'player_history';
 		this.playerPicksKey = 'player_picks';
 		this.staticKey = 'static_data';
-		this.leaguesTab = 'MyLeagues';
-		this.hideChip = false;
 		this.soccerPlayers = null;
 	}
 
 	ngOnInit() {
-		this.loadBootstrapData();
+		this.loadMemebersData();
 	}
 
-	loadBootstrapData() {
-		this.createLoadingIcon();
-		this.staticDataService.getBootstrapData().then(async () => {
-			if (this.staticDataService.isDataLoaded()) {
-				//If data is stored just retrieve it
-				//otherwise fetch
-				this.currentGameweek = await this.staticDataService.getCurrentGameweek();
-				const membersGameweekDataPromise =
-					this.membersGameweekData ||
-					this.getMembersCurrentGameweekData(this.currentGameweek).catch(() => undefined);
-				const membersGameweekHistoryPromise =
-					this.membersGameweekHistory || this.getMembersGameweekHistory().catch(() => undefined);
+	getBootstrapData() {
+		return this.requestDataService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
+	}
 
-				Promise.all([
-					membersGameweekDataPromise,
-					this.liveDataService.getLiveData(this.currentGameweek).catch(() => undefined),
-					membersGameweekHistoryPromise
-				])
-					.then(([ membersGameweekData, liveData, membersGameweekHistory ]: [[], {}, any]) =>
-						this.constructLeague(membersGameweekData, liveData, membersGameweekHistory)
-					)
-					.then(() => this.hideLoadingIcon())
-					.catch((err) => console.log(err));
-			}
+	loadMemebersData() {
+		this.getBootstrapData().then((bootstrap) => {
+			const { 'current-event': currentGameweek, elements: soccerPlayers } = bootstrap;
+			this.soccerPlayers = soccerPlayers;
+			Promise.all([
+				this.getMembersCurrentGameweekData(currentGameweek).catch(() => undefined),
+				this.liveDataService.getLiveData(currentGameweek),
+				this.getMembersGameweekHistory().catch(() => undefined)
+			])
+				.then(([ membersGameweekData, liveData, membersGameweekHistory ]: [[], {}, []]) => {
+					this.constructLeague(membersGameweekData, liveData, membersGameweekHistory);
+					return null;
+				})
+				.finally(() => (this.showSpinner = false));
 		});
 	}
 
-	constructLeague(membersGameweekData, liveData, membersGameweekHistory) {
+	constructLeague(membersGameweekData: [], liveData: {}, membersGameweekHistory: []) {
 		this.membersGameweekData = this.membersGameweekData || membersGameweekData || [];
 		this.liveFplData = this.liveFplData || liveData || [];
 		this.membersGameweekHistory = this.membersGameweekHistory || membersGameweekHistory || [];
@@ -104,7 +91,6 @@ export class LeagueComponent implements OnInit {
 			const playerGameweekData = membersGameweekData[index];
 			const gameweekHistoryData = membersGameweekHistory[index];
 			const fantasyPlayer = this.members[index];
-			this.soccerPlayers = this.staticDataService.getSoccerPlayers();
 
 			//Current Gameweek data
 			if (playerGameweekData && gameweekHistoryData) {
@@ -140,14 +126,14 @@ export class LeagueComponent implements OnInit {
 	 * 
 	 * @param team A fantasy team 	
 	 * @param picks players selected by the fantasy manager for the current week
-	 * @param soccerPlayers list of soccer players in the game
-	 * @returns array of selected soccer players without relevent data pertaining to the soccer player
+	 * @returns array of selected soccer players without relevent data pertaining to each soccer player
 	 */
 	createTeamPlayers(team: Team, picks) {
 		const newPlayers = [];
 		for (const pick of picks) {
 			const newPlayer = this.createPlayer(pick.element);
 			newPlayer.multiplier = pick.multiplier;
+			newPlayer.position = this.getPosition(newPlayer.position_type);
 			newPlayer.teamPosition = pick.position;
 			if (pick.is_captain) {
 				newPlayer.isCaptain = true;
@@ -158,6 +144,40 @@ export class LeagueComponent implements OnInit {
 		return newPlayers;
 	}
 
+	/**
+	 * 
+	 * @param type player type
+	 * @returns returns text version of position
+	 */
+	getPosition(type: number) {
+		const indx = Number(type);
+
+		switch (indx) {
+			case 0:
+				return 'Goalkeepers';
+				break;
+			case 1:
+				return 'Defenders';
+				break;
+			case 2:
+				return 'Midfielders';
+				break;
+			case 3:
+				return 'Forwards';
+				break;
+			case 4:
+				return 'Bench';
+				break;
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * 
+	 * @param id soccer player id
+	 * @return new instance of soccer player
+	 */
 	createPlayer(id) {
 		const newPlayer = new SoccerPlayer(id);
 		const player = this.soccerPlayers.find((player) => player.id == id);
@@ -167,7 +187,6 @@ export class LeagueComponent implements OnInit {
 		return newPlayer;
 	}
 
-	getActiveChip() {}
 	/**
 	 * 
 	 * @param live live data received from fpl
@@ -275,34 +294,16 @@ export class LeagueComponent implements OnInit {
 		}
 	}
 
-	async createLoadingIcon() {
-		this.loading = this.loadingController.create({
-			message: 'Calculating Live Scores...',
-			duration: 20000
-		});
-
-		this.showLoadingIcon();
-	}
-
 	async leaguePlayerSelected(playerId) {
 		const selectedPlayer = this.members.find((memeber) => memeber.team.id == playerId);
-		const selectedPlayerPicks = selectedPlayer.team.players;
-		const captain = selectedPlayer.team.captain;
-
-		// const modal = await this.modalController.create({
-		// 	component: PlayerModal,
-		// 	componentProps: {
-		// 		playerId: playerId,
-		// 		picks: selectedPlayerPicks,
-		// 		gameweek: this.currentGameweek,
-		// 		captain: captain,
-		// 		gameweekPoints: selectedPlayer.team.gameweekPoints,
-		// 		name: selectedPlayer.name,
-		// 		teamName: selectedPlayer.team.name
-		// 	}
-		// });
-
-		// return await modal.present();
+		const modal = await this.modalController.create({
+			component: PitchComponent,
+			componentProps: {
+				fantasyPlayer: selectedPlayer,
+				gameweek: this.currentGameweek
+			}
+		});
+		return await modal.present();
 	}
 
 	removeLeague(leagueId) {
@@ -320,19 +321,11 @@ export class LeagueComponent implements OnInit {
 		const storedData = await this.storage.get(userkey);
 
 		if (!storedData) {
-			const data = await this.fplDataService.getData(url);
+			const data = await this.requestDataService.getData(url);
 			//this.storage.set(userkey, data);
 			return data;
 		}
 		return storedData;
-	}
-
-	showLoadingIcon() {
-		this.loading.then((icon) => icon.present());
-	}
-
-	hideLoadingIcon() {
-		this.loading.then((icon) => icon.dismiss());
 	}
 
 	persistLeague(leagueId, leagueName) {
@@ -341,10 +334,6 @@ export class LeagueComponent implements OnInit {
 
 	getLeagueData(leagueId) {
 		this.league.getLeagueData();
-	}
-
-	switchToLiveTab(): any {
-		this.leaguesTab = 'Live';
 	}
 
 	addPlayerToLeague(fantasyPlayer: FantasyPlayer) {

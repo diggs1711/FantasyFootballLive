@@ -7,6 +7,9 @@ import { IonicModule } from '@ionic/angular';
 
 import { LeaguesPage } from './leagues.page';
 import { ComponentsModule } from '../Components/components.module';
+import { LeagueComponent } from '../league/league.component';
+import { PlayerProfileComponent } from '../player-profile/player-profile.component';
+import { PitchComponent } from '../Components/ui/pitch/pitch.component';
 
 const routes: Routes = [
 	{
@@ -16,7 +19,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
+	entryComponents: [ LeagueComponent, PlayerProfileComponent, PitchComponent ],
 	imports: [ CommonModule, FormsModule, IonicModule, ComponentsModule, RouterModule.forChild(routes) ],
-	declarations: [ LeaguesPage ]
+	declarations: [ LeaguesPage, LeagueComponent, PlayerProfileComponent ]
 })
 export class LeaguesPageModule {}

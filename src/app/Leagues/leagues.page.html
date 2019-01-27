@@ -1,8 +1,8 @@
 <app-header [title]="'LEAGUES'"></app-header>
 
 <ion-content padding>
-  <ion-list>
-    <ion-item *ngFor="let league of leagues" lines="none" (click)="openLeague(league.id)" detail>
+  <ion-list lines="inset">
+    <ion-item *ngFor="let league of leagues" lines="inset" inset (click)="openLeague(league.id)" detail>
       <ion-label class="leagues" text-wrap>
         <h2>
           <strong> {{ league.name }}</strong>

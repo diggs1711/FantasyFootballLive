@@ -1,4 +1,5 @@
 <app-header [title]="'NEWS'"></app-header>
+<ion-backdrop *ngIf="showSpinner" tappable="false"></ion-backdrop>
 <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
 <ion-content padding>
   <ion-list>

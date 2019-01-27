@@ -1,13 +1,18 @@
 .player-photo {
     height: 50px;
     width: 50px;
-    border-radius: 50% !important;
+    border-radius: 50%;
     overflow: hidden;
-    margin-bottom: 0;
+    border: 1px solid;
     margin: 0;
+    margin-bottom: 0.6em;
+
+    &--no-border {
+        border: none;
+    }
 
     &--box-shadow {
-        box-shadow: 1px 9px 20px 0px black;
+        box-shadow: 5px 12px 20px 0px black;
         background: #fffffff0;
     }
 
@@ -61,7 +66,6 @@
 .fantasy-player {
     &__heading {
         font-size: 0.7em;
-        font-weight: bold;
         line-height: 1.5;
         margin: 0;
         padding: 0;
@@ -84,7 +88,7 @@
         rgb(0, 88, 0) 70% 80%,
         green 80% 90%,
         rgb(0, 88, 0) 90% 100%);
-    box-shadow: 6px 9px 13px 6px #ccc;
+    box-shadow: 5px 12px 13px 0px #00000094;
     border-radius: 30px;
     color: #fff;
     margin-bottom: 25px;

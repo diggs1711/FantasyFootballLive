@@ -3,7 +3,21 @@
     color: white;
 }
 
+.rank__number {
+    margin-right: 1.5em;
+    font-weight: 600;
+}
+
 .league {
+
+    &__member {
+        font-weight: 800;
+        font-size: 1em;
+
+        &__details {
+            text-align: right;
+        }
+    }
 
     &__player {
         display: flex;

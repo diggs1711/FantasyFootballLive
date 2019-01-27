@@ -26,7 +26,7 @@ export class HomePage implements OnInit {
 	) {}
 
 	ngOnInit() {
-		Promise.all([ this.checkForFantasyId(), this.getUpcomingFixtures() ])
+		Promise.all([ this.checkForFantasyId(), this.getBootstrapData() ])
 			.then(([ id, bootstrap ]) => {
 				let { next_event_fixtures: fixtures, teams } = bootstrap;
 
@@ -89,7 +89,7 @@ export class HomePage implements OnInit {
 		return this.fplTeamService.loadPlayer(id);
 	}
 
-	getUpcomingFixtures() {
+	getBootstrapData() {
 		return this.requestDataService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
 	}
 

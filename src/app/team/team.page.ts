@@ -49,7 +49,7 @@ export class TeamPage implements OnInit {
 	}
 
 	async fetchFantasyPlayer(id) {
-		if (id) return await this.fplTeamService.getTeam(id);
+		if (id) return await this.fplTeamService.loadPlayer(id);
 	}
 
 	addLeaguesFromId(playerId) {

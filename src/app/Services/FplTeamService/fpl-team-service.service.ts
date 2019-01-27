@@ -20,13 +20,7 @@ export class FplTeamService {
 		private storage: Storage,
 		private fplDataService: RequestDataService,
 		private liveDataService: LiveDataService
-	) {
-		this.init();
-	}
-
-	async init() {
-		//this.currentGameweek = await this.staticDataService.getCurrentGameweek();
-	}
+	) {}
 
 	async getCurrentGameweekData(id) {
 		if (!this.currentGameweek) {
@@ -42,10 +36,6 @@ export class FplTeamService {
 		return this.getDataAsyncOrRetrieveStored(id, this.composeCurrentGameweekInfoUrl(id, this.currentGameweek));
 	}
 
-	async getTeam(id) {
-		return await this.loadPlayer(id);
-	}
-
 	getPlayerGameweekHistory(id) {
 		return this.getDataAsyncOrRetrieveStored(id, this.composePlayerGameweekHistoryUrl(id));
 	}
@@ -59,67 +49,80 @@ export class FplTeamService {
    * @param id fpl id from user input
    * @description get all data needed to display and current live score
    */
-	async loadPlayer(id) {
-		return await Promise.all([
-			this.getCurrentGameweekData(id),
-			this.getPlayerGameweekHistory(id)
-		]).then(async ([ gameweekData, gameweekHistory ]) => {
-			this.liveData = await this.getLiveData();
-			const leagues = gameweekHistory.leagues.classic;
-			const firstName = gameweekHistory.entry.player_first_name;
-			const lastName = gameweekHistory.entry.player_last_name;
-			const country = this.createCountryPhotoUrl(gameweekHistory.entry.player_region_short_iso);
-			const teamName = gameweekHistory.entry.name;
-			const currentGameweek = gameweekHistory.entry.current_event;
-			const lastWeekOverallPoints = gameweekHistory.history[gameweekHistory.history.length - 1].total_points;
-			const picks = gameweekData.picks;
-			const team = new Team(id, teamName, currentGameweek, [], lastWeekOverallPoints);
-			const gameweekTransfers = gameweekData.entry_history.event_transfers;
-			const overallRank = gameweekHistory.history.pop().overall_rank;
-			const fantasyPlayer = new FantasyPlayer(
-				id,
-				leagues,
-				`${firstName} ${lastName}`,
-				team,
-				country,
-				overallRank,
-				gameweekTransfers
-			);
-
-			//create team of players
-			for (const pick of picks) {
-				const player = this.bootstrapData.elements.find((player) => player.id === pick.element);
-				const position = this.getElementType(player.element_type);
-
-				const newPlayer = new SoccerPlayer(
-					pick.element,
-					player.web_name,
-					this.getLivePoints(player.id),
-					this.createPlayerPhotoUrl(player.photo),
-					pick.position,
-					position,
-					player.element_type
+	async loadPlayer(id): Promise<FantasyPlayer> {
+		return this.getBootstrapData()
+			.then((bootstrap) => {
+				const { 'current-event': currentGameweek } = bootstrap;
+				return currentGameweek;
+			})
+			.then((currentGameweek) => {
+				return Promise.all([
+					this.getCurrentGameweekData(id),
+					this.getPlayerGameweekHistory(id),
+					this.getLiveData(currentGameweek)
+				]);
+			})
+			.then(([ gameweekData, gameweekHistory, liveData ]) => {
+				this.liveData = liveData;
+				const leagues = gameweekHistory.leagues.classic;
+				const firstName = gameweekHistory.entry.player_first_name;
+				const lastName = gameweekHistory.entry.player_last_name;
+				const country = this.createCountryPhotoUrl(gameweekHistory.entry.player_region_short_iso);
+				const teamName = gameweekHistory.entry.name;
+				const currentGameweek = gameweekHistory.entry.current_event;
+				const lastWeekOverallPoints = gameweekHistory.history[gameweekHistory.history.length - 1].total_points;
+				const picks = gameweekData.picks;
+				const team = new Team(id, teamName, currentGameweek, [], lastWeekOverallPoints);
+				const gameweekTransfers = gameweekData.entry_history.event_transfers;
+				const overallRank = gameweekHistory.history.pop().overall_rank;
+				const fantasyPlayer = new FantasyPlayer(
+					id,
+					leagues,
+					`${firstName} ${lastName}`,
+					team,
+					country,
+					overallRank,
+					gameweekTransfers
 				);
 
-				newPlayer.isCaptain = pick.is_captain;
-				newPlayer.multiplier = pick.multiplier;
-				fantasyPlayer.team.players.push(newPlayer);
+				//create team of players
+				for (const pick of picks) {
+					const player = this.bootstrapData.elements.find((player) => player.id === pick.element);
+					const position = this.getElementType(player.element_type);
 
-				//addd starters to positions array to display on team page
-				if (pick.position < 12) {
-					fantasyPlayer.team[`${position}s`].push(newPlayer);
-				} else {
-					fantasyPlayer.team.Bench.push(newPlayer);
+					const newPlayer = new SoccerPlayer(
+						pick.element,
+						player.web_name,
+						this.getLivePoints(player.id),
+						this.createPlayerPhotoUrl(player.photo),
+						pick.position,
+						position,
+						player.element_type
+					);
+
+					newPlayer.isCaptain = pick.is_captain;
+					newPlayer.multiplier = pick.multiplier;
+					fantasyPlayer.team.players.push(newPlayer);
+
+					this.addPlayersToPositions(pick, fantasyPlayer, newPlayer, position);
 				}
-			}
 
-			for (const plaayer of fantasyPlayer.team.players) {
-				fantasyPlayer.team.gameweekPoints += plaayer.gameweek_points * plaayer.multiplier;
-			}
+				for (const plaayer of fantasyPlayer.team.players) {
+					fantasyPlayer.team.gameweekPoints += plaayer.gameweek_points * plaayer.multiplier;
+				}
 
-			fantasyPlayer.team.gameweekPoints;
-			return fantasyPlayer;
-		});
+				fantasyPlayer.team.gameweekPoints;
+				return fantasyPlayer;
+			});
+	}
+
+	addPlayersToPositions(pick, fantasyPlayer, newPlayer, position) {
+		//addd starters to positions array to display on team page
+		if (pick.position < 12) {
+			fantasyPlayer.team[`${position}s`].push(newPlayer);
+		} else {
+			fantasyPlayer.team.Bench.push(newPlayer);
+		}
 	}
 
 	getElementType(typeId) {
@@ -129,8 +132,8 @@ export class FplTeamService {
 	getLivePoints(id) {
 		return this.liveData['elements'][id]['stats']['total_points'];
 	}
-	async getLiveData() {
-		return await this.liveDataService.getLiveData(this.currentGameweek);
+	async getLiveData(gameweek: number) {
+		return await this.liveDataService.getLiveData(gameweek);
 	}
 
 	createCountryPhotoUrl(code) {
