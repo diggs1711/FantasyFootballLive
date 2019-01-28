@@ -8,6 +8,7 @@ export default class SoccerPlayer {
 	multiplier: number;
 	teamPosition: number;
 	isCaptain: boolean;
+	fixtures: any[];
 
 	constructor(
 		id = -1,

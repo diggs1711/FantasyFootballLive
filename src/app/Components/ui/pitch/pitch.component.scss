@@ -1,31 +1,31 @@
-.pitch {
-    background: linear-gradient(to left,
-        green 0% 10%,
-        rgb(0, 88, 0) 10% 20%,
-        green 20% 30%,
-        rgb(0, 88, 0) 30% 40%,
-        green 40% 50%,
-        rgb(0, 88, 0) 50% 60%,
-        green 60% 70%,
-        rgb(0, 88, 0) 70% 80%,
-        green 80% 90%,
-        rgb(0, 88, 0) 90% 100%);
-    box-shadow: 5px 12px 13px 0px #00000094;
-    border-radius: 30px;
-    color: #fff;
-    margin-bottom: 25px;
+// .pitch {
+//     background: linear-gradient(to left,
+//         green 0% 10%,
+//         rgb(0, 88, 0) 10% 20%,
+//         green 20% 30%,
+//         rgb(0, 88, 0) 30% 40%,
+//         green 40% 50%,
+//         rgb(0, 88, 0) 50% 60%,
+//         green 60% 70%,
+//         rgb(0, 88, 0) 70% 80%,
+//         green 80% 90%,
+//         rgb(0, 88, 0) 90% 100%);
+//     box-shadow: 5px 12px 13px 0px #00000094;
+//     border-radius: 30px;
+//     color: #fff;
+//     margin-bottom: 25px;
 
 
 
 
-}
+// }
 
 .player-photo {
     height: 50px;
     width: 50px;
     border-radius: 50%;
     overflow: hidden;
-    border: 1px solid;
+    border: 2px solid rgba(204, 204, 204, 0);
     margin: 0;
     margin-bottom: 0.6em;
 
@@ -34,8 +34,8 @@
     }
 
     &--box-shadow {
-        box-shadow: 5px 12px 20px 0px black;
-        background: #fffffff0;
+        box-shadow: 7px 8px 9px 0px rgba(204, 204, 204, 0.71);
+        background: rgba(214, 214, 214, 0.509804);
     }
 
     &-container {
@@ -70,6 +70,7 @@
 
 .player-text {
     margin-top: 0.2em;
+    color: black;
 
     p {
         margin: 0;

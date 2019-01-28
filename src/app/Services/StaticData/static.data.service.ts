@@ -28,4 +28,14 @@ export class StaticDataService {
 		this.data = await this.getBootstrapData();
 		return this.data['current-event'];
 	}
+
+	async getUpcomingFixtures() {
+		this.data = await this.getBootstrapData();
+		return this.data['next_event_fixtures'];
+	}
+
+	async getTeams() {
+		this.data = await this.getBootstrapData();
+		return this.data['teams'];
+	}
 }

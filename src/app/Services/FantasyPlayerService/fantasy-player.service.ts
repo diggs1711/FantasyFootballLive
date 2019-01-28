@@ -6,6 +6,7 @@ import Team from 'src/app/Models/Team';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 import { LiveDataService } from '../LiveData/live.data.service';
 import { HttpRequestService } from '../HttpRequestService/http-request.service';
+import { SoccerPlayerService } from '../SoccerPlayerService/soccerplayer.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -91,6 +92,7 @@ export class FantasyPlayerService {
 		//create team of players
 		for (const pick of picks) {
 			const player = this.staticDataService.data.elements.find((player_1) => player_1.id === pick.element);
+
 			const position = this.getElementType(player.element_type);
 			const newPlayer = new SoccerPlayer(
 				pick.element,

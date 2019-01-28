@@ -1,5 +1,5 @@
 <app-header [title]="'TEAM'"></app-header>
-<ion-content padding>
+<ion-content>
   <ion-item lines="none" *ngIf="fantasyPlayer">
     <ion-label text-wrap>
       <h2 class="fantasy-player__heading" text-uppercase><strong>{{ fantasyPlayer.team.name }}</strong> </h2>
@@ -24,6 +24,9 @@
               <img src='{{keeper.image}}' />
             </figure>
             <div class="player-text">
+              <ul class="fixture-list">
+                <li *ngFor="let fixture of keeper?.fixtures?.slice(0,5)" class="fixture difficulty-{{fixture.difficulty}}"></li>
+              </ul>
               <h6>{{ keeper.name }}</h6>
               <p>{{ keeper.gameweek_points }}</p>
             </div>
@@ -38,6 +41,9 @@
               <img src='{{defender.image}}' />
             </figure>
             <div class="player-text">
+              <ul class="fixture-list">
+                <li *ngFor="let fixture of defender?.fixtures?.slice(0,5)" class="fixture difficulty-{{fixture.difficulty}}"></li>
+              </ul>
               <h6>{{ defender.name }}</h6>
               <p>{{ defender.gameweek_points * defender.multiplier }}</p>
             </div>
@@ -52,6 +58,9 @@
               <img src='{{midfielder.image}}' />
             </figure>
             <div class="player-text">
+              <ul class="fixture-list">
+                <li *ngFor="let fixture  of midfielder?.fixtures?.slice(0,5)" class="fixture difficulty-{{fixture.difficulty}}"></li>
+              </ul>
               <h6>{{ midfielder.name }}</h6>
               <p>{{ midfielder.gameweek_points * midfielder.multiplier }}</p>
             </div>
@@ -66,6 +75,9 @@
               <img src='{{forward.image}}' />
             </figure>
             <div class="player-text">
+              <ul class="fixture-list">
+                <li *ngFor="let fixture of forward?.fixtures?.slice(0,5)" class="fixture difficulty-{{fixture.difficulty}}"></li>
+              </ul>
               <h6>{{ forward.name }}</h6>
               <p>{{ forward.gameweek_points * forward.multiplier }}</p>
             </div>
@@ -90,6 +102,9 @@
             <img src='{{bench.image}}' />
           </figure>
           <div class="player-text">
+            <ul class="fixture-list">
+              <li *ngFor="let fixture of bench?.fixtures?.slice(0,5)" class="fixture difficulty-{{fixture.difficulty}}"></li>
+            </ul>
             <h6>{{ bench.name }}</h6>
             <p>{{ bench.gameweek_points * bench.multiplier }}</p>
           </div>
