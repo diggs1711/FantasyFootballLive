@@ -7,7 +7,7 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="primary">
-      <ion-button (click)="refresh()">
+      <ion-button (click)="refresh(league.id)">
         <ion-icon slot='end' name="refresh"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -16,19 +16,19 @@
 <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
 
 <ion-content *ngIf="!showSpinner">
-  <ion-refresher slot="fixed" (ionRefresh)="refreshLeague($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="refreshPulldown($event)">
     <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
   </ion-refresher>
 
-  <ion-list inset lines="none" *ngIf="members.length > 0">
+  <ion-list inset lines="none" *ngIf="league.members.length > 0">
     <ion-list-header>
       <ion-label text-wrap>
         <h3>
-          {{ leagueName }}
+          {{ league.name }}
         </h3>
       </ion-label>
     </ion-list-header>
-    <ion-item class="league__member" *ngFor="let member of members; let i = index;" (click)="leaguePlayerSelected(member.team.id)">
+    <ion-item class="league__member" *ngFor="let member of league.members; let i = index;" (click)="playerSelected(member.team.id)">
       <div class="rank__number">
         {{ i + 1 }}
       </div>
@@ -50,7 +50,7 @@
         <ion-text color="danger" *ngIf="member.gameweekTransfersCost > 0">
           (-{{ member.gameweekTransfersCost }})</ion-text>
         <p>
-          <strong>{{ member.team.captain }}</strong>
+          <strong>{{ member.team.captain }} (C)</strong>
         </p>
         <p>
           {{ member.team.gameweekPoints }}

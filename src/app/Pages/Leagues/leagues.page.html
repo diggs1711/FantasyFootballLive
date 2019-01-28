@@ -1,0 +1,17 @@
+<app-header [title]="'LEAGUES'"></app-header>
+
+<ion-content padding>
+  <ion-list *ngIf="mainUserService.user" lines="inset">
+    <ion-item *ngFor="let league of mainUserService.user.leagues" lines="inset" inset (click)="openLeague(league.id)"
+      detail>
+      <ion-label class="leagues" text-wrap>
+        <h2>
+          <strong> {{ league.name }}</strong>
+        </h2>
+        <p>
+          <ion-text color="danger"><strong> {{ league.playerRank }}</strong></ion-text>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

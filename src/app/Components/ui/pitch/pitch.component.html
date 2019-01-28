@@ -1,3 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+        Close
+      </ion-button>
+    </ion-buttons>
+    <ion-title>TEAM</ion-title>
+  </ion-toolbar>
+</ion-header>
 <ion-content padding>
   <ion-item lines="none" *ngIf="fantasyPlayer">
     <ion-label text-wrap>
@@ -10,7 +21,7 @@
     </ion-label>
     <ion-button shape="round" size="small" color="danger" class="make-transfers__chip" href="https://fantasy.premierleague.com/a/squad/transfers"
       slot="end">
-      <ion-label>MAKE TRANSFERS</ion-label>
+      <ion-label>VIEW TEAM ON FPL</ion-label>
     </ion-button>
   </ion-item>
 

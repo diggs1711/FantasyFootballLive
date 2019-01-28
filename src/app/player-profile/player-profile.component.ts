@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { NavParams } from '@ionic/angular';
-import { RequestDataService } from '../Services/FplData/fpl-data.service';
 import { LiveDataService } from '../Services/LiveData/live.data.service';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
+import { HttpRequestService } from '../Services/HttpRequestService/http-request.service';
 
 @Component({
 	selector: 'app-player-profile',
@@ -35,7 +35,7 @@ export class PlayerProfileComponent implements OnInit {
 	constructor(
 		public navParams: NavParams,
 		private modalController: ModalController,
-		private fplDataService: RequestDataService,
+		private httpRequestService: HttpRequestService,
 		private liveDataService: LiveDataService
 	) {
 		this.playerId = navParams.get('playerId');
@@ -110,7 +110,7 @@ export class PlayerProfileComponent implements OnInit {
 	}
 
 	async getTransfers(playerId) {
-		const transfersData = await this.fplDataService.getData(
+		const transfersData = await this.httpRequestService.getData(
 			`https://fantasy.premierleague.com/drf/entry/${playerId}/transfers`
 		);
 		const transfers = transfersData.history;

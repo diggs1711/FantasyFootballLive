@@ -1,3 +1,25 @@
+.pitch {
+    background: linear-gradient(to left,
+        green 0% 10%,
+        rgb(0, 88, 0) 10% 20%,
+        green 20% 30%,
+        rgb(0, 88, 0) 30% 40%,
+        green 40% 50%,
+        rgb(0, 88, 0) 50% 60%,
+        green 60% 70%,
+        rgb(0, 88, 0) 70% 80%,
+        green 80% 90%,
+        rgb(0, 88, 0) 90% 100%);
+    box-shadow: 5px 12px 13px 0px #00000094;
+    border-radius: 30px;
+    color: #fff;
+    margin-bottom: 25px;
+
+
+
+
+}
+
 .player-photo {
     height: 50px;
     width: 50px;
@@ -74,22 +96,4 @@
 
 .main-logo {
     height: 50px;
-}
-
-.pitch {
-    background: linear-gradient(to left,
-        green 0% 10%,
-        rgb(0, 88, 0) 10% 20%,
-        green 20% 30%,
-        rgb(0, 88, 0) 30% 40%,
-        green 40% 50%,
-        rgb(0, 88, 0) 50% 60%,
-        green 60% 70%,
-        rgb(0, 88, 0) 70% 80%,
-        green 80% 90%,
-        rgb(0, 88, 0) 90% 100%);
-    box-shadow: 5px 12px 13px 0px #00000094;
-    border-radius: 30px;
-    color: #fff;
-    margin-bottom: 25px;
 }

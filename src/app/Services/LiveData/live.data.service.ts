@@ -5,9 +5,14 @@ import { HttpRequestService } from '../HttpRequestService/http-request.service';
 	providedIn: 'root'
 })
 export class LiveDataService {
+	data: any;
 	constructor(private httpRequestService: HttpRequestService) {}
 
 	async getLiveData(gameweek) {
-		return await this.httpRequestService.getData(`https://fantasy.premierleague.com/drf/event/${gameweek}/live`);
+		this.data = await this.httpRequestService.getData(
+			`https://fantasy.premierleague.com/drf/event/${gameweek}/live`
+		);
+
+		return this.data;
 	}
 }

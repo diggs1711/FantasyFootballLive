@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpRequestService } from '../HttpRequestService/http-request.service';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class StaticDataService {
-	soccerPlayers: any;
-	currentGameweek: Number;
-	positions: any;
-	teams: any;
+	data: any;
+	storageKey: string = 'bootstrap';
 
-	constructor(private httpRequestService: HttpRequestService) {}
+	constructor(private httpRequestService: HttpRequestService, private storage: Storage) {}
 
 	/**
 	 * @Returns returns a promise containing bootstrap data
@@ -18,54 +17,15 @@ export class StaticDataService {
 	 */
 
 	async getBootstrapData() {
-		return await this.httpRequestService
-			.getData('https://fantasy.premierleague.com/drf/bootstrap-static')
-			.then((bootstrap) => {
-				const {
-					'current-event': currentGameweek,
-					elements: soccerPlayers,
-					element_types: positions,
-					teams: teams
-				} = bootstrap;
-
-				this.soccerPlayers = soccerPlayers;
-				this.currentGameweek = currentGameweek;
-				this.positions = positions;
-				this.teams = teams;
-
-				return bootstrap;
-			});
-	}
-
-	/**
-   * @description check if data is present
-   */
-	isDataLoaded() {
-		return this.currentGameweek > 0;
-	}
-
-	getPosition(type) {
-		return this.positions.find((position) => position.id === type).plural_name;
+		//retrieve bootstrap data if it is stored
+		//make request
+		this.data = await this.httpRequestService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
+		this.storage.set(this.storageKey, this.data);
+		return this.data;
 	}
 
 	async getCurrentGameweek() {
-		if (this.currentGameweek) {
-			return this.currentGameweek;
-		}
-
-		const data = await this.getBootstrapData();
-		return this.currentGameweek;
-	}
-
-	getSoccerPlayers() {
-		return this.soccerPlayers;
-	}
-
-	getPositions() {
-		return this.positions;
-	}
-
-	getTeams() {
-		return this.teams;
+		this.data = await this.getBootstrapData();
+		return this.data['current-event'];
 	}
 }

@@ -8,12 +8,12 @@ const routes: Routes = [
 		path: 'tabs',
 		component: TabsPage,
 		children: [
-			{ path: 'news', loadChildren: '../News/news.module#NewsPageModule' },
-			{ path: 'home', loadChildren: '../home/home.module#HomePageModule' },
-			{ path: 'team', loadChildren: '../team/team.module#TeamPageModule' },
-			{ path: 'settings', loadChildren: '../settings/settings.module#SettingsPageModule' },
-			{ path: 'leagues', loadChildren: '../leagues/leagues.module#LeaguesPageModule' },
-			{ path: 'stats', loadChildren: '../stats/stats.module#StatsPageModule' }
+			{ path: 'news', loadChildren: '../Pages/News/news.module#NewsPageModule' },
+			{ path: 'home', loadChildren: '../Pages/Home/home.module#HomePageModule' },
+			{ path: 'team', loadChildren: '../Pages/Team/team.module#TeamPageModule' },
+			{ path: 'settings', loadChildren: '../Pages/Settings/settings.module#SettingsPageModule' },
+			{ path: 'leagues', loadChildren: '../Pages/Leagues/leagues.module#LeaguesPageModule' },
+			{ path: 'stats', loadChildren: '../Pages/Stats/stats.module#StatsPageModule' }
 		]
 	},
 	{

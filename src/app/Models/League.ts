@@ -4,7 +4,6 @@ export default class League {
 	name: string;
 	members: FantasyPlayer[];
 	baseLeagueUrl: string;
-	r;
 	playerRank: number;
 
 	constructor(id = -1, name = '', playerRank = 0, members = []) {
@@ -36,6 +35,4 @@ export default class League {
 	getMember(id) {
 		return this.members.find((member) => member.id === id);
 	}
-
-	onMemberSelected(memberId) {}
 }

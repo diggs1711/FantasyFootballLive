@@ -6,10 +6,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { LeaguesPage } from './leagues.page';
-import { ComponentsModule } from '../Components/components.module';
-import { LeagueComponent } from '../league/league.component';
-import { PlayerProfileComponent } from '../player-profile/player-profile.component';
-import { PitchComponent } from '../Components/ui/pitch/pitch.component';
+import { ComponentsModule } from '../../Components/components.module';
+import { LeagueComponent } from '../../Components/league/league.component';
+import { PlayerProfileComponent } from '../../player-profile/player-profile.component';
+import { PitchComponent } from '../../Components/ui/pitch/pitch.component';
 
 const routes: Routes = [
 	{

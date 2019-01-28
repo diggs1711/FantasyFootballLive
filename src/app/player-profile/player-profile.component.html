@@ -1,5 +1,5 @@
 <ion-content padding>
-  <!-- <ion-segment [(ngModel)]="showPlayerData" scrollable>
+    <!-- <ion-segment [(ngModel)]="showPlayerData" scrollable>
     <ion-segment-button value="gameweek" text-wrap>
         <ion-label text-wrap>Current GW({{ currentGameweek }})</ion-label>
     </ion-segment-button>
@@ -194,43 +194,43 @@
         </ion-grid>
     </div> -->
 
-  <!-- <div *ngIf="showPlayerData === 'team'"> -->
-  <ion-list inset lines="none">
-    <ion-item>
-      <ion-label text-wrap>
-        <ion-text color="primary">
-          <h2>Live GW Points</h2>
-        </ion-text>
-        <p>{{ gameweekPoints }}</p>
-      </ion-label>
-      <ion-label text-wrap>
-        <ion-text color="primary">
-          <h2>Points Benched</h2>
-        </ion-text>
-        <p>{{ pointsBenched }}</p>
-      </ion-label>
-    </ion-item>
-    <div *ngFor="let position of positions | keyvalue;">
-      <ion-item-divider>
-        <ion-label>
-          {{ getPosition(position.key) }}
-        </ion-label>
-      </ion-item-divider>
-      <ion-item *ngFor="let pick of position.value">
-        <ion-avatar slot="start">
-          <ion-img [src]='pick.photo'></ion-img>
-        </ion-avatar>
-        <ion-label>
-          <h3>{{ pick.name }}</h3>
-          <p>{{ pick.points }}</p>
-        </ion-label>
-        <ion-badge *ngIf="pick.isCaptain" color="primary" fill="outline" slot="end">C</ion-badge>
-        <ion-badge *ngIf="pick.is_vice_captain" color="light" slot="end">Vice</ion-badge>
-      </ion-item>
-    </div>
-  </ion-list>
+    <!-- <div *ngIf="showPlayerData === 'team'"> -->
+    <ion-list inset lines="none">
+        <ion-item>
+            <ion-label text-wrap>
+                <ion-text color="primary">
+                    <h2>Live GW Points</h2>
+                </ion-text>
+                <p>{{ gameweekPoints }}</p>
+            </ion-label>
+            <ion-label text-wrap>
+                <ion-text color="primary">
+                    <h2>Points Benched</h2>
+                </ion-text>
+                <p>{{ pointsBenched }}</p>
+            </ion-label>
+        </ion-item>
+        <div *ngFor="let position of positions | keyvalue;">
+            <ion-item-divider>
+                <ion-label>
+                    {{ getPosition(position.key) }}
+                </ion-label>
+            </ion-item-divider>
+            <ion-item *ngFor="let pick of position.value">
+                <ion-avatar slot="start">
+                    <ion-img [src]='pick.photo'></ion-img>
+                </ion-avatar>
+                <ion-label>
+                    <h3>{{ pick.name }}</h3>
+                    <p>{{ pick.points }}</p>
+                </ion-label>
+                <ion-badge *ngIf="pick.isCaptain" color="primary" fill="outline" slot="end">C</ion-badge>
+                <ion-badge *ngIf="pick.is_vice_captain" color="light" slot="end">Vice</ion-badge>
+            </ion-item>
+        </div>
+    </ion-list>
 </ion-content>
 
 <ion-button (click)="closeModal()">
-  Close
+    Close
 </ion-button>

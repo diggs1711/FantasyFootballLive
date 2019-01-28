@@ -5,18 +5,20 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { NewsPage } from './news.page';
-import { ComponentsModule } from '../Components/components.module';
+import { TeamPage } from './team.page';
+import { ComponentsModule } from '../../Components/components.module';
+import { PitchComponent } from 'src/app/Components/ui/pitch/pitch.component';
 
 const routes: Routes = [
 	{
 		path: '',
-		component: NewsPage
+		component: TeamPage
 	}
 ];
 
 @NgModule({
+	entryComponents: [ PitchComponent ],
 	imports: [ CommonModule, FormsModule, IonicModule, ComponentsModule, RouterModule.forChild(routes) ],
-	declarations: [ NewsPage ]
+	declarations: [ TeamPage ]
 })
-export class NewsPageModule {}
+export class TeamPageModule {}
