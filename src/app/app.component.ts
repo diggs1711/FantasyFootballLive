@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import * as Aos from 'aos';
 
 @Component({
 	selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent {
 
 	initializeApp() {
 		this.platform.ready().then(() => {
+			Aos.init();
 			this.statusBar.styleDefault();
 			this.statusBar.overlaysWebView(false);
 			this.statusBar.show();

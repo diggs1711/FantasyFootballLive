@@ -72,7 +72,8 @@ export class FantasyPlayerService {
 		const country = this.createCountryPhotoUrl(gameweekHistory.entry.player_region_short_iso);
 		const teamName = gameweekHistory.entry.name;
 		const currentGameweek_1 = gameweekHistory.entry.current_event;
-		const lastWeekOverallPoints = gameweekHistory.history.pop().total_points;
+		const lastWeekOverallPoints = gameweekHistory.history.find((hist) => hist.event == this.currentGameweek - 1)
+			.total_points;
 		const picks = gameweekData.picks;
 		const team = new Team(id, teamName, currentGameweek_1, [], lastWeekOverallPoints);
 		const gameweekTransfers = gameweekData.entry_history.event_transfers;

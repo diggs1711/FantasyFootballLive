@@ -3,12 +3,12 @@
 <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
 <ion-content padding>
   <ion-list>
-    <ion-item lines="none" button *ngFor="let post of latestPosts" (click)="openNewsStory(post.url)">
+    <ion-item data-aos="fade-up" lines="inset" button *ngFor="let post of latestPosts" (click)="openNewsStory(post.url)">
       <ion-avatar slot="start">
         <img [src]="post.image" alt="">
       </ion-avatar>
-      <ion-label>
-        <h3>{{ post.title }}</h3>
+      <ion-label text-wrap>
+        <h2>{{ post.title }}</h2>
         <p> {{ post.url }} </p>
       </ion-label>
     </ion-item>
