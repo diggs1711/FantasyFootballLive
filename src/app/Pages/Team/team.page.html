@@ -1,5 +1,6 @@
 <app-header [title]="'TEAM'"></app-header>
-<ion-content>
+<app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+<ion-content *ngIf="!showSpinner">
   <ion-item lines="none" *ngIf="fantasyPlayer">
     <ion-label text-wrap>
       <h2 class="fantasy-player__heading" text-uppercase><strong>{{ fantasyPlayer.team.name }}</strong> </h2>
@@ -88,7 +89,7 @@
 
 
     <ion-item-divider style="border:none;">
-      <ion-label lines="none">
+      <ion-label>
         <ion-text>
           Bench
         </ion-text>

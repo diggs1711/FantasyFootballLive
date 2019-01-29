@@ -10,6 +10,7 @@ import { SoccerPlayerService } from 'src/app/Services/SoccerPlayerService/soccer
 })
 export class TeamPage implements OnInit {
 	fantasyPlayer: FantasyPlayer;
+	showSpinner: boolean = true;
 	constructor(private storage: Storage, private soccerPlayerService: SoccerPlayerService) {}
 
 	ngOnInit() {
@@ -45,6 +46,8 @@ export class TeamPage implements OnInit {
 					.getUpcomingFixtures(player.id)
 					.then((fixtures) => (player.fixtures = fixtures));
 			}
+
+			this.showSpinner = false;
 		});
 	}
 }

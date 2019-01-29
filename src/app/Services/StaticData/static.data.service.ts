@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage';
 export class StaticDataService {
 	data: any;
 	storageKey: string = 'bootstrap';
+	updateKey: string = 'update-bootstrap-time';
 
 	constructor(private httpRequestService: HttpRequestService, private storage: Storage) {}
 
@@ -17,11 +18,29 @@ export class StaticDataService {
 	 */
 
 	async getBootstrapData() {
+		//store bootstrap data until time of next gameweek begins
+		return this.storage
+			.get(this.updateKey)
+			.then((time) => {
+				//compare next deadline time to current date
+				//if before deadline you can get old data otherwise update
+				if (time && Date.now() <= new Date(time).getTime()) {
+					return this.storage.get(this.storageKey);
+				}
+				return this.httpRequestService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
+			})
+			.then((bootstrap) => {
+				//make request
+				this.data = bootstrap;
+				const nextDeadline = bootstrap.next_event_fixtures[0]
+					? bootstrap.next_event_fixtures[0].deadline_time
+					: null;
+				this.storage.set(this.updateKey, nextDeadline);
+				this.storage.set(this.storageKey, this.data);
+				return this.data;
+			});
+
 		//retrieve bootstrap data if it is stored
-		//make request
-		this.data = await this.httpRequestService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
-		this.storage.set(this.storageKey, this.data);
-		return this.data;
 	}
 
 	async getCurrentGameweek() {
