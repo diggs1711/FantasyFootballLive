@@ -9,7 +9,9 @@
     <ion-title>TEAM</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content padding>
+
+<app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
+<ion-content *ngIf="!showSpinner">
   <ion-item lines="none" *ngIf="fantasyPlayer">
     <ion-label text-wrap>
       <h2 class="fantasy-player__heading" text-uppercase><strong>{{ fantasyPlayer.team.name }}</strong> </h2>
@@ -18,8 +20,9 @@
       <p class="fantasy-player__heading">Overall Points - <strong>{{ fantasyPlayer.team.overallPoints }} </strong>
         <p class="fantasy-player__heading">GW Transfers - <strong>{{ fantasyPlayer.gameweekTransfers }} </strong>
         </p>
+        <ion-badge size="small" color="danger">{{ fantasyPlayer.activeChip }}</ion-badge>
     </ion-label>
-    <ion-button shape="round" size="small" color="danger" class="make-transfers__chip" href="https://fantasy.premierleague.com/a/squad/transfers"
+    <ion-button shape="round" size="small" color="danger" class="make-transfers__chip" href="https://fantasy.premierleague.com/a/team/{{fantasyPlayer.team.id}}"
       slot="end">
       <ion-label>VIEW TEAM ON FPL</ion-label>
     </ion-button>
@@ -85,8 +88,8 @@
     </div>
 
 
-    <ion-item-divider style="border:none;">
-      <ion-label>
+    <ion-item-divider style="    margin-bottom: 0.9em;">
+      <ion-label lines="inset">
         <ion-text>
           Bench
         </ion-text>
@@ -102,6 +105,40 @@
           <div class="player-text">
             <h6>{{ bench.name }}</h6>
             <p>{{ bench.gameweek_points * bench.multiplier }}</p>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-item-divider *ngIf="gameweekTransfers.length > 0" lines="none" style="margin-bottom: 0.9em;">
+      <ion-label lines="none">
+        <ion-text>
+          Gameweek Transfers
+        </ion-text>
+      </ion-label>
+    </ion-item-divider>
+
+    <ion-row *ngFor="let transfer of gameweekTransfers">
+      <ion-col size='4'>
+        <div class="player-photo-container">
+          <figure class="player-photo player-photo--no-border">
+            <img src='{{transfer.transfer_in_photo}}' />
+          </figure>
+          <div class="player-text">
+            <h6>{{ transfer.transfer_in }}</h6>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col size='4' class="gameweek-transfers__icon">
+        <ion-icon name="swap"></ion-icon>
+      </ion-col>
+      <ion-col size='4'>
+        <div class="player-photo-container">
+          <figure class="player-photo player-photo--no-border">
+            <img src='{{transfer.transfer_out_photo}}' />
+          </figure>
+          <div class="player-text">
+            <h6>{{ transfer.transfer_out }}</h6>
           </div>
         </div>
       </ion-col>

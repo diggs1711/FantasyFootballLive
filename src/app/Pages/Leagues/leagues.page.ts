@@ -10,7 +10,7 @@ import { LeagueComponent } from 'src/app/Components/league/league.component';
 	styleUrls: [ './leagues.page.scss' ]
 })
 export class LeaguesPage implements OnInit {
-	constructor(private modalController: ModalController, private mainUserService: MainUserService) {}
+	constructor(private modalController: ModalController, public mainUserService: MainUserService) {}
 
 	ngOnInit() {
 		this.mainUserService.loadSavedUser();

@@ -5,6 +5,7 @@ import League from '../../Models/League';
 import FantasyPlayer from '../../Models/FantasyPlayer';
 import { PitchComponent } from '../../Components/ui/pitch/pitch.component';
 import { LeaguesService } from 'src/app/Services/LeaguesService/leagues.service';
+import { TransferService } from 'src/app/Services/transfer.service';
 
 @Component({
 	selector: 'app-league',
@@ -20,7 +21,8 @@ export class LeagueComponent implements OnInit {
 	constructor(
 		public modalController: ModalController,
 		private navParams: NavParams,
-		private leaguesService: LeaguesService
+		private leaguesService: LeaguesService,
+		private transferService: TransferService
 	) {}
 
 	ngOnInit() {

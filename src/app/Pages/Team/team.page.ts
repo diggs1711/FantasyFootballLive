@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import FantasyPlayer from '../../Models/FantasyPlayer';
 import { SoccerPlayerService } from 'src/app/Services/SoccerPlayerService/soccerplayer.service';
+import { MainUserService } from 'src/app/Services/main-user/main-user.service';
 
 @Component({
 	selector: 'app-team',
@@ -11,10 +12,18 @@ import { SoccerPlayerService } from 'src/app/Services/SoccerPlayerService/soccer
 export class TeamPage implements OnInit {
 	fantasyPlayer: FantasyPlayer;
 	showSpinner: boolean = true;
-	constructor(private storage: Storage, private soccerPlayerService: SoccerPlayerService) {}
+	constructor(
+		private storage: Storage,
+		private soccerPlayerService: SoccerPlayerService,
+		private mainUserService: MainUserService
+	) {}
 
 	ngOnInit() {
-		this.storage.get('user').then((user) => {
+		this.fetchCurrentUser().then(() => (this.showSpinner = false));
+	}
+
+	async fetchCurrentUser() {
+		return this.storage.get('user').then((user) => {
 			this.fantasyPlayer = user;
 
 			for (const player of this.fantasyPlayer.team.Goalkeepers) {
@@ -46,8 +55,16 @@ export class TeamPage implements OnInit {
 					.getUpcomingFixtures(player.id)
 					.then((fixtures) => (player.fixtures = fixtures));
 			}
-
-			this.showSpinner = false;
 		});
+	}
+
+	refreshUser(event) {
+		this.mainUserService
+			.updateUser(this.fantasyPlayer.id)
+			.then(() => {
+				return this.fetchCurrentUser();
+			})
+			.then(() => {
+				event.target.complete()});
 	}
 }

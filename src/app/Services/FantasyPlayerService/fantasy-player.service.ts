@@ -68,6 +68,7 @@ export class FantasyPlayerService {
 		]);
 
 		const leagues = gameweekHistory.leagues.classic;
+		const activeChip = gameweekData.active_chip;
 		const firstName = gameweekHistory.entry.player_first_name;
 		const lastName = gameweekHistory.entry.player_last_name;
 		const country = this.createCountryPhotoUrl(gameweekHistory.entry.player_region_short_iso);
@@ -89,6 +90,7 @@ export class FantasyPlayerService {
 			overallRank,
 			gameweekTransfers
 		);
+		fantasyPlayer.activeChip = activeChip;
 		//create team of players
 		for (const pick of picks) {
 			const player = this.staticDataService.data.elements.find((player_1) => player_1.id === pick.element);

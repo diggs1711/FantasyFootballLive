@@ -1,8 +1,10 @@
 import League from './League';
 import Team from './Team';
+import SoccerPlayer from './SoccerPlayer';
 
 export default class FantasyPlayer {
 	leagues: League[];
+	gameweekTransfersPlayers: SoccerPlayer[];
 	name: string;
 	team: Team;
 	id: number;

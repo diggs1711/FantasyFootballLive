@@ -21,12 +21,16 @@ export class StaticDataService {
 		//store bootstrap data until time of next gameweek begins
 		return this.storage
 			.get(this.updateKey)
-			.then((time) => {
+			.then(async (time) => {
 				//compare next deadline time to current date
 				//if before deadline you can get old data otherwise update
 				if (time && Date.now() <= new Date(time).getTime()) {
 					return this.storage.get(this.storageKey);
 				}
+				//store user and delete unecessary stored data -> need to test first before implementing
+				// const user = await this.storage.get("user");
+				// this.storage.clear();
+				// this.storage.set("user", user)
 				return this.httpRequestService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
 			})
 			.then((bootstrap) => {

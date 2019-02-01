@@ -1,6 +1,9 @@
 <app-header [title]="'TEAM'"></app-header>
 <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
 <ion-content *ngIf="!showSpinner">
+  <ion-refresher slot="fixed" (ionRefresh)="refreshUser($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-item lines="none" *ngIf="fantasyPlayer">
     <ion-label text-wrap>
       <h2 class="fantasy-player__heading" text-uppercase><strong>{{ fantasyPlayer.team.name }}</strong> </h2>
@@ -88,8 +91,8 @@
     </div>
 
 
-    <ion-item-divider style="border:none;">
-      <ion-label>
+    <ion-item-divider style="    margin-bottom: 0.9em;">
+      <ion-label lines="inset">
         <ion-text>
           Bench
         </ion-text>

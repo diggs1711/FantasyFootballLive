@@ -35,4 +35,9 @@ export class MainUserService {
 			this.storage.set(this.userKey, user);
 		});
 	}
+
+	async updateUser(id: number) {
+		//just re create user to get live data
+		await this.createUser(id);
+	}
 }
