@@ -38,6 +38,6 @@ export class MainUserService {
 
 	async updateUser(id: number) {
 		//just re create user to get live data
-		await this.createUser(id);
+		return await this.createUser(id);
 	}
 }

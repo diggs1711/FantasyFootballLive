@@ -29,18 +29,17 @@ export class LeagueComponent implements OnInit {
 		this.getLeague(this.navParams.data.leagueId);
 	}
 
-	getLeague(id: number) {
-		this.leaguesService.getLeague(id).then((league) => {
-			if (league.members.includes(undefined) && this.maxTries > 0) {
-				this.maxTries--;
-				this.getLeague(league.id);
-				return;
-			}
-
-			this.maxTries = 5;
-			this.league = league;
-			this.showSpinner = false;
-		});
+	async getLeague(id: number) {
+		const league = await this.leaguesService.getLeague(id);
+		if (league.members.includes(undefined) && this.maxTries > 0) {
+			this.maxTries--;
+			this.getLeague(league.id);
+			return;
+		}
+		this.maxTries = 5;
+		league.members.sort((a, b) => b.team.overallPoints - a.team.overallPoints);
+		this.league = league;
+		this.showSpinner = false;
 	}
 
 	closeModal() {
@@ -48,7 +47,7 @@ export class LeagueComponent implements OnInit {
 	}
 
 	async refresh(id: number) {
-		this.getLeague(id);
+		await this.getLeague(id);
 	}
 
 	async refreshPulldown(event) {

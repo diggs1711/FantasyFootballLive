@@ -58,13 +58,10 @@ export class TeamPage implements OnInit {
 		});
 	}
 
-	refreshUser(event) {
+	refreshUser(event: { target: { complete: () => void } }) {
 		this.mainUserService
 			.updateUser(this.fantasyPlayer.id)
-			.then(() => {
-				return this.fetchCurrentUser();
-			})
-			.then(() => {
-				event.target.complete()});
+			.then(async () => await this.fetchCurrentUser())
+			.then(() => event.target.complete());
 	}
 }
