@@ -7,34 +7,35 @@ import { Platform } from '@ionic/angular';
 	providedIn: 'root'
 })
 export class FcmService {
+	token: string;
+	userFplId: number;
+
 	constructor(private firebase: Firebase, private afs: AngularFirestore, private platform: Platform) {}
 
-	async getToken() {
-		let token;
-
+	async getToken(id: number = null) {
 		if (this.platform.is('android')) {
-			token = await this.firebase.getToken();
+			this.token = await this.firebase.getToken();
 		}
 
 		if (this.platform.is('ios')) {
-			token = await this.firebase.getToken();
+			this.token = await this.firebase.getToken();
 			await this.firebase.grantPermission();
 		}
 
-		this.saveToken(token);
+		this.saveToken(id);
 	}
 
-	private saveToken(token) {
-		if (!token) return;
+	private saveToken(id: number) {
+		if (!this.token) return;
 
 		const devicesRef = this.afs.collection('devices');
-
 		const data = {
-			token,
-			userId: 'testUserId'
+			token: this.token,
+			fplId: id
 		};
 
-		return devicesRef.doc(token).set(data);
+		console.log('svaing token');
+		return devicesRef.doc(this.token).set(data);
 	}
 
 	onNotifications() {
