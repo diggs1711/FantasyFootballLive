@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: 'AIzaSyApkY24e5wgHN7ZbzB39vpI5xlloqvI_Bk',
+    authDomain: '<your-project-authdomain>',
+    databaseURL: 'https://fantasy-football-live.firebaseio.com',
+    projectId: 'fantasy-football-live',
+    storageBucket: 'fantasy-football-live.appspot.com',
+    messagingSenderId: '<your-messaging-sender-id>'
+  }
 };
 
 /*
