@@ -1,0 +1,236 @@
+<ion-content padding>
+    <!-- <ion-segment [(ngModel)]="showPlayerData" scrollable>
+    <ion-segment-button value="gameweek" text-wrap>
+        <ion-label text-wrap>Current GW({{ currentGameweek }})</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="team" text-wrap>
+        <ion-label>Team</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="next" text-wrap>
+        <ion-label text-wrap>Next GW</ion-label>
+    </ion-segment-button>
+</ion-segment>
+<ion-content>
+
+    <div *ngIf="showPlayerData === 'next'">
+        <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Transfers Made</h3>
+                            <p>{{ league_player_info.live_transfers }}
+                                <ion-text color="danger" *ngIf="league_player_info.live_transfers_cost > 0">
+                                    (-{{ league_player_info.live_transfers_cost }})</ion-text>
+                            </p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Live Squad Value</h3>
+                            <p>{{ league_player_info.live_squad_value / 10 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Live Bank</h3>
+                            <p> {{ league_player_info.live_bank / 10}}
+                            </p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Change in Squad Value</h3>
+                            <p>{{ ((league_player_info.live_squad_value + league_player_info.live_bank) -
+                                playerData.entry_history.value) / 10 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+    <div *ngIf="showPlayerData === 'gameweek'">
+        <ion-grid>
+            <ion-row>
+                <ion-col size="4">
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Overall Points</h3>
+                            <p>{{ league_player_info.total }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Latest Points</h3>
+                            <p>{{ league_player_info.event_total }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="4">
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Transfers</h3>
+                            <p>{{ playerData.entry_history.event_transfers }}
+                                <ion-text color="danger" *ngIf="playerData.entry_history.event_transfers_cost > 0">
+                                    (-{{ playerData.entry_history.event_transfers_cost }})</ion-text>
+                            </p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Overall Rank</h3>
+                            <p>{{playerData.entry_history.overall_rank | number:0 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>GW Rank</h3>
+                            <p>{{playerData.entry_history.rank | number:0 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Team Value</h3>
+                            <p>&pound;{{ (playerData.entry_history.value) / 10 }}m</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size="4">
+                    <ion-item lines="none">
+                        <ion-label text-wrap>
+                            <h3>Bank</h3>
+                            <p>&pound;{{ playerData.entry_history.bank / 10 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col size="4" *ngIf="league_player_info.chip != ''">
+                    <ion-item lines="none">
+                        <ion-label>
+                            <h3>
+                                Chip
+                            </h3>
+                            <ion-badge color="success">{{ league_player_info.chip }}</ion-badge>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-grid *ngIf="gameweekTransfers.length > 0">
+            <ion-item lines="none">
+                <ion-label>Gameweek Transfers</ion-label>
+            </ion-item>
+            <ion-row>
+                <ion-col>
+                    <ion-item>
+                        <ion-label>
+                            <ion-text color="success">
+                                <h2>
+                                    IN
+                                </h2>
+                            </ion-text>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+                <ion-col>
+                    <ion-item>
+                        <ion-label>
+                            <ion-text color="danger">
+                                <h2>
+                                    OUT
+                                </h2>
+                            </ion-text>
+                        </ion-label>
+                    </ion-item>
+
+                </ion-col>
+            </ion-row>
+            <ion-row *ngFor="let transfer of gameweekTransfers">
+                <ion-col size="6">
+                    <ion-item lines="none">
+                        <ion-avatar slot="start">
+                            <img [src]="transfer.photo_url_in">
+                        </ion-avatar>
+                        <ion-label text-wrap>
+                            <h4>{{ transfer.player_in_name }}</h4>
+                            <p>&pound;{{ transfer.player_in_cost / 10 }} </p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+
+                <ion-col size="6">
+                    <ion-item lines="none" text-wrap>
+                        <ion-avatar slot="end">
+                            <img [src]="transfer.photo_url_out">
+                        </ion-avatar>
+                        <ion-label text-wrap>
+                            <h4>{{ transfer.player_out_name }}</h4>
+                            <p>&pound;{{ transfer.player_out_cost / 10 }}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div> -->
+
+    <!-- <div *ngIf="showPlayerData === 'team'"> -->
+    <ion-list inset lines="none">
+        <ion-item>
+            <ion-label text-wrap>
+                <ion-text color="primary">
+                    <h2>Live GW Points</h2>
+                </ion-text>
+                <p>{{ gameweekPoints }}</p>
+            </ion-label>
+            <ion-label text-wrap>
+                <ion-text color="primary">
+                    <h2>Points Benched</h2>
+                </ion-text>
+                <p>{{ pointsBenched }}</p>
+            </ion-label>
+        </ion-item>
+        <div *ngFor="let position of positions | keyvalue;">
+            <ion-item-divider>
+                <ion-label>
+                    {{ getPosition(position.key) }}
+                </ion-label>
+            </ion-item-divider>
+            <ion-item *ngFor="let pick of position.value">
+                <ion-avatar slot="start">
+                    <ion-img [src]='pick.photo'></ion-img>
+                </ion-avatar>
+                <ion-label>
+                    <h3>{{ pick.name }}</h3>
+                    <p>{{ pick.points }}</p>
+                </ion-label>
+                <ion-badge *ngIf="pick.isCaptain" color="primary" fill="outline" slot="end">C</ion-badge>
+                <ion-badge *ngIf="pick.is_vice_captain" color="light" slot="end">Vice</ion-badge>
+            </ion-item>
+        </div>
+    </ion-list>
+</ion-content>
+
+<ion-button (click)="closeModal()">
+    Close
+</ion-button>
