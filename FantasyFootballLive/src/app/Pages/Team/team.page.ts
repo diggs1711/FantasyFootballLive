@@ -20,6 +20,7 @@ export class TeamPage implements OnInit {
 
 	ngOnInit() {
 		this.fetchCurrentUser().then(() => (this.showSpinner = false));
+		this.refresh();
 	}
 
 	async fetchCurrentUser() {
@@ -59,9 +60,12 @@ export class TeamPage implements OnInit {
 	}
 
 	refreshUser(event: { target: { complete: () => void } }) {
-		this.mainUserService
-			.updateUser(this.fantasyPlayer.id)
-			.then(async () => await this.fetchCurrentUser())
-			.then(() => event.target.complete());
+		this.refresh().then(() => event.target.complete());
+	}
+
+	async refresh() {
+		await this.mainUserService
+			.updateUser(this.fantasyPlayer.id);
+		return await await this.fetchCurrentUser();
 	}
 }
