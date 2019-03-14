@@ -2,30 +2,18 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import fetch from 'cross-fetch';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
-
 admin.initializeApp();
 const database = admin.database();
 const firestore = admin.firestore();
 
+//http endpoint
 exports.checkDeadline = functions.https.onRequest((req, res) => {
-	// const key = req.query.key;
-
-	// if(!key == functions.config().cron.key) {
-	//     res.status(403).send('Security key does not match. Make sure your "key" URL query parameter matches the ' +
-	//     'cron.key environment variable.')
-	//     return null;
-	// }
 	getNextDeadline();
 	res.send('transfer deadline job complete');
 	return null;
 });
 
+//retrieves the next deadline
 function getNextDeadline() {
 	database
 		.ref('fantasy-football-live')
@@ -33,11 +21,13 @@ function getNextDeadline() {
 		.once('value')
 		.then((value) => value)
 		.then((time) => {
+			//if the database does not contain a time then get the next deadline
 			if (!time) {
 				getDeadline();
 			} else if (isPastDeadline(time)) {
 				getDeadline();
 			} else if (lessThanSixtyMinutesToDeadline(time)) {
+				//if less than 60 mins before deadline, check if the notification has been sent already, if not send it
 				database
 					.ref('fantasy-football-live')
 					.child('reminder-sent')
@@ -78,35 +68,36 @@ function getNextDeadline() {
 		firestore
 			.collection('devices')
 			.listDocuments()
-			.then(() => {
-				const message = {
-					notification: {
-						title: 'DEADLINE APPROACHING',
+			.then((docs) => {
+				for (const doc of docs) {
+					const notification : admin.messaging.Notification = {
+						title: 'Deadline Approaching',
 						body: 'Less than 60 minutes until the deadline, make your transfers soon',
-						icon: "icon/drawable-hdpi-icon"
-					},
-					token: "fBhmbkPLgN0:APA91bH3JGGHCWYFLeF25pFGHg2gvcGpeK6C-6MAobtsFX_a4RDOpucYU_OAgfUK7Bpjvt3E7jrMwn3C4sx5h1jRZeRfju45cTL4hch1aoA6RHgeNcs-9UNPubyMkXlh3jumOqOtPZMa"
-				};
-
-				admin.messaging().send(message).catch(err => console.log(err))
-				// for (const doc of docs) {
-				// 	const message = {
-				// 		notification: {
-				// 			title: 'DEADLINE APPROACHING',
-				// 			body: 'Less than 60 minutes until the deadline, make your transfers soon'
-				// 		},
-				// 		token: doc.id
-				// 	};
-
-				// 	admin.messaging().send(message).catch((err) => console.log(err));
-				// 	console.log(doc.id);
-				// }
+					}
+				
+					const payload: admin.messaging.Message = {
+						notification,
+						webpush: {
+							notification: {
+								vibrate: [200, 100, 200],
+								icon: "notification_icon"
+							}
+						},
+						android: {
+							notification: {
+								icon: "notification_icon",
+								color: "#BF4035"
+							}
+						},
+						token: doc.id
+					}
+				
+					admin.messaging().send(payload).catch(err => console.log(err));
+				}
 			})
 			.catch((err) => console.log(err));
 	}
-	// ref.child('deadline').set({
-	// 	deadline: new Date().getTime()
-	// });
+
 	return null;
 }
 
@@ -115,36 +106,12 @@ function isPastDeadline(time: any) {
 }
 
 function lessThanSixtyMinutesToDeadline(time: any) {
+	//creating new date object with time of next deadline
 	const sixtyMinutesBeforeDeadline = new Date(time.val());
+
+	//setting date object to 60 mins before deadline is due to occur
 	sixtyMinutesBeforeDeadline.setHours(sixtyMinutesBeforeDeadline.getHours() - 1);
+
+	//checking if current time is after date object 
 	return new Date().getTime() >= sixtyMinutesBeforeDeadline.getTime();
 }
-
-
-exports.test = functions.https.onRequest((req, res) => {
-    const notification : admin.messaging.Notification = {
-		title: 'Deadline Approaching',
-		body: 'Less than 60 minutes until the deadline, make your transfers soon',
-	}
-
-	const payload: admin.messaging.Message = {
-		notification,
-		webpush: {
-			notification: {
-				vibrate: [200, 100, 200],
-				icon: "notification_icon"
-			}
-		},
-		android: {
-			notification: {
-				icon: "notification_icon",
-				color: "#BF4035"
-			}
-		},
-		token: "fBhmbkPLgN0:APA91bH3JGGHCWYFLeF25pFGHg2gvcGpeK6C-6MAobtsFX_a4RDOpucYU_OAgfUK7Bpjvt3E7jrMwn3C4sx5h1jRZeRfju45cTL4hch1aoA6RHgeNcs-9UNPubyMkXlh3jumOqOtPZMa"
-	}
-
-    admin.messaging().send(payload).catch(err => console.log(err));
-    res.send("complete")
-    return null
-});
