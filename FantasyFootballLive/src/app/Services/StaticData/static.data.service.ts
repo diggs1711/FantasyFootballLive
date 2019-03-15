@@ -28,9 +28,9 @@ export class StaticDataService {
 					return this.storage.get(this.storageKey);
 				}
 				//store user and delete unecessary stored data -> need to test first before implementing
-				// const user = await this.storage.get("user");
-				// this.storage.clear();
-				// this.storage.set("user", user)
+				const user = await this.storage.get("user");
+				await this.storage.clear();
+				await this.storage.set("user", user)
 				return this.httpRequestService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
 			})
 			.then((bootstrap) => {

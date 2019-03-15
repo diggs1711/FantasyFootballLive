@@ -26,6 +26,11 @@ export class NewsPage implements OnInit {
 		});
 	}
 
+	refresh(event) {
+		this.getLatestPosts()
+		event.target.complete();
+	}
+
 	openNewsStory(url: string) {
 		window.open(url);
 	}
