@@ -13,6 +13,7 @@ export default class FantasyPlayer {
 	activeChip: string;
 	country: string;
 	bank: number;
+	value: number;
 	overallRank: number = 0;
 	gameweekRank: number = 0;
 

@@ -67,21 +67,21 @@ export class FantasyPlayerService {
 			this.getPlayerGameweekHistory(id, this.currentGameweek).catch(() => undefined)
 		]);
 
-		const leagues = gameweekHistory.leagues.classic;
-		const activeChip = gameweekData.active_chip;
-		const firstName = gameweekHistory.entry.player_first_name;
-		const lastName = gameweekHistory.entry.player_last_name;
-		const country = this.createCountryPhotoUrl(gameweekHistory.entry.player_region_short_iso);
-		const teamName = gameweekHistory.entry.name;
-		const currentGameweek_1 = gameweekHistory.entry.current_event;
-		const lastWeekOverallPoints = gameweekHistory.history.find((hist) => hist.event == this.currentGameweek - 1)
-			.total_points;
-		const picks = gameweekData.picks;
-		const team = new Team(id, teamName, currentGameweek_1, [], lastWeekOverallPoints);
-		const gameweekTransfers = gameweekData.entry_history.event_transfers;
-		const gameweekTransfersCost = gameweekData.entry_history.event_transfers_cost;
-		const overallRank = gameweekHistory.history.pop().overall_rank;
-		const fantasyPlayer = new FantasyPlayer(
+		const leagues = gameweekHistory.leagues.classic,
+			activeChip = gameweekData.active_chip,
+			firstName = gameweekHistory.entry.player_first_name,
+			lastName = gameweekHistory.entry.player_last_name,
+			country = this.createCountryPhotoUrl(gameweekHistory.entry.player_region_short_iso),
+			teamName = gameweekHistory.entry.name,
+			currentGameweek_1 = gameweekHistory.entry.current_event,
+			lastWeekOverallPoints = gameweekHistory.history.find((gameweek) => gameweek.event == this.currentGameweek - 1).total_points,
+			picks = gameweekData.picks,
+			team = new Team(id, teamName, currentGameweek_1, [], lastWeekOverallPoints),
+			gameweekTransfers = gameweekData.entry_history.event_transfers,
+			gameweekTransfersCost = gameweekData.entry_history.event_transfers_cost,
+			overallRank = gameweekHistory.history.pop().overall_rank,
+
+			fantasyPlayer = new FantasyPlayer(
 			id,
 			leagues,
 			`${firstName} ${lastName}`,
@@ -90,6 +90,8 @@ export class FantasyPlayerService {
 			overallRank,
 			gameweekTransfers
 		);
+		fantasyPlayer.value = gameweekData.entry_history.value
+		fantasyPlayer.bank = gameweekData.entry_history.bank
 		fantasyPlayer.activeChip = activeChip;
 		//create team of players
 		for (const pick of picks) {
@@ -123,6 +125,10 @@ export class FantasyPlayerService {
 		return fantasyPlayer;
 	}
 
+	getLivePoints(id) {
+		return this.liveData['elements'][id]['stats']['total_points'];
+	}
+
 	addPlayersToPositions(pick, fantasyPlayer, newPlayer, position) {
 		//addd starters to positions array to display on team page
 		if (pick.position < 12) {
@@ -132,13 +138,37 @@ export class FantasyPlayerService {
 		}
 	}
 
+	async getLiveOverallPoints(id) {
+		const currentGameweek = await this.staticDataService.getCurrentGameweek(),
+			lastWeekPoints = await this.getLastWeekPoints(id, currentGameweek),
+			liveTeamPoints  = await this.getLiveTeamPoints(id, currentGameweek)
+		return lastWeekPoints + liveTeamPoints
+	}
+
+	async getLastWeekPoints(id: number, currentGameweek) {
+		const data = await this.getPlayerGameweekHistory(id, currentGameweek).catch(() => undefined)
+		const lastWeekData = data.history.find((week) => week.event == currentGameweek - 1)
+		return lastWeekData.total_points;
+	}
+
+	async getLiveTeamPoints(id: number, gameweek){
+		const gameweekData = await this.getCurrentGameweekData(id, gameweek).catch(() => undefined)
+		return await this.calculateTotalTeamPoints(gameweekData.picks, gameweekData.active_chip, gameweek);
+	}
+
+	async calculateTotalTeamPoints(picks, chip, gameweek) {
+		let liveData = await  this.getLiveData(gameweek),
+		result = 0
+		for(let pick of picks) {
+			if(chip == "bboost" || pick.position < 12) result += liveData['elements'][pick.element]['stats']['total_points'] * pick.multiplier
+		}
+		return result;
+	}
+
 	getElementType(typeId) {
 		return this.staticDataService.data.element_types.find((type) => type.id == typeId).singular_name;
 	}
 
-	getLivePoints(id) {
-		return this.liveData['elements'][id]['stats']['total_points'];
-	}
 	async getLiveData(gameweek: number) {
 		return await this.liveDataService.getLiveData(gameweek);
 	}

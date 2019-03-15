@@ -27,6 +27,13 @@ export class MainUserService {
 			this.user = user;
 			if (this.user) this.updateDeviceToken(this.user.id);
 			return user;
+		}).then(async (user : FantasyPlayer) => {
+			if(user) {
+				const history = await this.getLatestHistory(user.id)
+				user.overallRank = history.overall_rank
+				user.team.overallPoints = await this.fantasyPlayerService.getLiveOverallPoints(user.id)
+			}
+			return user;
 		});
 	}
 
@@ -48,5 +55,13 @@ export class MainUserService {
 	async updateUser(id: number) {
 		//just re create user to get live data
 		return await this.createUser(id);
+	}
+
+	async getLatestHistory(id: number) {
+		return await this.liveDataService.getLastestHistory(id)
+	}
+
+	getLivePoints() {
+		
 	}
 }

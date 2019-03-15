@@ -47,7 +47,7 @@ export class AppComponent {
 			this.statusBar.overlaysWebView(false);
 			this.statusBar.show();
 			this.splashScreen.hide();
-			//this.notificationSetup();
+			this.notificationSetup();
 		});
 	}
 }

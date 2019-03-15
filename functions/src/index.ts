@@ -72,7 +72,7 @@ function getNextDeadline() {
 				for (const doc of docs) {
 					const notification : admin.messaging.Notification = {
 						title: 'Deadline Approaching',
-						body: 'Less than 60 minutes until the deadline, make your transfers soon',
+						body: 'Less than 60 minutes until the deadline, make your transfers soon!',
 					}
 				
 					const payload: admin.messaging.Message = {
@@ -115,3 +115,31 @@ function lessThanSixtyMinutesToDeadline(time: any) {
 	//checking if current time is after date object 
 	return new Date().getTime() >= sixtyMinutesBeforeDeadline.getTime();
 }
+
+// exports.test = functions.https.onRequest((req, res) => {
+//     const notification : admin.messaging.Notification = {
+// 		title: 'Deadline Approaching',
+// 		body: 'Less than 60 minutes until the deadline, make your transfers soon!',
+// 	}
+
+// 	const payload: admin.messaging.Message = {
+// 		notification,
+// 		webpush: {
+// 			notification: {
+// 				vibrate: [200, 100, 200],
+// 				icon: "notification_icon"
+// 			}
+// 		},
+// 		android: {
+// 			notification: {
+// 				icon: "notification_icon",
+// 				color: "#BF4035"
+// 			}
+// 		},
+// 		token: "f-IiztywR5A:APA91bFcd0ldmwIjFIVaL7yXcsLMoKAjsOxPB3Ex9fTLjzwQ0JPh_Kr-8H9qmFE5LLhQ1740KtaIiIcgny8XGYUZZROuZ35UVKOf565-dU-z1xAG8lu7QVBAWdr4BTYaGTPD5NFI4sKu"
+// 	}
+
+//     admin.messaging().send(payload).catch(err => console.log(err));
+//     res.send("complete")
+//     return null
+// });

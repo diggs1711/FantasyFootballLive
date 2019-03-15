@@ -18,6 +18,7 @@ export class HttpRequestService {
 	private parseJsonData(data) {
 		if (data.url == 'https://fantasy.premierleague.com/updating/') {
 			this.router.navigateByUrl("/updating")
+			return null;
 		}
 
 		if (this.device.cordova) {
