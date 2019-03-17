@@ -18,7 +18,7 @@
 [<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot_01.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot_01.png)
 
 ## Description
-Fantasy Football Live uses the Offical FPL API (Links can be found [here](https://github.com/pkgrem/OddsOnFPL)) to get the latest team data and scores. All that is needed is your team's FPL ID, which can be found in the URL when in the points tab of your team. 
+Fantasy Football Live uses the Offical FPL API (Links can be found [here](https://github.com/pkgrem/OddsOnFPL)) to get the latest team data and scores. All that is needed is your team's FPL ID, which can be found in the URL when in the points tab of your team on the Offical Fantasy Premier League site.
 
 ### Features
 * Live Leagues
