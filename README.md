@@ -30,12 +30,12 @@ If you have any ideas, suggestions, design changes, code refactoring or big code
 If you'd like to get involved, check our [contribution notes](.github/CONTRIBUTING.md).
 
 ## Donate
-If you like using FFL a donation is always appreciated. So if you want to buy me a coffee :coffee: or beer :beer: please use one the links below :heart:
+If you like using FFL a donation is always appreciated. So if you want to buy me a coffee :coffee: or beer :beer: please use one of the links below :heart:
 
 <table>
   <tr>
     <td><img src="https://bitcoin.org/img/icons/logotop.svg" alt="Bitcoin"></td>
-    <td><img src="assets/bitcoin_qr_code.png" alt="Bitcoin QR code" width="100px"></td>
+    <td><img src="assets/bitcoin_wallet_qr_code.png" alt="Bitcoin QR code" width="100px"></td>
     <td><samp>bc1qsqac863n0yc4mc0c8zk0mxwx3qymhc0pxjp9wm</samp></td>
   </tr>
   <tr>
