@@ -35,7 +35,7 @@ If you like using FFL a donation is always appreciated. So if you want to buy me
 <table>
   <tr>
     <td><img src="https://bitcoin.org/img/icons/logotop.svg" alt="Bitcoin"></td>
-    <td><img src="assets/bitcoin_qr_code.png" alt="Bitcoin QR code" width="100px"></td>
+    <td><img src="assets/bitcoin_wallet_qr_code.png" alt="Bitcoin QR code" width="100px"></td>
     <td><samp>bc1qsqac863n0yc4mc0c8zk0mxwx3qymhc0pxjp9wm</samp></td>
   </tr>
   <tr>
