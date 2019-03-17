@@ -1,4 +1,4 @@
-<p align="center"><a href="https://newpipe.schabi.org"><img src="assets/new_pipe_icon_5.png" width="150"></a></p> 
+<p align="center"><a href="https://fflapp.com"><img src="assets/icon.png" width="150"></a></p> 
 <h2 align="center"><b>Fantasy Football Live</b></h2>
 <h4 align="center">An Ionic 4 hybrid application for use with the offical Fantasy Premier League Fantasy game.</h4>
 
