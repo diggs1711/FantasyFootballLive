@@ -30,7 +30,7 @@ If you have any ideas, suggestions, design changes, code refactoring or big code
 If you'd like to get involved, check our [contribution notes](.github/CONTRIBUTING.md).
 
 ## Donate
-If you like using FFL a donation is always appreciated. So if you want to buy me a coffee :coffee: or beer :beer: please use one the links below :heart:
+If you like using FFL a donation is always appreciated. So if you want to buy me a coffee :coffee: or beer :beer: please use one of the links below :heart:
 
 <table>
   <tr>
