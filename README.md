@@ -8,6 +8,12 @@
 </p>
 <hr>
 
+# App Store
+<a href="https://play.google.com/store/apps/details?id=com.bijoysingh.quicknote" target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80"/></a>
+
+<hr>
+
 <b>PUTTING FANTASY FOOTBALL LIVE OR ANY FORK OF IT INTO GOOGLE PLAYSTORE VIOLATES THEIR TERMS OF CONDITIONS.</b>
 
 ## Screenshots
