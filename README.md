@@ -11,13 +11,18 @@
 <b>PUTTING FANTASY FOOTBALL LIVE OR ANY FORK OF IT INTO GOOGLE PLAYSTORE VIOLATES THEIR TERMS OF CONDITIONS.</b>
 
 ## Screenshots
+[<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot_01.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot_01.png)
 
 ## Description
+Fantasy Football Live uses the Offical FPL API (Links can be found [https://github.com/pkgrem/OddsOnFPL](here)) to get the latest team data and scores. All that is needed is your team's FPL ID, which can be found in the URL when in the points tab of your team. 
 
 ### Features
-
 * Live Leagues
-* 
+* Live Team Viewer
+* Gameweek Transfers made
+* Player Fixture Difficulty
+* Fixture Difficulty Ranking with a variable gameweek selector
+* Latest news articles
 
 ## Contribution
 If you have any ideas, suggestions, design changes, code refactoring or big code changes, help is always appreciated!
