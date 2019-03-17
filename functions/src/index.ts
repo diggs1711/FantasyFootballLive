@@ -92,7 +92,7 @@ function getNextDeadline() {
 						token: doc.id
 					}
 				
-					admin.messaging().send(payload).catch(err => console.log(err));
+					admin.messaging().send(payload).catch(err => console.log(err, doc, doc.id));
 				}
 			})
 			.catch((err) => console.log(err));
