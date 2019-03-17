@@ -6,7 +6,6 @@
 <a href="https://github.com/diggs171/FantasyFootballMobileApp" alt="GitHub release"><img src="https://img.shields.io/github/release/FantasyFootballMobileApp/FantasyFootballMobileApp.svg" ></a>
 <a href="https://www.gnu.org/licenses/gpl-3.0" alt="License: GPLv3"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg"></a>
 </p>
-<hr>
 
 ## App Store
   <a href="https://play.google.com/store/apps/details?id=com.fantasy.live" target="_blank">
