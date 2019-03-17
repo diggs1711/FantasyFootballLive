@@ -45,6 +45,7 @@ If you like using FFL a donation is always appreciated. So if you want to buy me
   </tr>
   <tr>
     <td><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" width="80px" ></td>
+    <td>[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/Higgins29?locale.x=en_US)</td>
   </tr>
 </table>
 
