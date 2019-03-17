@@ -1,11 +1,15 @@
-<p align="center"><a href="https://newpipe.schabi.org"><img src="assets/new_pipe_icon_5.png" width="150"></a></p> 
+<p align="center"><a href="https://fflapp.com"><img src="assets/icon.png" width="150"></a></p> 
 <h2 align="center"><b>Fantasy Football Live</b></h2>
 <h4 align="center">An Ionic 4 hybrid application for use with the offical Fantasy Premier League Fantasy game.</h4>
 
 <p align="center">
-<a href="https://github.com/TeamNewPipe/NewPipe" alt="GitHub release"><img src="https://img.shields.io/github/release/TeamNewPipe/NewPipe.svg" ></a>
 <a href="https://www.gnu.org/licenses/gpl-3.0" alt="License: GPLv3"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg"></a>
 </p>
+
+## App Store
+  <a href="https://play.google.com/store/apps/details?id=com.fantasy.live" target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="50"/></a>
+
 <hr>
 
 <b>PUTTING FANTASY FOOTBALL LIVE OR ANY FORK OF IT INTO GOOGLE PLAYSTORE VIOLATES THEIR TERMS OF CONDITIONS.</b>
@@ -40,6 +44,7 @@ If you like using FFL a donation is always appreciated. So if you want to buy me
   </tr>
   <tr>
     <td><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" width="80px" ></td>
+    <td><a href="https://paypal.me/Higgins29/5" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" height="50"></a></td>
   </tr>
 </table>
 
