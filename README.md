@@ -36,12 +36,10 @@ If you like using FFL a donation is always appreciated. So if you want to buy me
   <tr>
     <td><img src="https://bitcoin.org/img/icons/logotop.svg" alt="Bitcoin"></td>
     <td><img src="assets/bitcoin_qr_code.png" alt="Bitcoin QR code" width="100px"></td>
-    <td><samp></samp></td>
+    <td><samp>bc1qsqac863n0yc4mc0c8zk0mxwx3qymhc0pxjp9wm</samp></td>
   </tr>
   <tr>
-    <td><a href="https://liberapay.com/TeamNewPipe/"><img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Liberapay_logo_v2_white-on-yellow.svg" alt="Liberapay" width="80px" ></a></td>
-    <td><a href="https://liberapay.com/TeamNewPipe/"><img src="assets/liberapay_qr_code.png" alt="Visit NewPipe at liberapay.com" width="100px"></a></td>
-    <td><a href="https://liberapay.com/TeamNewPipe/donate"><img src="assets/liberapay_donate_button.svg" alt="Donate via Liberapay" height="35px"></a></td>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" width="80px" ></td>
   </tr>
 </table>
 
