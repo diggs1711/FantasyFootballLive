@@ -12,8 +12,6 @@
 
 <hr>
 
-<b>PUTTING FANTASY FOOTBALL LIVE OR ANY FORK OF IT INTO GOOGLE PLAYSTORE VIOLATES THEIR TERMS OF CONDITIONS.</b>
-
 ## Screenshots
 [<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/shot_01.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot_01.png)
 
