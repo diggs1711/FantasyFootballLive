@@ -1,6 +1,6 @@
 <p align="center"><a href="https://fflapp.com"><img src="assets/icon.png" width="150"></a></p> 
 <h2 align="center"><b>Fantasy Football Live</b></h2>
-<h4 align="center">An Ionic 4 hybrid application for use with the offical Fantasy Premier League Fantasy game.</h4>
+<h4 align="center">An Ionic 4 hybrid application for use with the offical Fantasy Premier League game.</h4>
 
 <p align="center">
 <a href="https://www.gnu.org/licenses/gpl-3.0" alt="License: GPLv3"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg"></a>
