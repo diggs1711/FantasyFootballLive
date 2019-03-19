@@ -13,7 +13,7 @@
 <img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="50"/></a>
 
 ## Screenshots
-[<img src="assets/screen1.png" width=160>](fastlane/metadata/android/en-US/images/phoneScreenshots/shot_01.png)
+[<img src="assets/screen1.png" width=160>](assets/screen1.png)
 
 ## Description
 Fantasy Football Live uses the Offical FPL API (Links can be found [here](https://github.com/pkgrem/OddsOnFPL)) to get the latest team data and scores. All that is needed is your team's FPL ID, which can be found in the URL when in the points tab of your team on the Offical Fantasy Premier League site.
