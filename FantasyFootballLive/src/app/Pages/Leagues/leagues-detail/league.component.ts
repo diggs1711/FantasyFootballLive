@@ -4,7 +4,7 @@ import { ModalController } from '@ionic/angular';
 import League from '../../../Models/League';
 import FantasyPlayer from '../../../Models/FantasyPlayer';
 import { PitchComponent } from '../../../Components/pitch/pitch.component';
-import { LeaguesService } from 'src/app/Services/Leagues/leagues.service';
+import { LeaguesService } from 'src/app/Services/leagues/leagues.service';
 import { TransferService } from 'src/app/Services/transfers/transfer.service';
 
 @Component({

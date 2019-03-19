@@ -19,8 +19,9 @@ export class TeamPage implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.fetchCurrentUser().then(() => (this.showSpinner = false));
-		this.refresh();
+		this.fetchCurrentUser()
+			.then(() => (this.showSpinner = false))
+			.then(() => this.refresh());
 	}
 
 	async fetchCurrentUser() {
