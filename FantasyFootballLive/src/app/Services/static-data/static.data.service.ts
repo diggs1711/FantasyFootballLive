@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpRequestService } from '../HttpRequestService/http-request.service';
+import { HttpRequestService } from '../http-request/http-request.service';
 import { Storage } from '@ionic/storage';
 
 @Injectable({
@@ -23,11 +23,11 @@ export class StaticDataService {
 			.get(this.updateKey)
 			.then(async (time) => {
 				//compare next deadline time to current date
-				//if before deadline you can get old data otherwise update
+				//if current time is before the deadline you can get old data otherwise fetch new data
 				if (time && Date.now() <= new Date(time).getTime()) {
 					return this.storage.get(this.storageKey);
 				}
-				//store user and delete unecessary stored data -> need to test first before implementing
+				//store user and delete unecessary stored data
 				const user = await this.storage.get("user");
 				await this.storage.clear();
 				await this.storage.set("user", user)

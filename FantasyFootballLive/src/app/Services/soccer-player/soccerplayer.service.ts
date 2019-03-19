@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
-import { HttpRequestService } from '../HttpRequestService/http-request.service';
+import { HttpRequestService } from '../http-request/http-request.service';
 import { Storage } from '@ionic/storage';
-import { StaticDataService } from '../StaticData/static.data.service';
+import { StaticDataService } from '../static-data/static.data.service';
 
 @Injectable({
 	providedIn: 'root'

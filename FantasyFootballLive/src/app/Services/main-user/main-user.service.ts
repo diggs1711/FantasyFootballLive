@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import { Storage } from '@ionic/storage';
-import { FantasyPlayerService } from '../FantasyPlayerService/fantasy-player.service';
-import { StaticDataService } from '../StaticData/static.data.service';
-import { LiveDataService } from '../LiveData/live.data.service';
+import { FantasyPlayerService } from '../fantasy-player/fantasy-player.service';
+import { StaticDataService } from '../static-data/static.data.service';
+import { LiveDataService } from '../live-data/live.data.service';
 import { FcmService } from '../Firebase/fcm.service';
 
 @Injectable({
@@ -29,9 +29,9 @@ export class MainUserService {
 			return user;
 		}).then(async (user : FantasyPlayer) => {
 			if(user) {
-				const history = await this.getLatestHistory(user.id)
-				user.overallRank = history.overall_rank
-				user.team.overallPoints = await this.fantasyPlayerService.getLiveOverallPoints(user.id)
+				// const history = await this.getLatestHistory(user.id)
+				// user.overallRank = history.overall_rank
+				// user.team.overallPoints = await this.fantasyPlayerService.getLiveOverallPoints(user.id)
 			}
 			return user;
 		});
@@ -39,7 +39,7 @@ export class MainUserService {
 
 	async createUser(id: number) {
 		const gameweek = await this.staticDataService.getCurrentGameweek();
-		const liveData = await this.liveDataService.getLiveData(gameweek);
+		const liveData = await this.liveDataService.fetchData(gameweek);
 
 		return await this.fantasyPlayerService.createPlayer(id, liveData).then((user) => {
 			this.user = user;
@@ -55,10 +55,6 @@ export class MainUserService {
 	async updateUser(id: number) {
 		//just re create user to get live data
 		return await this.createUser(id);
-	}
-
-	async getLatestHistory(id: number) {
-		return await this.liveDataService.getLastestHistory(id)
 	}
 
 	getLivePoints() {

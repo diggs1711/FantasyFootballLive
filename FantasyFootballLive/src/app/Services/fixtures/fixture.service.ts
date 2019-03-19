@@ -16,8 +16,7 @@ export class FixtureService {
 
 	createFixtureList(fixtures, teams) {
 		return fixtures.map((fixture) => {
-			const homeTeam = this.getTeamName(teams, fixture.team_h);
-			const awayTeam = this.getTeamName(teams, fixture.team_a);
+			const [homeTeam, awayTeam] = [this.getTeamName(teams, fixture.team_h), this.getTeamName(teams, fixture.team_a)]
 
 			return {
 				home_team: homeTeam,

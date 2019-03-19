@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavParams } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
-import League from '../../Models/League';
-import FantasyPlayer from '../../Models/FantasyPlayer';
-import { PitchComponent } from '../../Components/ui/pitch/pitch.component';
-import { LeaguesService } from 'src/app/Services/LeaguesService/leagues.service';
-import { TransferService } from 'src/app/Services/transfer.service';
+import League from '../../../Models/League';
+import FantasyPlayer from '../../../Models/FantasyPlayer';
+import { PitchComponent } from '../../../Components/pitch/pitch.component';
+import { LeaguesService } from 'src/app/Services/Leagues/leagues.service';
+import { TransferService } from 'src/app/Services/transfers/transfer.service';
 
 @Component({
 	selector: 'app-league',

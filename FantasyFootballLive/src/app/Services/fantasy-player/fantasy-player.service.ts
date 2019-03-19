@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { StaticDataService } from '../StaticData/static.data.service';
+import { StaticDataService } from '../static-data/static.data.service';
 import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import Team from 'src/app/Models/Team';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
-import { LiveDataService } from '../LiveData/live.data.service';
-import { HttpRequestService } from '../HttpRequestService/http-request.service';
-import { SoccerPlayerService } from '../SoccerPlayerService/soccerplayer.service';
+import { LiveDataService } from '../live-data/live.data.service';
+import { HttpRequestService } from '../http-request/http-request.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -170,7 +169,7 @@ export class FantasyPlayerService {
 	}
 
 	async getLiveData(gameweek: number) {
-		return await this.liveDataService.getLiveData(gameweek);
+		return await this.liveDataService.fetchData(gameweek);
 	}
 
 	createCountryPhotoUrl(code) {

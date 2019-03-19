@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import FantasyPlayer from '../../Models/FantasyPlayer';
-import { SoccerPlayerService } from 'src/app/Services/SoccerPlayerService/soccerplayer.service';
+import { SoccerPlayerService } from 'src/app/Services/soccer-player/soccerplayer.service';
 import { MainUserService } from 'src/app/Services/main-user/main-user.service';
 
 @Component({

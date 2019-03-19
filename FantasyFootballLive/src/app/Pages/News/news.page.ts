@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RedditService } from 'src/app/Services/RedditDataService/reddit.service';
+import { RedditService } from 'src/app/Services/reddit-data/reddit.service';
 
 @Component({
 	selector: 'app-news',

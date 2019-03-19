@@ -12,16 +12,8 @@ const routes: Routes = [
 			{ path: 'news', loadChildren: '../Pages/News/news.module#NewsPageModule', canActivate: [ LoginGuard ] },
 			{ path: 'home', loadChildren: '../Pages/Home/home.module#HomePageModule' },
 			{ path: 'team', loadChildren: '../Pages/Team/team.module#TeamPageModule', canActivate: [ LoginGuard ] },
-			{
-				path: 'settings',
-				loadChildren: '../Pages/Settings/settings.module#SettingsPageModule',
-				canActivate: [ LoginGuard ]
-			},
-			{
-				path: 'leagues',
-				loadChildren: '../Pages/Leagues/leagues.module#LeaguesPageModule',
-				canActivate: [ LoginGuard ]
-			},
+			{ path: 'settings',loadChildren: '../Pages/Settings/settings.module#SettingsPageModule', canActivate: [ LoginGuard ] },
+			{ path: 'leagues', loadChildren: '../Pages/Leagues/leagues-list/leagues.module#LeaguesPageModule', canActivate: [ LoginGuard ] },
 			{ path: 'stats', loadChildren: '../Pages/Stats/stats.module#StatsPageModule', canActivate: [ LoginGuard ] }
 		]
 	},

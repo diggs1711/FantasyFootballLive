@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpRequestService } from 'src/app/Services/HttpRequestService/http-request.service';
-import { StaticDataService } from 'src/app/Services/StaticData/static.data.service';
-import { template } from '@angular/core/src/render3';
+import { HttpRequestService } from 'src/app/Services/http-request/http-request.service';
+import { StaticDataService } from 'src/app/Services/static-data/static.data.service';
 
 @Component({
 	selector: 'app-stats',

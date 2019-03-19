@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import League from 'src/app/Models/League';
-import { HttpRequestService } from '../HttpRequestService/http-request.service';
-import FantasyPlayer from 'src/app/Models/FantasyPlayer';
-import Team from 'src/app/Models/Team';
-import { FantasyPlayerService } from '../FantasyPlayerService/fantasy-player.service';
-import { StaticDataService } from '../StaticData/static.data.service';
-import { LiveDataService } from '../LiveData/live.data.service';
+import { HttpRequestService } from '../http-request/http-request.service';
+import { FantasyPlayerService } from '../fantasy-player/fantasy-player.service';
+import { StaticDataService } from '../static-data/static.data.service';
+import { LiveDataService } from '../live-data/live.data.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -24,7 +22,7 @@ export class LeaguesService {
 		);
 
 		const currentGameweek = await this.staticDataService.getCurrentGameweek();
-		const liveData = await this.LiveDataService.getLiveData(currentGameweek);
+		const liveData = await this.LiveDataService.fetchData(currentGameweek);
 
 		return Promise.all(
 			leagueData.standings.results.map((player: any) =>

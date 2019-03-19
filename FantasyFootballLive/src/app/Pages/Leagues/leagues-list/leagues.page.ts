@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { MainUserService } from 'src/app/Services/main-user/main-user.service';
-import { LeaguesService } from 'src/app/Services/LeaguesService/leagues.service';
-import { LeagueComponent } from 'src/app/Components/league/league.component';
+import { LeagueComponent } from 'src/app/Pages/Leagues/leagues-detail/league.component';
 
 @Component({
 	selector: 'app-leagues',

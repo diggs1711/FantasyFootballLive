@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { StaticDataService } from './StaticData/static.data.service';
-import { HttpRequestService } from './HttpRequestService/http-request.service';
-import { SoccerPlayerService } from './SoccerPlayerService/soccerplayer.service';
+import { StaticDataService } from '../static-data/static.data.service';
+import { HttpRequestService } from '../http-request/http-request.service';
+import { SoccerPlayerService } from '../soccer-player/soccerplayer.service';
 import { Storage } from '@ionic/storage';
 
 @Injectable({
