@@ -34,7 +34,6 @@ export class FcmService {
 			fplId: id
 		};
 
-		console.log('svaing token');
 		return devicesRef.doc(this.token).set(data);
 	}
 

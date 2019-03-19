@@ -21,15 +21,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { Firebase } from '@ionic-native/firebase/ngx';
-
-var config = {
-	apiKey: 'AIzaSyDjd6XqSB35R06kIrZp1CVzwnV6zroI9jQ',
-	authDomain: 'fantasy-football-live.firebaseapp.com',
-	databaseURL: 'https://fantasy-football-live.firebaseio.com',
-	projectId: 'fantasy-football-live',
-	storageBucket: 'fantasy-football-live.appspot.com',
-	messagingSenderId: '276208393080'
-};
+import config from 'src/firebase.config';
 
 @NgModule({
 	declarations: [ AppComponent ],
