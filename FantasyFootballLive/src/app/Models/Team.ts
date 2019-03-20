@@ -31,7 +31,7 @@ export default class Team {
 	}
 
 	static composePhotoUrl(photo) {
-		return '/assets/player_images/' + 'p' + photo.replace(/jpg/gi, 'png');
+		return '/assets/player_images/' + 'p' + photo.replace(/jpg/gi, 'webp');
 	}
 
 	updateTeamPoints() {

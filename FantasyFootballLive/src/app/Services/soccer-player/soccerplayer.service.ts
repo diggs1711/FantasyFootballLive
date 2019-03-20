@@ -25,7 +25,7 @@ export class SoccerPlayerService {
 
 	async getPlayerPhoto(id: number) {
 		return this.getPlayerDetails(id).then(
-			(player) => '/assets/player_images/' + 'p' + player.photo.replace(/jpg/gi, 'png')
+			(player) => '/assets/player_images/' + 'p' + player.photo.replace(/jpg/gi, 'webp')
 		);
 	}
 
