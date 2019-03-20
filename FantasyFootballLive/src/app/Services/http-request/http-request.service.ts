@@ -1,7 +1,7 @@
+import { Device } from '@ionic-native/device/ngx';
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
-import { Device } from '@ionic-native/device/ngx';
 import { Router } from '@angular/router';
 
 @Injectable({

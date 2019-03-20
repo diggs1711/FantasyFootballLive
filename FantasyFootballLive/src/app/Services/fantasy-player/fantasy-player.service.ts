@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { StaticDataService } from '../static-data/static.data.service';
+
 import FantasyPlayer from 'src/app/Models/FantasyPlayer';
-import Team from 'src/app/Models/Team';
-import SoccerPlayer from 'src/app/Models/SoccerPlayer';
-import { LiveDataService } from '../live-data/live.data.service';
 import { HttpRequestService } from '../http-request/http-request.service';
+import { LiveDataService } from '../live-data/live.data.service';
+import SoccerPlayer from 'src/app/Models/SoccerPlayer';
+import { StaticDataService } from '../static-data/static.data.service';
+import Team from 'src/app/Models/Team';
 
 @Injectable({
 	providedIn: 'root'

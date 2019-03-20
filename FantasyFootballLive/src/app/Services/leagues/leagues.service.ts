@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import League from 'src/app/Models/League';
-import { HttpRequestService } from '../http-request/http-request.service';
+
 import { FantasyPlayerService } from '../fantasy-player/fantasy-player.service';
-import { StaticDataService } from '../static-data/static.data.service';
+import { HttpRequestService } from '../http-request/http-request.service';
+import League from 'src/app/Models/League';
 import { LiveDataService } from '../live-data/live.data.service';
+import { StaticDataService } from '../static-data/static.data.service';
 
 @Injectable({
 	providedIn: 'root'

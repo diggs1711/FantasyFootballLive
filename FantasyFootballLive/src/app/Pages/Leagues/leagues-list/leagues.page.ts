@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { MainUserService } from 'src/app/Services/main-user/main-user.service';
+
 import { LeagueComponent } from 'src/app/Pages/Leagues/leagues-detail/league.component';
+import { MainUserService } from 'src/app/Services/main-user/main-user.service';
 
 @Component({
 	selector: 'app-leagues',
@@ -15,6 +16,10 @@ export class LeaguesPage implements OnInit {
 		this.mainUserService.loadSavedUser();
 	}
 
+	/**
+	 * @param leagueId id of league
+	 * @description creates a modal view of the league selected by the user
+	 */
 	async openLeague(leagueId: number) {
 		if (!leagueId) return;
 

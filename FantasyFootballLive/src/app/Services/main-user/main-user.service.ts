@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import { Storage } from '@ionic/storage';
+
 import { FantasyPlayerService } from '../fantasy-player/fantasy-player.service';
-import { StaticDataService } from '../static-data/static.data.service';
-import { LiveDataService } from '../live-data/live.data.service';
 import { FcmService } from '../Firebase/fcm.service';
+import { LiveDataService } from '../live-data/live.data.service';
+import { StaticDataService } from '../static-data/static.data.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -23,18 +24,7 @@ export class MainUserService {
 	) {}
 
 	async loadSavedUser() {
-		return await this.storage.get(this.userKey).then((user) => {
-			this.user = user;
-			if (this.user) this.updateDeviceToken(this.user.id);
-			return user;
-		}).then(async (user : FantasyPlayer) => {
-			if(user) {
-				// const history = await this.getLatestHistory(user.id)
-				// user.overallRank = history.overall_rank
-				// user.team.overallPoints = await this.fantasyPlayerService.getLiveOverallPoints(user.id)
-			}
-			return user;
-		});
+		return await this.storage.get(this.userKey);
 	}
 
 	async createUser(id: number) {

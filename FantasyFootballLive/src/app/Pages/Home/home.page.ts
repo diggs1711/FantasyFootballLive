@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { FixtureService } from 'src/app/Services/fixtures/fixture.service';
 import { MainUserService } from 'src/app/Services/main-user/main-user.service';
 import { StaticDataService } from 'src/app/Services/static-data/static.data.service';
-import { FixtureService } from 'src/app/Services/fixtures/fixture.service';
 
 @Component({
 	selector: 'app-home',

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpRequestService } from '../http-request/http-request.service';
 import { Storage } from '@ionic/storage';
+
+import { HttpRequestService } from '../http-request/http-request.service';
 
 @Injectable({
 	providedIn: 'root'

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { RedditService } from 'src/app/Services/reddit-data/reddit.service';
 
 @Component({
@@ -19,6 +20,9 @@ export class NewsPage implements OnInit {
 		this.getLatestPosts();
 	}
 
+	/**
+	 * @description fetches the latest posts from reddit
+	 */
 	getLatestPosts() {
 		this.redditService.getLatestLinkPosts().then((posts) => {
 			this.latestPosts = posts;
@@ -31,6 +35,10 @@ export class NewsPage implements OnInit {
 		event.target.complete();
 	}
 
+	/**
+	 * @description opens the link selected by the user
+	 * @param url url of link to be opened
+	 */
 	openNewsStory(url: string) {
 		window.open(url);
 	}

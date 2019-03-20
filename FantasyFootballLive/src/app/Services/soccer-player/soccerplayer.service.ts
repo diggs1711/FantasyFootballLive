@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import SoccerPlayer from 'src/app/Models/SoccerPlayer';
-import { HttpRequestService } from '../http-request/http-request.service';
 import { Storage } from '@ionic/storage';
+
+import { HttpRequestService } from '../http-request/http-request.service';
+import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 import { StaticDataService } from '../static-data/static.data.service';
 
 @Injectable({
@@ -30,8 +31,9 @@ export class SoccerPlayerService {
 	}
 
 	getPlayerDetails(id: number) {
-		return this.staticDataService.getBootstrapData().then(({ elements: players }) => {
-			return players.find((player) => player.id === id);
+		return this.staticDataService.getBootstrapData()
+			.then(({ elements: players }) => {
+				return players.find((player) => player.id === id);
 		});
 	}
 
