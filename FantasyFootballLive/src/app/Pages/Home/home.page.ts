@@ -26,11 +26,13 @@ export class HomePage implements OnInit {
 			this.staticDataService.getTeams()
 		]).then(([ fixtures, teams ]) => {
 			this.upcomingFixtures = this.fixtureService.createFixtureList(fixtures, teams);
-			this.mainUserService.loadSavedUser().then(() => (this.showSpinner = false));
+			this.mainUserService
+				.loadSavedUser()
+					.then(() => (this.showSpinner = false));
 		});
 	}
 
-	onFantasyIdEntered(id) {
+	onFantasyIdEntered(id: number) {
 		this.mainUserService.createUser(id).then(() => (this.showSpinner = false));
 	}
 

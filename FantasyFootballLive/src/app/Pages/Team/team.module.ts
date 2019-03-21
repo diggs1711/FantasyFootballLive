@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { TeamPage } from './team.page';
 import { ComponentsModule } from '../../Components/components.module';
 import { PitchComponent } from 'src/app/Components/pitch/pitch.component';
+import { RowOfPlayersComponent } from 'src/app/Components/pitch/row-of-players/row-of-players.component';
 
 const routes: Routes = [
 	{
@@ -17,7 +18,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-	entryComponents: [ PitchComponent ],
 	imports: [ CommonModule, FormsModule, IonicModule, ComponentsModule, RouterModule.forChild(routes) ],
 	declarations: [ TeamPage ]
 })

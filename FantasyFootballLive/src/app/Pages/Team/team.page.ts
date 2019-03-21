@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
 
-import FantasyPlayer from '../../Models/FantasyPlayer';
 import { LiveDataService } from 'src/app/Services/live-data/live.data.service';
 import { MainUserService } from 'src/app/Services/main-user/main-user.service';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
@@ -13,10 +11,8 @@ import { SoccerPlayerService } from 'src/app/Services/soccer-player/soccerplayer
 	styleUrls: [ './team.page.scss' ]
 })
 export class TeamPage implements OnInit {
-	fantasyPlayer: FantasyPlayer;
 	showSpinner: boolean = true;
 	constructor(
-		private storage: Storage,
 		private soccerPlayerService: SoccerPlayerService,
 		private mainUserService: MainUserService,
 		private liveDataService: LiveDataService
@@ -24,7 +20,6 @@ export class TeamPage implements OnInit {
 
 	ngOnInit() {
 		this.mainUserService.loadSavedUser()
-			.then(user => this.fantasyPlayer = user)
 			.then(() => this.loadUpcomingFixtures())
 			.then(() => (this.showSpinner = false))
 			.then(() => this.refresh());
@@ -39,11 +34,11 @@ export class TeamPage implements OnInit {
 	}
 
 	loadUpcomingFixtures() {
-		this.loadFixtures(this.fantasyPlayer.team.Goalkeepers)
-		this.loadFixtures(this.fantasyPlayer.team.Defenders)
-		this.loadFixtures(this.fantasyPlayer.team.Midfielders)
-		this.loadFixtures(this.fantasyPlayer.team.Forwards)
-		this.loadFixtures(this.fantasyPlayer.team.Bench)
+		this.loadFixtures(this.mainUserService.user.team.Goalkeepers)
+		this.loadFixtures(this.mainUserService.user.team.Defenders)
+		this.loadFixtures(this.mainUserService.user.team.Midfielders)
+		this.loadFixtures(this.mainUserService.user.team.Forwards)
+		this.loadFixtures(this.mainUserService.user.team.Bench)
 	}
 
 	refreshUser(event: { target: { complete: () => void } }) {
@@ -51,6 +46,6 @@ export class TeamPage implements OnInit {
 	}
 
 	async refresh() {
-		this.liveDataService.refresh()
+		//this.liveDataService.refresh()
 	}
 }

@@ -24,7 +24,13 @@ export class MainUserService {
 	) {}
 
 	async loadSavedUser() {
-		return await this.storage.get(this.userKey);
+		this.user = await this.storage.get(this.userKey);
+		return
+	}
+
+	async getSavedUserId() {
+		let user = await this.storage.get(this.userKey)
+		return user.id
 	}
 
 	async createUser(id: number) {
@@ -32,7 +38,7 @@ export class MainUserService {
 		const liveData = await this.liveDataService.fetchData(gameweek);
 
 		return await this.fantasyPlayerService.createPlayer(id, liveData).then((user) => {
-			this.user = user;
+			this.user = user; 
 			this.storage.set(this.userKey, user);
 			this.updateDeviceToken(this.user.id);
 		});
