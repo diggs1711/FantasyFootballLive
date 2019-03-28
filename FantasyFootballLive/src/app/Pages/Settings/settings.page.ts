@@ -8,7 +8,7 @@ import { BonusPointService } from 'src/app/Services/bonus-point/bonus-point.serv
 	styleUrls: [ './settings.page.scss' ]
 })
 export class SettingsPage implements OnInit {
-	includeBonusPoints: boolean = false;
+	includeBonusPoints = false;
 	public form = [ { val: 'Include Bonus Points', isChecked: this.includeBonusPoints } ];
 	constructor(private bonusPointService: BonusPointService) {}
 

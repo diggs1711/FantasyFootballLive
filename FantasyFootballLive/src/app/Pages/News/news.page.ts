@@ -9,8 +9,8 @@ import { RedditService } from 'src/app/Services/reddit-data/reddit.service';
 })
 export class NewsPage implements OnInit {
 	latestPosts: any[];
-	title: string = 'NEWS';
-	showSpinner: boolean = true;
+	title = 'NEWS';
+	showSpinner = true;
 
 	constructor(private redditService: RedditService) {
 		this.latestPosts = [];
@@ -31,7 +31,7 @@ export class NewsPage implements OnInit {
 	}
 
 	refresh(event) {
-		this.getLatestPosts()
+		this.getLatestPosts();
 		event.target.complete();
 	}
 

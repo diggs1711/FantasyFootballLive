@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import { Storage } from '@ionic/storage';
-
+import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import { FantasyPlayerService } from '../fantasy-player/fantasy-player.service';
 import { FcmService } from '../Firebase/fcm.service';
 import { LiveDataService } from '../live-data/live.data.service';
 import { StaticDataService } from '../static-data/static.data.service';
 
+
 @Injectable({
 	providedIn: 'root'
 })
 export class MainUserService {
-	user: FantasyPlayer;
-	userLeaguesKey: string = 'user-leagues';
-	userKey: string = 'user';
+	public user: FantasyPlayer;
+	private userKey = 'user';
 
 	constructor(
 		private storage: Storage,
@@ -25,22 +24,27 @@ export class MainUserService {
 
 	async loadSavedUser() {
 		this.user = await this.storage.get(this.userKey);
-		return
+		return this.user;
 	}
 
 	async getSavedUserId() {
-		let user = await this.storage.get(this.userKey)
-		return user.id
+		const user = await this.storage.get(this.userKey);
+		return user.id;
 	}
 
-	async createUser(id: number) {
+	/**
+	 * @description creates the main user of the app
+	 * @param id fpl id of user
+	 */
+	async createUser(id: number): Promise<FantasyPlayer> {
 		const gameweek = await this.staticDataService.getCurrentGameweek();
-		const liveData = await this.liveDataService.fetchData(gameweek);
+		const liveData = await this.liveDataService.fetch(gameweek);
 
 		return await this.fantasyPlayerService.createPlayer(id, liveData).then((user) => {
-			this.user = user; 
+			this.user = user;
 			this.storage.set(this.userKey, user);
 			this.updateDeviceToken(this.user.id);
+			return user;
 		});
 	}
 
@@ -49,11 +53,11 @@ export class MainUserService {
 	}
 
 	async updateUser(id: number) {
-		//just re create user to get live data
+		// just re create user to get live data
 		return await this.createUser(id);
 	}
 
 	getLivePoints() {
-		
+
 	}
 }

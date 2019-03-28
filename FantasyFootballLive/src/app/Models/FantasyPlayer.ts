@@ -1,60 +1,43 @@
 import League from './League';
-import Team from './Team';
 import SoccerPlayer from './SoccerPlayer';
+import Team from './Team';
 
 export default class FantasyPlayer {
-	leagues: League[];
-	gameweekTransfersPlayers: SoccerPlayer[];
-	name: string;
-	team: Team;
-	id: number;
-	gameweekTransfers: number;
-	gameweekTransfersCost: number;
 	activeChip: string;
-	country: string;
 	bank: number;
-	value: number;
-	overallRank: number = 0;
-	gameweekRank: number = 0;
+	countryImage: string;
+	gameweekRank = 0;
+	gameweekTransfers: SoccerPlayer[];
+	gameweekTransfersCost: number;
+	id: number;
+	leagues: League[];
+	name: string;
+	overallRank = 0;
+	team: Team;
 
 	constructor(
+		activeChip = '',
+		bank = 0,
+		countryImage = '',
+		gameweekRank = -1,
+		gameweekTransfers = [],
+		gameweekTransfersCost = 0,
 		id = -1,
 		leagues = [],
 		name = '',
-		team = new Team(),
-		country = '',
-		overallRank: number,
-		transfers: number = 0
+		overallRank = -1,
+		team = new Team()
 	) {
+		this.activeChip = activeChip;
+		this.bank = bank;
+		this.countryImage = countryImage;
+		this.gameweekRank = gameweekRank;
+		this.gameweekTransfers = gameweekTransfers;
+		this.gameweekTransfersCost = gameweekTransfersCost;
+		this.id = id;
 		this.leagues = leagues;
 		this.name = name;
-		this.team = team;
-		this.id = id;
-		this.country = country;
 		this.overallRank = overallRank;
-		this.gameweekTransfers = transfers;
-	}
-
-	getLeagues() {
-		return this.leagues;
-	}
-
-	removeLeague(id) {
-		this.leagues = this.leagues.filter((league) => league.id != id);
-	}
-
-	addLeague(id, name) {
-		const newLeague = new League(id, name);
-		this.leagues.push(newLeague);
-	}
-
-	static createFantasyPlayersArray(array) {
-		const newArray = [];
-		for (const member of array) {
-			const newTeam = new Team(member.entry, member.entry_name);
-			const newPlayer = new FantasyPlayer(member.id, null, member.player_name, newTeam, '', 0);
-			newArray.push(newPlayer);
-		}
-		return newArray;
+		this.team = team;
 	}
 }

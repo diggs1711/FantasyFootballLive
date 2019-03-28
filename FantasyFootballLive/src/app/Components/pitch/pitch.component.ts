@@ -11,17 +11,16 @@ import { TransferService } from 'src/app/Services/transfers/transfer.service';
 })
 export class PitchComponent implements OnInit {
 	@Input() fantasyPlayer: FantasyPlayer;
+	@Input() showCloseButton: boolean = false;
 	gameweekTransfers: any[] = [];
 	showSpinner: boolean = true;
 
 	constructor(
-		public navParams: NavParams,
 		private modalController: ModalController,
 		private transferService: TransferService
 	) {}
 
 	ngOnInit() {
-		this.navParams.get('fantasyPlayer');
 		this.transferService.getGameweekTransfers(this.fantasyPlayer.team.id).then((transfers) => {
 			for (const transfer of transfers) {
 				this.gameweekTransfers.push(transfer);

@@ -1,46 +1,43 @@
-import Gameweek from './Gameweek';
 import SoccerPlayer from './SoccerPlayer';
 
 export default class Team {
 	id: number;
 	gameweekPoints: number;
-	gameweek: number;
 	overallPoints: number;
 	Goalkeepers: SoccerPlayer[];
 	Defenders: SoccerPlayer[];
 	Midfielders: SoccerPlayer[];
 	Forwards: SoccerPlayer[];
 	Bench: SoccerPlayer[];
-	players: SoccerPlayer[];
 	name: string;
 	captainId: number;
-	captain: string;
+	value: number;
+	bank = 0;
 
-	constructor(id = -1, name = '', gameweek = 0, players = [], overall = 0) {
+	constructor(
+		id = -1,
+		name = '',
+		overallPoints = 0,
+		Goalkeepers = [],
+		Defenders = [],
+		Midfielders = [],
+		Forwards = [],
+		Bench = [],
+		captainId = 0,
+		value = 0,
+		bank = 0,
+	) {
 		this.id = id;
 		this.name = name;
-		this.gameweek = gameweek;
-		this.overallPoints = overall;
-		this.players = players;
+		this.overallPoints = overallPoints;
 		this.gameweekPoints = 0;
-		this.Goalkeepers = [];
-		this.Defenders = [];
-		this.Midfielders = [];
-		this.Forwards = [];
-		this.Bench = [];
-	}
-
-	static composePhotoUrl(photo) {
-		return '/assets/player_images/' + 'p' + photo.replace(/jpg/gi, 'webp');
-	}
-
-	updateTeamPoints() {
-		this.gameweekPoints = 0;
-
-		for (const player of this.players) {
-			this.gameweekPoints += player.gameweek_points;
-		}
-
-		return this.gameweekPoints;
+		this.Goalkeepers = Goalkeepers;
+		this.Defenders = Defenders;
+		this.Midfielders = Midfielders;
+		this.Forwards = Forwards;
+		this.Bench = Bench;
+		this.captainId = captainId;
+		this.value = value;
+		this.bank = bank;
 	}
 }

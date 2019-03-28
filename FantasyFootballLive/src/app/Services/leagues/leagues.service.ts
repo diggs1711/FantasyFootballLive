@@ -14,23 +14,25 @@ export class LeaguesService {
 		private staticDataService: StaticDataService,
 		private httpRequestService: HttpRequestService,
 		private fantasyPlayerService: FantasyPlayerService,
-		private LiveDataService: LiveDataService
+		private liveDataService: LiveDataService
 	) {}
 
 	async getLeague(id: number): Promise<League> {
-		const leagueData = await this.httpRequestService.getData(
+		const leagueData = await this.httpRequestService.fetch(
 			`https://fantasy.premierleague.com/drf/leagues-classic-standings/${id}`
 		);
 
 		const currentGameweek = await this.staticDataService.getCurrentGameweek();
-		const liveData = await this.LiveDataService.fetchData(currentGameweek);
+		const liveData = await this.liveDataService.fetch(currentGameweek);
 
 		return Promise.all(
 			leagueData.standings.results.map((player: any) =>
-				this.fantasyPlayerService.createPlayer(player.entry, liveData).catch(() => undefined)
+				this.fantasyPlayerService
+					.createPlayer(player.entry, liveData)
+					.catch(() => undefined)
 			)
 		).then((members) => {
-			const newLeague = new League(leagueData.league.id, leagueData.league.name, 0, members);
+			const newLeague = new League(leagueData.league.id, leagueData.league.name, members);
 			return newLeague;
 		});
 	}

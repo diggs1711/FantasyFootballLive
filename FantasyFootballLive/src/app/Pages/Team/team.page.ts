@@ -11,7 +11,7 @@ import { SoccerPlayerService } from 'src/app/Services/soccer-player/soccerplayer
 	styleUrls: [ './team.page.scss' ]
 })
 export class TeamPage implements OnInit {
-	showSpinner: boolean = true;
+	showSpinner = true;
 	constructor(
 		private soccerPlayerService: SoccerPlayerService,
 		private mainUserService: MainUserService,
@@ -34,11 +34,11 @@ export class TeamPage implements OnInit {
 	}
 
 	loadUpcomingFixtures() {
-		this.loadFixtures(this.mainUserService.user.team.Goalkeepers)
-		this.loadFixtures(this.mainUserService.user.team.Defenders)
-		this.loadFixtures(this.mainUserService.user.team.Midfielders)
-		this.loadFixtures(this.mainUserService.user.team.Forwards)
-		this.loadFixtures(this.mainUserService.user.team.Bench)
+		this.loadFixtures(this.mainUserService.user.team.Goalkeepers);
+		this.loadFixtures(this.mainUserService.user.team.Defenders);
+		this.loadFixtures(this.mainUserService.user.team.Midfielders);
+		this.loadFixtures(this.mainUserService.user.team.Forwards);
+		this.loadFixtures(this.mainUserService.user.team.Bench);
 	}
 
 	refreshUser(event: { target: { complete: () => void } }) {
@@ -46,6 +46,6 @@ export class TeamPage implements OnInit {
 	}
 
 	async refresh() {
-		//this.liveDataService.refresh()
+		// this.liveDataService.refresh()
 	}
 }

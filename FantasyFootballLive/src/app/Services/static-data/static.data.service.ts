@@ -1,65 +1,70 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-
 import { HttpRequestService } from '../http-request/http-request.service';
+import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class StaticDataService {
-	data: any;
-	storageKey: string = 'bootstrap';
-	updateKey: string = 'update-bootstrap-time';
+	staticData: any;
+	storageKey = 'bootstrap';
+	updateDataTime = 'update-bootstrap-time';
 
 	constructor(private httpRequestService: HttpRequestService, private storage: Storage) {}
 
 	/**
 	 * @Returns returns a promise containing bootstrap data
 	 * @description returns current gameweek, soccer player data, prem team data, next gw fixtures
+	 * @param returnValue {string} key of the data you wish to extract, leaving empty wil return all the data
 	 */
 
-	async getBootstrapData() {
-		//store bootstrap data until time of next gameweek begins
-		return this.storage
-			.get(this.updateKey)
-			.then(async (time) => {
-				//compare next deadline time to current date
-				//if current time is before the deadline you can get old data otherwise fetch new data
-				if (time && Date.now() <= new Date(time).getTime()) {
-					return this.storage.get(this.storageKey);
-				}
-				//store user and delete unecessary stored data
-				const user = await this.storage.get("user");
-				await this.storage.clear();
-				await this.storage.set("user", user)
-				return this.httpRequestService.getData('https://fantasy.premierleague.com/drf/bootstrap-static');
-			})
-			.then((bootstrap) => {
-				//make request
-				this.data = bootstrap;
-				const nextDeadline = bootstrap.next_event_fixtures[0]
-					? bootstrap.next_event_fixtures[0].deadline_time
-					: null;
-				this.storage.set(this.updateKey, nextDeadline);
-				this.storage.set(this.storageKey, this.data);
-				return this.data;
-			});
+	private async fetch(returnValue: string = null) {
+		return this.storage.get(this.updateDataTime).then(async (time) => {
+			// compare next deadline time to current date
+			// if current time is before the deadline you can get old data otherwise fetch new data
+			let data = null;
 
-		//retrieve bootstrap data if it is stored
+			if (time && Date.now() <= new Date(time).getTime()) {
+				data = await this.storage.get(this.storageKey);
+			} else {
+				// store user and delete unecessary stored data
+				// const user = await this.storage.get('user');
+				// await this.storage.clear();
+				// await this.storage.set('user', user);
+				data = await this.httpRequestService.fetch(
+					'https://fantasy.premierleague.com/drf/bootstrap-static'
+				);
+			}
+			this.staticData = data;
+			const nextDeadline = data.next_event_fixtures[0]
+				? data.next_event_fixtures[0].deadline_time
+				: null;
+
+			this.storage.set(this.updateDataTime, nextDeadline);
+			this.storage.set(this.storageKey, this.staticData);
+			return returnValue != null ? data[returnValue] : data;
+		});
 	}
 
-	async getCurrentGameweek() {
-		this.data = await this.getBootstrapData();
-		return this.data['current-event'];
+	public async getCurrentGameweek(): Promise<number> {
+		return this.fetch('current-event');
 	}
 
-	async getUpcomingFixtures() {
-		this.data = await this.getBootstrapData();
-		return this.data['next_event_fixtures'];
+	public async getUpcomingFixtures(): Promise<any[]> {
+		return this.fetch('next_event_fixtures');
 	}
 
-	async getTeams() {
-		this.data = await this.getBootstrapData();
-		return this.data['teams'];
+	public async getTeams(): Promise<any[]> {
+		return this.fetch('teams');
+	}
+
+	public async getPlayers(): Promise<any[]> {
+		return this.fetch('elements');
+	}
+
+	public async getPositionLabel(positionId: number): Promise<string> {
+		const data = await this.fetch('element_types');
+		return data.find((type) => type.id === positionId).singular_name;
 	}
 }

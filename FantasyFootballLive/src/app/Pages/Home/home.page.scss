@@ -3,7 +3,7 @@ $yellow: rgba(240, 172, 46, 0.88);
 $shadow: .2em .2em .3em rgba(0, 0, 0, 0.2);
 $white: rgb(255, 255, 255);
 $border-radius: 0.5em;
-$badge-size: 4em;
+$badge-size: 3em;
 $font-size: 1.5em;
 
 .input-container {
@@ -48,6 +48,7 @@ $font-size: 1.5em;
             ". . ."
             "badge . ."
             "name . points";
+        transition: all .5s -1s linear;
 
         &__name {
             grid-area: name;

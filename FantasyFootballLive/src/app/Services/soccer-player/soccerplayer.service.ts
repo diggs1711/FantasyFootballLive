@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 
 import { HttpRequestService } from '../http-request/http-request.service';
@@ -8,33 +8,45 @@ import { StaticDataService } from '../static-data/static.data.service';
 @Injectable({
 	providedIn: 'root'
 })
-export class SoccerPlayerService {
-	players: SoccerPlayer[];
+export class SoccerPlayerService implements OnInit {
+	players: Map<number, any>;
 	constructor(
-		private HttpRequestService: HttpRequestService,
-		private storage: Storage,
+		private httpRequestService: HttpRequestService,
 		private staticDataService: StaticDataService
 	) {}
 
+	async ngOnInit() {
+		const arrayOfPlayers = await this.staticDataService.getPlayers(),
+			playerMap = new Map();
+
+		for (const player of arrayOfPlayers) {
+			playerMap.set(player.id, player);
+		}
+		this.players = playerMap;
+	}
+
 	async getPlayerData(id: number) {
-		return this.HttpRequestService.getData(`https://fantasy.premierleague.com/drf/element-summary/${id}`);
-	}
-
-	async getPlayerName(id: number) {
-		return this.getPlayerDetails(id).then((player) => player.web_name);
-	}
-
-	async getPlayerPhoto(id: number) {
-		return this.getPlayerDetails(id).then(
-			(player) => '/assets/player_images/' + 'p' + player.photo.replace(/jpg/gi, 'webp')
+		return this.httpRequestService.fetch(
+			`https://fantasy.premierleague.com/drf/element-summary/${id}`
 		);
 	}
 
-	getPlayerDetails(id: number) {
-		return this.staticDataService.getBootstrapData()
-			.then(({ elements: players }) => {
-				return players.find((player) => player.id === id);
-		});
+	async createPlayer(id: number): Promise<SoccerPlayer> {
+		return new SoccerPlayer(id);
+	}
+
+	async getPlayerName(id: number) {
+		return this.getPlayer(id).then((player) => player.name);
+	}
+
+	async getPlayerPhoto(id: number) {
+		return this.getPlayer(id).then(
+			(player) => '/assets/player_images/' + 'p' + player.image.replace(/jpg/gi, 'webp')
+		);
+	}
+
+	async getPlayer(id: number) {
+		return this.players.get(id);
 	}
 
 	async getUpcomingFixtures(id: number) {
@@ -42,7 +54,7 @@ export class SoccerPlayerService {
 		// const stored = await this.storage.get(key);
 		// if (stored) return stored;
 		const data = await this.getPlayerData(id);
-		//this.storage.set(key, data['fixtures']);
+		// this.storage.set(key, data['fixtures']);
 		return data['fixtures'];
 	}
 }

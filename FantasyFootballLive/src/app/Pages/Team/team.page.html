@@ -4,29 +4,6 @@
   <ion-refresher slot="fixed" (ionRefresh)="refreshUser($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-item lines="none" *ngIf="mainUserService.user">
-    <ion-label text-wrap>
-      <h2 class="fantasy-player__heading" text-uppercase><strong>{{ mainUserService.user.team.name }}</strong> </h2>
-      <p class="fantasy-player__heading">GW Points - <strong>{{ mainUserService.user.team.gameweekPoints }} </strong>
-      </p>
-      <p class="fantasy-player__heading">Overall Points - <strong>{{ mainUserService.user.team.overallPoints }} </strong>
-        <p class="fantasy-player__heading">GW Transfers - <strong>{{ mainUserService.user.gameweekTransfers }} </strong>
-        </p>
-    </ion-label>
-    <ion-button shape="round" size="small" color="danger" class="make-transfers__chip" href="https://fantasy.premierleague.com/a/squad/transfers"
-      slot="end">
-      <ion-label>MAKE TRANSFERS</ion-label>
-    </ion-button>
-  </ion-item>
 
-  <ion-grid *ngIf="mainUserService.user">
-    <div class="pitch">
-      <app-row-of-players [players]="mainUserService.user.team.Goalkeepers"></app-row-of-players>
-      <app-row-of-players [players]="mainUserService.user.team.Defenders"></app-row-of-players>
-      <app-row-of-players [players]="mainUserService.user.team.Midfielders"></app-row-of-players>
-      <app-row-of-players [players]="mainUserService.user.team.Forwards"></app-row-of-players>
-      <app-list-divider [Title]="Bench"></app-list-divider>
-      <app-row-of-players [players]="mainUserService.user.team.Bench"></app-row-of-players>
-    </div>
-  </ion-grid>
+  <app-pitch [fantasyPlayer]="mainUserService.user"></app-pitch>
 </ion-content>

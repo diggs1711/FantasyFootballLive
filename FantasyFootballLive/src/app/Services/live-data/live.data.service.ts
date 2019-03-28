@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-
 import { HttpRequestService } from '../http-request/http-request.service';
+
 
 @Injectable({
 	providedIn: 'root'
@@ -8,8 +8,8 @@ import { HttpRequestService } from '../http-request/http-request.service';
 export class LiveDataService {
 	constructor(private httpRequestService: HttpRequestService) {}
 
-	fetchData(gameweek) {
-		return this.httpRequestService.getData(
+	fetch(gameweek: number): Promise<any> {
+		return this.httpRequestService.fetch(
 			`https://fantasy.premierleague.com/drf/event/${gameweek}/live`
 		);
 	}

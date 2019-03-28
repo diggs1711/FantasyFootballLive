@@ -1,33 +1,24 @@
 export default class SoccerPlayer {
 	id: number;
-	gameweek_points: number;
 	image: any;
-	position: string;
-	position_type: number;
-	name: string;
-	multiplier: number;
-	teamPosition: number;
-	isCaptain: boolean;
 	fixtures: any[];
+	gameweekPoints: number;
+	name: string;
+	position: string;
 
 	constructor(
 		id = -1,
-		name = '',
-		gameweek_points = -1,
 		image = null,
-		teamPosition = 0,
+		fixtures = [],
+		gameweekPoints = -1,
+		name = '',
 		position = '',
-		positionType = 0
 	) {
 		this.id = id;
-		this.name = name;
-		this.gameweek_points = gameweek_points;
 		this.image = image;
+		this.fixtures = fixtures;
+		this.gameweekPoints = gameweekPoints;
+		this.name = name;
 		this.position = position;
-		this.teamPosition = teamPosition;
-		this.isCaptain = false;
-		this.position_type = positionType;
 	}
-
-	getGameweekPoints(id) {}
 }

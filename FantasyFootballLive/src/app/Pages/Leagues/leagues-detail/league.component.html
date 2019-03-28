@@ -1,18 +1,4 @@
-<ion-header translucent="true">
-  <ion-toolbar color="teritary" text-center>
-    <ion-label class="main-logo">LEAGUE</ion-label>
-    <ion-buttons slot="start">
-      <ion-button (click)="closeModal()">
-        <ion-icon slot="start" name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-buttons slot="primary">
-      <ion-button (click)="refresh(league.id)">
-        <ion-icon slot='end' name="refresh"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-header [title]="'LEAGUE'"></app-header>
 <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
 
 <ion-content *ngIf="!showSpinner">
@@ -45,12 +31,12 @@
       </ion-label>
 
       <ion-note class="league__member__details" slot="end">
-        <ion-text *ngIf="member.gameweekTransfers > 0"> {{ member.gameweekTransfers }} Transfer<ion-text *ngIf="member.gameweekTransfers > 1">s</ion-text>
+        <ion-text *ngIf="member.gameweekTransfers.length > 0"> {{ member.gameweekTransfers }} Transfer<ion-text *ngIf="member.gameweekTransfers.length > 1">s</ion-text>
         </ion-text>
         <ion-text color="danger" *ngIf="member.gameweekTransfersCost > 0">
           (-{{ member.gameweekTransfersCost }})</ion-text>
         <p>
-          <strong>{{ member.team.captain }} (C)</strong>
+          <strong>{{ member.team.captainId }} (C)</strong>
         </p>
         <p>
           {{ member.team.gameweekPoints }}

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
+import FantasyPlayer from 'src/app/Models/FantasyPlayer';
 import { FixtureService } from 'src/app/Services/fixtures/fixture.service';
 import { MainUserService } from 'src/app/Services/main-user/main-user.service';
 import { StaticDataService } from 'src/app/Services/static-data/static.data.service';
+import { LoginService } from 'src/app/Services/login/login.service';
 
 @Component({
 	selector: 'app-home',
@@ -11,13 +12,17 @@ import { StaticDataService } from 'src/app/Services/static-data/static.data.serv
 	styleUrls: [ './home.page.scss' ]
 })
 export class HomePage implements OnInit {
-	showSpinner: boolean = true;
-	upcomingFixtures: any[] = [];
+	public showSpinner = true;
+	public upcomingFixtures = [];
+	public FplId = null;
+	public user: FantasyPlayer;
+
 	constructor(
-		private mainUserService: MainUserService,
+		public mainUserService: MainUserService,
 		private router: Router,
 		private staticDataService: StaticDataService,
-		private fixtureService: FixtureService
+		private fixtureService: FixtureService,
+		private loginService: LoginService
 	) {}
 
 	ngOnInit() {
@@ -26,14 +31,19 @@ export class HomePage implements OnInit {
 			this.staticDataService.getTeams()
 		]).then(([ fixtures, teams ]) => {
 			this.upcomingFixtures = this.fixtureService.createFixtureList(fixtures, teams);
-			this.mainUserService
-				.loadSavedUser()
-					.then(() => (this.showSpinner = false));
+			this.mainUserService.loadSavedUser().then((user) => {
+				this.loginService.login();
+				this.user = user;
+				this.showSpinner = false;
+			});
 		});
 	}
 
 	onFantasyIdEntered(id: number) {
-		this.mainUserService.createUser(id).then(() => (this.showSpinner = false));
+		this.mainUserService.createUser(id).then((user) => {
+			this.user = user;
+			this.showSpinner = false;
+		});
 	}
 
 	navigateTo(url: string) {

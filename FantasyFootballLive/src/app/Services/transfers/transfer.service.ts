@@ -18,14 +18,16 @@ export class TransferService {
 
 	async getGameweekTransfers(id: number) {
 		const gameweek = await this.staticDataService.getCurrentGameweek();
-		const data = await this.httpRequestService.getData(
+		const data = await this.httpRequestService.fetch(
 			`https://fantasy.premierleague.com/drf/entry/${id}/transfers`
 		);
-		const transfers = data.history.filter((entry: any) => entry.event == gameweek);
+		const transfers = data.history.filter((entry: any) => entry.event === gameweek);
 		const key = `player-${id} gameweek-${gameweek} transfers`;
 		const stored = await this.storage.get(key);
 
-		if (stored) return stored;
+		if (stored) {
+			return stored;
+		}
 
 		return Promise.all(
 			transfers.map((transfer) => {

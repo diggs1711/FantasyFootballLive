@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { HttpRequestService } from 'src/app/Services/http-request/http-request.service';
 import { StaticDataService } from 'src/app/Services/static-data/static.data.service';
 
@@ -9,34 +8,37 @@ import { StaticDataService } from 'src/app/Services/static-data/static.data.serv
 	styleUrls: [ './stats.page.scss' ]
 })
 export class StatsPage implements OnInit {
-	teamFixtures: any = new Map();
-	teamFixturesAll: any = new Map();
+	teamFixtures = new Map();
+	teamFixturesAll = new Map();
 	fixtureDifficulty: Map<string, number> = new Map();
-	bootstrapData: {};
-	fixtureRange: number = 6;
+	fixtureRange = 6;
 	originalFixtures: any;
 	teams: any;
 
-	constructor(private fplDataService: HttpRequestService, private staticDataService: StaticDataService) {}
+	constructor(
+		private fplDataService: HttpRequestService,
+		private staticDataService: StaticDataService
+	) {}
 
 	ngOnInit() {
-		Promise.all([ this.staticDataService.getBootstrapData(), this.getFixtures() ])
-			.then(([ bootstrap, fixtures ]) => {
-				this.bootstrapData = bootstrap;
+		Promise.all([ this.staticDataService.getTeams(), this.getFixtures() ])
+			.then(([ teams, fixtures ]) => {
+				this.teams = teams;
 				const upcomingFixtures = fixtures.filter((fixture) => !fixture.finished);
 				this.createMapOfUpcomingFixtures(upcomingFixtures);
+				return null;
 			})
 			.then(() => this.updateRank());
 	}
 
 	/**
-     * 
+     *
      * @param fixtures array of upcoming fixtures
      */
 	createMapOfUpcomingFixtures(upcomingFixures: any[]) {
 		upcomingFixures.map((fixture) => {
-			let homeTeam = this.getTeamName(fixture.team_h);
-			let awayTeam = this.getTeamName(fixture.team_a);
+			const homeTeam = this.getTeamName(fixture.team_h),
+				awayTeam = this.getTeamName(fixture.team_a);
 
 			const homeFixture = {
 				venue: 'home',
@@ -51,16 +53,15 @@ export class StatsPage implements OnInit {
 				opponent: homeTeam,
 				team_name: awayTeam
 			};
-			const homeTeamFixtures = this.teamFixturesAll.get(homeTeam) || [];
-			let homeTeamDifficulty = this.fixtureDifficulty.get(homeTeam) || 0;
+			const homeTeamFixtures = this.teamFixturesAll.get(homeTeam) || [],
+				homeTeamDifficulty = this.fixtureDifficulty.get(homeTeam) || 0;
 
 			homeTeamFixtures.push(homeFixture);
 			this.teamFixturesAll.set(homeTeam, homeTeamFixtures);
 			this.fixtureDifficulty.set(homeTeam, homeTeamDifficulty + fixture.team_h_difficulty);
 
-			//away
-			const awayTeamFixtures = this.teamFixturesAll.get(awayTeam) || [];
-			let awayTeamDifficulty = this.fixtureDifficulty.get(awayTeam) || 0;
+			const awayTeamFixtures = this.teamFixturesAll.get(awayTeam) || [],
+				awayTeamDifficulty = this.fixtureDifficulty.get(awayTeam) || 0;
 			awayTeamFixtures.push(awayFixure);
 
 			this.fixtureDifficulty.set(awayTeam, awayTeamDifficulty + fixture.team_a_difficulty);
@@ -71,7 +72,7 @@ export class StatsPage implements OnInit {
 	}
 
 	updateRank() {
-		let teamfixtures = Array.from(this.teamFixturesAll);
+		const teamfixtures = Array.from(this.teamFixturesAll);
 
 		teamfixtures.map(([ team, fixures ]) => {
 			const totalDifficulty = fixures.slice(0, this.fixtureRange).reduce((a, b) => {
@@ -82,7 +83,8 @@ export class StatsPage implements OnInit {
 		});
 
 		teamfixtures.sort(
-			([ key1, value1 ], [ key2, value2 ]) => this.fixtureDifficulty.get(key1) - this.fixtureDifficulty.get(key2)
+			([ key1, value1 ], [ key2, value2 ]) =>
+				this.fixtureDifficulty.get(key1) - this.fixtureDifficulty.get(key2)
 		);
 
 		this.teamFixtures = new Map((teamfixtures as unknown) as ReadonlyArray<[any, any]>);
@@ -90,12 +92,15 @@ export class StatsPage implements OnInit {
 	}
 
 	getTeamName(id): string {
-		if (id < 1 || id > 20) return;
-		return this.bootstrapData['teams'].find((team) => team.id == id).name;
+		if (id < 1 || id > 20) {
+			return;
+		}
+
+		return this.teams.find(team => team.id === id).name;
 	}
 
 	/**
-     * 
+     *
      * @param id FPL start their Team ids at 1 and using an array to sort teams is awkward as it starts at 0 index
      */
 	getTeamNameStartingAtZeroIndex(id) {
@@ -106,6 +111,6 @@ export class StatsPage implements OnInit {
      * Get all the fixtures played this year
      */
 	getFixtures() {
-		return this.fplDataService.getData('https://fantasy.premierleague.com/drf/fixtures/');
+		return this.fplDataService.fetch('https://fantasy.premierleague.com/drf/fixtures/');
 	}
 }

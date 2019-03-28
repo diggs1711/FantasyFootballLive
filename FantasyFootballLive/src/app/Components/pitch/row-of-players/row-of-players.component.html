@@ -1,16 +1,5 @@
 <ion-row justify-content-center>
   <ion-col *ngFor="let player of players" align-self-center>
-    <div class="player-photo-container">
-      <figure class="player-photo player-photo--box-shadow" [ngClass]="{'player-photo__captain': player.isCaptain }">
-        <img src='{{player.image}}' />
-      </figure>
-      <div class="player-text">
-        <ul class="fixture-list">
-          <li *ngFor="let fixture of player?.fixtures?.slice(0,5)" class="fixture difficulty-{{fixture.difficulty}}"></li>
-        </ul>
-        <h6>{{ player.name }}</h6>
-        <p>{{ player.gameweek_points }}</p>
-      </div>
-    </div>
+      <app-player-photo [player]="player"></app-player-photo>
   </ion-col>
 </ion-row>

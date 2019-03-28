@@ -9,19 +9,23 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-//HTTP
+// HTTP
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { HTTP } from '@ionic-native/http/ngx';
 import { Device } from '@ionic-native/device/ngx';
 
-//Storage
+// Storage
 import { IonicStorageModule } from '@ionic/storage';
 
-//Firebase
+// Firebase
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import config from 'src/firebase.config';
+
+// cookie
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
 	declarations: [ AppComponent ],
@@ -30,6 +34,7 @@ import config from 'src/firebase.config';
 		BrowserModule,
 		IonicModule.forRoot(),
 		AppRoutingModule,
+		HttpClientModule,
 		HttpModule,
 		IonicStorageModule.forRoot(),
 		AngularFireModule.initializeApp(config),
@@ -41,6 +46,7 @@ import config from 'src/firebase.config';
 		StatusBar,
 		SplashScreen,
 		Firebase,
+		CookieService,
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
 	],
 	bootstrap: [ AppComponent ]

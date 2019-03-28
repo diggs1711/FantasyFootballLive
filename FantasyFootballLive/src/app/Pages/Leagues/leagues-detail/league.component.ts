@@ -15,8 +15,8 @@ import { PitchComponent } from '../../../Components/pitch/pitch.component';
 export class LeagueComponent implements OnInit {
 	league: League;
 	fantasyPlayer: FantasyPlayer;
-	showSpinner: boolean = true;
-	maxTries: number = 5;
+	showSpinner = true;
+	maxTries = 5;
 
 	constructor(
 		public modalController: ModalController,
@@ -29,27 +29,25 @@ export class LeagueComponent implements OnInit {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param id id of the league to be loaded
-	 * @description loads the all the data needed to display the league 
+	 * @description loads the all the data needed to display the league
 	 */
-	async load(id: number) {
+	async load(id: number, maxTries = 5) {
 		this.league = await this.leaguesService.getLeague(id);
-		//sometimes the league returns undefined for some users and they need to
-		//fetched again. this checks if any are undefined and loads the league again
-		//can be optimised to just fetch undefined users but this works for now
-		if (this.league.members.includes(undefined) && this.maxTries > 0) {
-			this.maxTries--;
-			this.load(this.league.id);
+		// sometimes the league returns undefined for some users and they need to
+		// fetched again. this checks if any are undefined and loads the league again
+		// can be optimised to just fetch undefined users but this works for now
+		if (this.league.members.includes(undefined) && maxTries > 0) {
+			this.load(this.league.id, maxTries - 1);
 			return;
 		}
-		this.maxTries = 5;
-		this.sortLeagueInDescendingOrder(this.league)
+		this.sortLeagueInDescendingOrder(this.league);
 		this.showSpinner = false;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param league league object to sorted
 	 */
 	sortLeagueInDescendingOrder(league: League) {
@@ -64,7 +62,7 @@ export class LeagueComponent implements OnInit {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param id id of league to refresh
 	 * @description refreshes the league by loading it again
 	 */
@@ -89,7 +87,8 @@ export class LeagueComponent implements OnInit {
 		const modal = await this.modalController.create({
 			component: PitchComponent,
 			componentProps: {
-				fantasyPlayer: selectedPlayer
+				fantasyPlayer: selectedPlayer,
+				showCloseButton: true
 			}
 		});
 		return await modal.present();

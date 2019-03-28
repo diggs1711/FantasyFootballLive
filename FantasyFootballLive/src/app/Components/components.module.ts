@@ -7,10 +7,12 @@ import { LoadingSpinnerComponent } from './ui/loading-spinner/loading-spinner.co
 import { PitchComponent } from './pitch/pitch.component';
 import { RowOfPlayersComponent } from './pitch/row-of-players/row-of-players.component';
 import { ListDividerComponent } from './ui/list-divider/list-divider.component';
+import { PitchTeamInfoComponent } from './pitch/pitch-team-info/pitch-team-info.component';
+import { PlayerPhotoComponent } from './pitch/player-photo/player-photo.component';
 
 @NgModule({
 	imports: [ IonicModule, CommonModule ],
-	declarations: [ HeaderComponent, LoadingSpinnerComponent, PitchComponent, RowOfPlayersComponent, ListDividerComponent ],
-	exports: [ HeaderComponent, LoadingSpinnerComponent, RowOfPlayersComponent, ListDividerComponent ]
+	declarations: [ HeaderComponent, LoadingSpinnerComponent, PitchComponent, RowOfPlayersComponent, ListDividerComponent, PitchTeamInfoComponent, PlayerPhotoComponent ],
+	exports: [ HeaderComponent, LoadingSpinnerComponent, RowOfPlayersComponent, ListDividerComponent, PitchComponent, PlayerPhotoComponent ]
 })
 export class ComponentsModule {}
