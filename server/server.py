@@ -10,8 +10,8 @@ def login():
     session = requests.Session()
 
     data = {
-        'login': '',
-        'password': '',
+        'login': 'davidhiggins712@gmail.com',
+        'password': 'matchy123*',
         'app': 'plfpl-web',
         'redirect_uri': 'https://fantasy.premierleague.com/a/login'
     }

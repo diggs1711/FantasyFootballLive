@@ -18,6 +18,7 @@ export class TransferService {
 
 	async getGameweekTransfers(id: number) {
 		const gameweek = await this.staticDataService.getCurrentGameweek();
+		const players = await this.soccerPlayerService.getPlayers();
 		const data = await this.httpRequestService.fetch(
 			`https://fantasy.premierleague.com/drf/entry/${id}/transfers`
 		);
@@ -29,29 +30,30 @@ export class TransferService {
 			return stored;
 		}
 
-		return Promise.all(
-			transfers.map((transfer) => {
-				return Promise.all([
-					this.soccerPlayerService.getPlayerName(transfer.element_in),
-					this.soccerPlayerService.getPlayerPhoto(transfer.element_in),
-					this.soccerPlayerService.getPlayerName(transfer.element_out),
-					this.soccerPlayerService.getPlayerPhoto(transfer.element_out)
-				]);
-			})
-		)
-			.then((result) => {
-				return result.map((transfer) => {
-					return {
-						transfer_in: transfer[0],
-						transfer_in_photo: transfer[1],
-						transfer_out: transfer[2],
-						transfer_out_photo: transfer[3]
-					};
-				});
-			})
-			.then((result) => {
-				this.storage.set(key, result);
-				return result;
-			});
+		return transfers.map((transfer) => {
+			const transferIn = this.getTransferInfo(transfer.element_in, players),
+				transferOut = this.getTransferInfo(transfer.element_out, players);
+
+			return {
+				transferIn,
+				transferOut
+			};
+		});
+	}
+
+	getTransferInfo(id, players) {
+		const playerInName = this.soccerPlayerService.getPlayerName(
+			id,
+			players
+		),
+		playerInPhotoUrl = this.soccerPlayerService.getPhotoUrl(
+			id,
+			players
+		);
+
+		return {
+			name: playerInName,
+			image: playerInPhotoUrl
+		};
 	}
 }

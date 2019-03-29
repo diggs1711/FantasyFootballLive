@@ -103,11 +103,11 @@ export class LoginService implements OnInit {
 			redirect_uri: 'https://fantasy.premierleague.com/a/login'
 		};
 		this.http
-			.get('http://0.0.0.0:5000/login')
+			.get('http://192.168.0.178:5000/login')
 			.pipe(
 				switchMap((token) => {
 
-					return this.http.post('http://0.0.0.0:5000/substitutions', {
+					return this.http.post('http://192.168.0.178:5000/substitutions', {
 						picks: p,
 						token: token.text()
 					});

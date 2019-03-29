@@ -28,27 +28,13 @@
 
     <ion-row *ngFor="let transfer of gameweekTransfers">
       <ion-col size='4'>
-        <div class="player-photo-container">
-          <figure class="player-photo player-photo--no-border">
-            <img src='{{transfer.transfer_in_photo}}' />
-          </figure>
-          <div class="player-text">
-            <h6>{{ transfer.transfer_in }}</h6>
-          </div>
-        </div>
+        <app-player-photo [player]="transfer.transferIn"></app-player-photo>
       </ion-col>
       <ion-col size='4' class="gameweek-transfers__icon">
         <ion-icon name="swap"></ion-icon>
       </ion-col>
       <ion-col size='4'>
-        <div class="player-photo-container">
-          <figure class="player-photo player-photo--no-border">
-            <img src='{{transfer.transfer_out_photo}}' />
-          </figure>
-          <div class="player-text">
-            <h6>{{ transfer.transfer_out }}</h6>
-          </div>
-        </div>
+        <app-player-photo [player]="transfer.transferOut"></app-player-photo>
       </ion-col>
     </ion-row>
   </ion-grid>

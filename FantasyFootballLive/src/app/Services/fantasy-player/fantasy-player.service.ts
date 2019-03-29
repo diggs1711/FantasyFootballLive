@@ -97,26 +97,30 @@ export class FantasyPlayerService {
 	private async populateSquad(picks: any[], fantasyPlayer: FantasyPlayer, liveData: any) {
 		// tslint:disable-next-line: prefer-const
 		let totalPoints = 0;
+		const players = await this.soccerPlayerService.getPlayers();
 
 		for (const pick of picks) {
-			const currentPlayer = await this.soccerPlayerService.getPlayer(pick.element),
+			const currentPlayer = players.get(pick.element),
 				position = await this.staticDataService.getPositionLabel(
-					pick.element_type
+					currentPlayer.element_type
 				),
-				currentPlayerPoints =
+				currentPlayerGWPoints =
 					liveData['elements'][currentPlayer.id]['stats']['total_points'],
 				newPlayer = new SoccerPlayer(
 					pick.element,
+					this.soccerPlayerService.getPhotoUrl(currentPlayer.id, players),
 					null,
-					null,
-					currentPlayerPoints,
-					currentPlayer.name,
+					currentPlayerGWPoints,
+					currentPlayer.web_name,
 					position
 				);
-			fantasyPlayer.team[`${position}s`].push(newPlayer);
+
 
 			if (fantasyPlayer.activeChip === 'bboost' || pick.position < 12) {
-				totalPoints += currentPlayerPoints * pick.multiplier;
+				totalPoints += currentPlayerGWPoints * pick.multiplier;
+				fantasyPlayer.team[`${position}s`].push(newPlayer);
+			} else {
+				fantasyPlayer.team[`Bench`].push(newPlayer);
 			}
 
 			if (pick.is_captain) {

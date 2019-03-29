@@ -9,13 +9,17 @@ import { StaticDataService } from '../static-data/static.data.service';
 	providedIn: 'root'
 })
 export class SoccerPlayerService implements OnInit {
-	players: Map<number, any>;
+	players: Map<number, any> = new Map();
 	constructor(
 		private httpRequestService: HttpRequestService,
 		private staticDataService: StaticDataService
 	) {}
 
-	async ngOnInit() {
+	ngOnInit() {
+		this.load();
+	}
+
+	async load() {
 		const arrayOfPlayers = await this.staticDataService.getPlayers(),
 			playerMap = new Map();
 
@@ -31,18 +35,27 @@ export class SoccerPlayerService implements OnInit {
 		);
 	}
 
+	async getPlayers(): Promise<Map<number, any>> {
+		const arrayOfPlayers = await this.staticDataService.getPlayers(),
+			playerMap = new Map();
+
+		for (const player of arrayOfPlayers) {
+			playerMap.set(player.id, player);
+		}
+		return playerMap;
+	}
+
 	async createPlayer(id: number): Promise<SoccerPlayer> {
 		return new SoccerPlayer(id);
 	}
 
-	async getPlayerName(id: number) {
-		return this.getPlayer(id).then((player) => player.name);
+	getPlayerName(id: number, players: Map<number, any>) {
+		return players.get(id).web_name;
 	}
 
-	async getPlayerPhoto(id: number) {
-		return this.getPlayer(id).then(
-			(player) => '/assets/player_images/' + 'p' + player.image.replace(/jpg/gi, 'webp')
-		);
+	getPhotoUrl(id: number, players: Map<number, any>) {
+		const player = players.get(id);
+		return '/assets/player_images/' + 'p' + player.photo.replace(/jpg/gi, 'webp');
 	}
 
 	async getPlayer(id: number) {

@@ -32,7 +32,7 @@ export class HomePage implements OnInit {
 		]).then(([ fixtures, teams ]) => {
 			this.upcomingFixtures = this.fixtureService.createFixtureList(fixtures, teams);
 			this.mainUserService.loadSavedUser().then((user) => {
-				this.loginService.login();
+				// this.loginService.login();
 				this.user = user;
 				this.showSpinner = false;
 			});
