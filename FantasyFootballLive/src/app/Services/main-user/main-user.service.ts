@@ -52,7 +52,7 @@ export class MainUserService {
 			});
 	}
 
-	updateDeviceToken(id: number) {
+	private updateDeviceToken(id: number) {
 		this.fcmService.getToken(id);
 	}
 

@@ -1,9 +1,24 @@
 <app-header [title]="'SETTINGS'"></app-header>
-<ion-content padding>
-  <!-- <ion-list>
-    <ion-item *ngFor="let entry of form" lines="inset">
-      <ion-label>{{entry.val}}</ion-label>
-      <ion-checkbox slot="end" [(ngModel)]="entry.isChecked" [checked]="includeBonusPoints" (ionChange)="updateSetting(entry.isChecked)"></ion-checkbox>
+<ion-content padding >
+  <ion-list *ngIf="mainUserService.user">
+    <ion-item>
+      <ion-label position="stacked">
+        <h2>Change Id</h2>
+        <p>Current - {{ mainUserService.user.id }} </p>
+      </ion-label>
+      <ion-button color="danger" slot="end" (click)="toggleIdInput()">
+        <ion-text *ngIf="!canEnterNewId">
+          Update
+        </ion-text>
+        <ion-text *ngIf="canEnterNewId">
+            Close
+        </ion-text>
+      </ion-button>
     </ion-item>
-  </ion-list> -->
+  </ion-list>
 </ion-content>
+
+<div class="settings__input__container" *ngIf="canEnterNewId">
+    <ion-input [(ngModel)]="newID" type="number" placeholder="Enter new Id..."></ion-input>
+    <ion-button color="danger" slot="end" (click)="updateId(newID)">Update</ion-button>
+</div>

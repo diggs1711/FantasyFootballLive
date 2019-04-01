@@ -8,7 +8,7 @@ import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 })
 export class PlayerPhotoComponent implements OnInit {
   @Input() player: SoccerPlayer;
-  @Input() isCaptain = false;
+  @Input() isCaptain: boolean;
 
   constructor() { }
 

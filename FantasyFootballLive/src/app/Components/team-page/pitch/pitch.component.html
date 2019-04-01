@@ -1,41 +1,8 @@
-<ion-header *ngIf="showCloseButton">
-  <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button (click)="closeModal()">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
-        Close
-      </ion-button>
-    </ion-buttons>
-    <ion-title>TEAM</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
-<ion-content *ngIf="!showSpinner">
-  <app-pitch-team-info [player]="fantasyPlayer"></app-pitch-team-info>
-
-  <ion-grid *ngIf="fantasyPlayer">
-    <div class="pitch">
-        <app-row-of-players [players]="fantasyPlayer.team.Goalkeepers"></app-row-of-players>
-        <app-row-of-players [players]="fantasyPlayer.team.Defenders"></app-row-of-players>
-        <app-row-of-players [players]="fantasyPlayer.team.Midfielders"></app-row-of-players>
-        <app-row-of-players [players]="fantasyPlayer.team.Forwards"></app-row-of-players>
-        <app-list-divider [Title]="'Bench'"></app-list-divider>
-        <app-row-of-players [players]="fantasyPlayer.team.Bench"></app-row-of-players>
-    </div>
-
-    <app-list-divider *ngIf="gameweekTransfers.length > 0" [Title]="'Transfers'"></app-list-divider>
-
-    <ion-row *ngFor="let transfer of gameweekTransfers">
-      <ion-col size='4'>
-        <app-player-photo [player]="transfer.transferIn"></app-player-photo>
-      </ion-col>
-      <ion-col size='4' class="gameweek-transfers__icon">
-        <ion-icon name="swap"></ion-icon>
-      </ion-col>
-      <ion-col size='4'>
-        <app-player-photo [player]="transfer.transferOut"></app-player-photo>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-</ion-content>
+<div class="pitch">
+    <app-row-of-players [players]="fantasyPlayer.team.Goalkeepers" [fantasyPlayer]='fantasyPlayer'></app-row-of-players>
+    <app-row-of-players [players]="fantasyPlayer.team.Defenders" [fantasyPlayer]='fantasyPlayer'></app-row-of-players>
+    <app-row-of-players [players]="fantasyPlayer.team.Midfielders" [fantasyPlayer]='fantasyPlayer'></app-row-of-players>
+    <app-row-of-players [players]="fantasyPlayer.team.Forwards" [fantasyPlayer]='fantasyPlayer'></app-row-of-players>
+    <app-list-divider [Title]="'Bench'"></app-list-divider>
+    <app-row-of-players [players]="fantasyPlayer.team.Bench" [fantasyPlayer]='fantasyPlayer'></app-row-of-players>
+</div>

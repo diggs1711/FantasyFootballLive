@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { BonusPointService } from 'src/app/Services/bonus-point/bonus-point.service';
+import { MainUserService } from 'src/app/Services/main-user/main-user.service';
 
 @Component({
 	selector: 'app-settings',
@@ -9,18 +10,33 @@ import { BonusPointService } from 'src/app/Services/bonus-point/bonus-point.serv
 })
 export class SettingsPage implements OnInit {
 	includeBonusPoints = false;
-	public form = [ { val: 'Include Bonus Points', isChecked: this.includeBonusPoints } ];
-	constructor(private bonusPointService: BonusPointService) {}
+	canEnterNewId = false;
+	newID = null;
+
+	constructor(
+		private bonusPointService: BonusPointService,
+		public mainUserService: MainUserService
+	) {}
 
 	ngOnInit() {
 		this.bonusPointService.getUserSetting().then((include) => {
 			this.includeBonusPoints = include;
 		});
-
-		this.form = [ { val: 'Include Bonus Points', isChecked: this.includeBonusPoints } ];
 	}
 
 	updateSetting(val: boolean): void {
 		this.bonusPointService.updateSetting(val);
+	}
+
+	toggleIdInput() {
+		this.canEnterNewId = !this.canEnterNewId;
+	}
+
+	updateId(id: number) {
+		if (!id) {
+			return null;
+		}
+		this.mainUserService.updateUser(id);
+		this.canEnterNewId = !this.canEnterNewId;
 	}
 }
