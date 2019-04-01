@@ -5,7 +5,7 @@ import { ModalController } from '@ionic/angular';
 import FantasyPlayer from '../../../Models/FantasyPlayer';
 import League from '../../../Models/League';
 import { LeaguesService } from 'src/app/Services/leagues/leagues.service';
-import { PitchComponent } from '../../../Components/pitch/pitch.component';
+import { TeamPageComponent } from 'src/app/Components/team-page/team-page.component';
 
 @Component({
 	selector: 'app-league',
@@ -17,6 +17,7 @@ export class LeagueComponent implements OnInit {
 	fantasyPlayer: FantasyPlayer;
 	showSpinner = true;
 	maxTries = 5;
+	leagueStanding = [];
 
 	constructor(
 		public modalController: ModalController,
@@ -38,11 +39,11 @@ export class LeagueComponent implements OnInit {
 		// sometimes the league returns undefined for some users and they need to
 		// fetched again. this checks if any are undefined and loads the league again
 		// can be optimised to just fetch undefined users but this works for now
-		if (this.league.members.includes(undefined) && maxTries > 0) {
-			this.load(this.league.id, maxTries - 1);
-			return;
-		}
-		this.sortLeagueInDescendingOrder(this.league);
+		// if (this.league.members.has(undefined) && maxTries > 0) {
+		// 	this.load(this.league.id, maxTries - 1);
+		// 	return;
+		// }
+		this.leagueStanding = this.sortLeagueInDescendingOrder(this.league);
 		this.showSpinner = false;
 	}
 
@@ -51,7 +52,7 @@ export class LeagueComponent implements OnInit {
 	 * @param league league object to sorted
 	 */
 	sortLeagueInDescendingOrder(league: League) {
-		league.members.sort((a, b) => b.team.overallPoints - a.team.overallPoints);
+		return Array.from(league.members.values()).sort((a, b) => b.team.overallPoints - a.team.overallPoints);
 	}
 
 	/**
@@ -83,9 +84,9 @@ export class LeagueComponent implements OnInit {
 	 * @param playerId id of the player in the league selected by the user
 	 */
 	async onPlayerSelected(playerId: number) {
-		const selectedPlayer = this.league.members.find((memeber) => memeber.team.id == playerId);
+		const selectedPlayer = this.league.members.get(playerId);
 		const modal = await this.modalController.create({
-			component: PitchComponent,
+			component: TeamPageComponent,
 			componentProps: {
 				fantasyPlayer: selectedPlayer,
 				showCloseButton: true

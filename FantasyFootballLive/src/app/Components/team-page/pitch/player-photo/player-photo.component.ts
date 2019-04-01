@@ -1,4 +1,4 @@
-import { Component, OnInit,Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 
 @Component({
@@ -8,7 +8,8 @@ import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 })
 export class PlayerPhotoComponent implements OnInit {
   @Input() player: SoccerPlayer;
-  
+  @Input() isCaptain = false;
+
   constructor() { }
 
   ngOnInit() {

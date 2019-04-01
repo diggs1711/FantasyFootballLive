@@ -2,11 +2,9 @@
 <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
 
 <ion-content *ngIf="!showSpinner">
-  <ion-refresher slot="fixed" (ionRefresh)="refreshPulldown($event)">
-    <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
-  </ion-refresher>
+  <app-refresher></app-refresher>
 
-  <ion-list inset lines="none" *ngIf="league.members.length > 0">
+  <ion-list inset lines="none" *ngIf="league.members.size > 0">
     <ion-list-header>
       <ion-label text-wrap>
         <h3>
@@ -14,7 +12,9 @@
         </h3>
       </ion-label>
     </ion-list-header>
-    <ion-item detail class="league__member" *ngFor="let member of league.members; let i = index;" (click)="onPlayerSelected(member.team.id)">
+
+    <ion-item detail class="league__member" *ngFor="let member of leagueStanding; let i = index;"
+      (click)="onPlayerSelected(member.team.id)">
       <div class="rank__number">
         {{ i + 1 }}
       </div>
@@ -31,12 +31,13 @@
       </ion-label>
 
       <ion-note class="league__member__details" slot="end">
-        <ion-text *ngIf="member.gameweekTransfers.length > 0"> {{ member.gameweekTransfers }} Transfer<ion-text *ngIf="member.gameweekTransfers.length > 1">s</ion-text>
+        <ion-text *ngIf="member.gameweekTransfers >= 0"> {{ member.gameweekTransfers }} Transfer<ion-text
+            *ngIf="member.gameweekTransfers > 1">s</ion-text>
         </ion-text>
         <ion-text color="danger" *ngIf="member.gameweekTransfersCost > 0">
           (-{{ member.gameweekTransfersCost }})</ion-text>
         <p>
-          <strong>{{ member.team.captainId }} (C)</strong>
+          <strong>{{ member.team.captainName }} (C)</strong>
         </p>
         <p>
           {{ member.team.gameweekPoints }}

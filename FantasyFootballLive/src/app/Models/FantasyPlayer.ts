@@ -7,7 +7,7 @@ export default class FantasyPlayer {
 	bank: number;
 	countryImage: string;
 	gameweekRank = 0;
-	gameweekTransfers: SoccerPlayer[];
+	gameweekTransfers: number;
 	gameweekTransfersCost: number;
 	id: number;
 	leagues: League[];
@@ -20,7 +20,7 @@ export default class FantasyPlayer {
 		bank = 0,
 		countryImage = '',
 		gameweekRank = -1,
-		gameweekTransfers = [],
+		gameweekTransfers = 0,
 		gameweekTransfersCost = 0,
 		id = -1,
 		leagues = [],

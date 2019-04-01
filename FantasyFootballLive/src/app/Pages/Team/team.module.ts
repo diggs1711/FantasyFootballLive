@@ -7,8 +7,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { TeamPage } from './team.page';
 import { ComponentsModule } from '../../Components/components.module';
-import { PitchComponent } from 'src/app/Components/pitch/pitch.component';
-import { RowOfPlayersComponent } from 'src/app/Components/pitch/row-of-players/row-of-players.component';
 
 const routes: Routes = [
 	{

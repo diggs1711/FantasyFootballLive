@@ -11,6 +11,13 @@ import { SoccerPlayerService } from '../soccer-player/soccerplayer.service';
 	providedIn: 'root'
 })
 export class FantasyPlayerService {
+	positionMap = {
+		1: 'Goalkeeper',
+		2: 'Defender',
+		3: 'Midfielder',
+		4: 'Forward'
+	};
+
 	constructor(
 		private staticDataService: StaticDataService,
 		private gameweekDataService: GameweekDataService,
@@ -24,9 +31,16 @@ export class FantasyPlayerService {
    * @description creates a fantasy premier league player
    * @returns FantasyPlayer object
    */
-	async createPlayer(id: number, liveData: any): Promise<FantasyPlayer> {
-		const currentGameweek = await this.staticDataService.getCurrentGameweek(),
-			userGameweekData = await this.gameweekDataService.getGameweekData(id, currentGameweek),
+	async createPlayer(
+		id: number,
+		liveData: any,
+		soccerPlayers: Map<number, any>,
+		currentGameweek: number
+	): Promise<FantasyPlayer> {
+		const userGameweekData = await this.gameweekDataService.getGameweekData(
+				id,
+				currentGameweek
+			),
 			previousGameweeksHistory = await this.gameweekHistoryService.fetch(id),
 			playerData = this.parsePlayerData(
 				userGameweekData,
@@ -48,7 +62,7 @@ export class FantasyPlayerService {
 				team
 			);
 
-		await this.populateSquad(playerData.picks, newFantasyPlayer, liveData);
+		this.populateSquad(playerData.picks, newFantasyPlayer, liveData, soccerPlayers);
 		return newFantasyPlayer;
 	}
 
@@ -94,16 +108,18 @@ export class FantasyPlayerService {
 		};
 	}
 
-	private async populateSquad(picks: any[], fantasyPlayer: FantasyPlayer, liveData: any) {
+	private populateSquad(
+		picks: any[],
+		fantasyPlayer: FantasyPlayer,
+		liveData: any,
+		players: Map<number, any>
+	) {
 		// tslint:disable-next-line: prefer-const
 		let totalPoints = 0;
-		const players = await this.soccerPlayerService.getPlayers();
 
 		for (const pick of picks) {
 			const currentPlayer = players.get(pick.element),
-				position = await this.staticDataService.getPositionLabel(
-					currentPlayer.element_type
-				),
+				position = this.positionMap[currentPlayer.element_type],
 				currentPlayerGWPoints =
 					liveData['elements'][currentPlayer.id]['stats']['total_points'],
 				newPlayer = new SoccerPlayer(
@@ -115,9 +131,13 @@ export class FantasyPlayerService {
 					position
 				);
 
-
+			// calculate total gameweek points
 			if (fantasyPlayer.activeChip === 'bboost' || pick.position < 12) {
 				totalPoints += currentPlayerGWPoints * pick.multiplier;
+			}
+
+			// add players to position arrays
+			if (pick.position < 12) {
 				fantasyPlayer.team[`${position}s`].push(newPlayer);
 			} else {
 				fantasyPlayer.team[`Bench`].push(newPlayer);
@@ -125,6 +145,7 @@ export class FantasyPlayerService {
 
 			if (pick.is_captain) {
 				fantasyPlayer.team.captainId = pick.element;
+				fantasyPlayer.team.captainName = newPlayer.name;
 			}
 		}
 		fantasyPlayer.team.gameweekPoints = totalPoints;

@@ -11,6 +11,7 @@ export default class Team {
 	Bench: SoccerPlayer[];
 	name: string;
 	captainId: number;
+	captainName: string;
 	value: number;
 	bank = 0;
 

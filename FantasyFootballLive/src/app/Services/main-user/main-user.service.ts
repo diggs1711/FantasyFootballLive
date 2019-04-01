@@ -5,7 +5,7 @@ import { FantasyPlayerService } from '../fantasy-player/fantasy-player.service';
 import { FcmService } from '../Firebase/fcm.service';
 import { LiveDataService } from '../live-data/live.data.service';
 import { StaticDataService } from '../static-data/static.data.service';
-
+import { SoccerPlayerService } from '../soccer-player/soccerplayer.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -19,7 +19,8 @@ export class MainUserService {
 		private fantasyPlayerService: FantasyPlayerService,
 		private liveDataService: LiveDataService,
 		private staticDataService: StaticDataService,
-		private fcmService: FcmService
+		private fcmService: FcmService,
+		private soccerPlayerService: SoccerPlayerService
 	) {}
 
 	async loadSavedUser() {
@@ -39,13 +40,16 @@ export class MainUserService {
 	async createUser(id: number): Promise<FantasyPlayer> {
 		const gameweek = await this.staticDataService.getCurrentGameweek();
 		const liveData = await this.liveDataService.fetch(gameweek);
+		const soccerPlayers = await this.soccerPlayerService.getPlayers();
 
-		return await this.fantasyPlayerService.createPlayer(id, liveData).then((user) => {
-			this.user = user;
-			this.storage.set(this.userKey, user);
-			this.updateDeviceToken(this.user.id);
-			return user;
-		});
+		return await this.fantasyPlayerService
+			.createPlayer(id, liveData, soccerPlayers, gameweek)
+			.then((user) => {
+				this.user = user;
+				this.storage.set(this.userKey, user);
+				this.updateDeviceToken(this.user.id);
+				return user;
+			});
 	}
 
 	updateDeviceToken(id: number) {
@@ -57,7 +61,5 @@ export class MainUserService {
 		return await this.createUser(id);
 	}
 
-	getLivePoints() {
-
-	}
+	getLivePoints() {}
 }

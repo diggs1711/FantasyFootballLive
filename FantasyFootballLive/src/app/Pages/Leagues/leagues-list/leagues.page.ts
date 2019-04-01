@@ -15,9 +15,7 @@ export class LeaguesPage implements OnInit {
 		public mainUserService: MainUserService
 	) {}
 
-	ngOnInit() {
-		this.mainUserService.loadSavedUser();
-	}
+	ngOnInit() {}
 
 	/**
 	 * @param leagueId id of league

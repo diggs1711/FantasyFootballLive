@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { LiveDataService } from 'src/app/Services/live-data/live.data.service';
 import { MainUserService } from 'src/app/Services/main-user/main-user.service';
 import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 import { SoccerPlayerService } from 'src/app/Services/soccer-player/soccerplayer.service';
@@ -14,12 +13,12 @@ export class TeamPage implements OnInit {
 	showSpinner = true;
 	constructor(
 		private soccerPlayerService: SoccerPlayerService,
-		private mainUserService: MainUserService,
-		private liveDataService: LiveDataService
+		public mainUserService: MainUserService
 	) {}
 
 	ngOnInit() {
-		this.mainUserService.loadSavedUser()
+		this.mainUserService
+			.loadSavedUser()
 			.then(() => this.loadUpcomingFixtures())
 			.then(() => (this.showSpinner = false))
 			.then(() => this.refresh());

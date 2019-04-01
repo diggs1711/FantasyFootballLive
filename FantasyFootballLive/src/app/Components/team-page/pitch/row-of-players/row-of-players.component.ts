@@ -8,7 +8,7 @@ import SoccerPlayer from 'src/app/Models/SoccerPlayer';
 })
 export class RowOfPlayersComponent implements OnInit {
   @Input() players: SoccerPlayer[];
-
+  
   constructor() { }
 
   ngOnInit() {
