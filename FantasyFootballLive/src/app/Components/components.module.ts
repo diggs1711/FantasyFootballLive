@@ -9,7 +9,6 @@ import { RowOfPlayersComponent } from './team-page/pitch/row-of-players/row-of-p
 import { ListDividerComponent } from './ui/list-divider/list-divider.component';
 import { PitchTeamInfoComponent } from './team-page/pitch/pitch-team-info/pitch-team-info.component';
 import { PlayerPhotoComponent } from './team-page/pitch/player-photo/player-photo.component';
-import { RefresherComponent } from './ui/refresher/refresher.component';
 import { TeamPageComponent } from './team-page/team-page.component';
 
 @NgModule({
@@ -22,7 +21,6 @@ import { TeamPageComponent } from './team-page/team-page.component';
 		ListDividerComponent,
 		PitchTeamInfoComponent,
 		PlayerPhotoComponent,
-		RefresherComponent,
 		TeamPageComponent
 	],
 	exports: [
@@ -32,7 +30,6 @@ import { TeamPageComponent } from './team-page/team-page.component';
 		ListDividerComponent,
 		PitchComponent,
 		PlayerPhotoComponent,
-		RefresherComponent,
 		TeamPageComponent
 	]
 })

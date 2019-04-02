@@ -6,6 +6,7 @@ import { StaticDataService } from '../static-data/static.data.service';
 import { GameweekDataService } from '../gameweek-data/gameweek-data.service';
 import { GameweekHistoryService } from '../gameweek-history/gameweek-history.service';
 import { SoccerPlayerService } from '../soccer-player/soccerplayer.service';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
 	providedIn: 'root'
@@ -22,7 +23,8 @@ export class FantasyPlayerService {
 		private staticDataService: StaticDataService,
 		private gameweekDataService: GameweekDataService,
 		private gameweekHistoryService: GameweekHistoryService,
-		private soccerPlayerService: SoccerPlayerService
+		private soccerPlayerService: SoccerPlayerService,
+		private storage: Storage
 	) {}
 
 	/**
@@ -37,30 +39,53 @@ export class FantasyPlayerService {
 		soccerPlayers: Map<number, any>,
 		currentGameweek: number
 	): Promise<FantasyPlayer> {
-		const userGameweekData = await this.gameweekDataService.getGameweekData(
-				id,
-				currentGameweek
-			),
-			previousGameweeksHistory = await this.gameweekHistoryService.fetch(id),
-			playerData = this.parsePlayerData(
+		const key = `id-${id} gameweek-${currentGameweek}`;
+		// tslint:disable-next-line: prefer-const
+		let stored = await this.storage.get(key),
+			userGameweekData = null,
+			playerData = null,
+			team = null,
+			previousGameweeksHistory = null,
+			newFantasyPlayer = null;
+
+		if (!stored) {
+			userGameweekData = await this.gameweekDataService.getGameweekData(id, currentGameweek);
+			previousGameweeksHistory = await this.gameweekHistoryService.fetch(id);
+			(playerData = this.parsePlayerData(
 				userGameweekData,
 				previousGameweeksHistory,
 				currentGameweek
-			),
-			team = new Team(id, playerData.teamName, playerData.lastWeekOverallPoints),
-			newFantasyPlayer = new FantasyPlayer(
-				playerData.activeChip,
-				playerData.bank,
-				playerData.countryImage,
-				0,
-				playerData.gameweekTransfers,
-				playerData.gameweekTransfersCost,
-				id,
-				playerData.leagues,
-				playerData.name,
-				playerData.overallRank,
-				team
-			);
+			)),
+				(team = new Team(id, playerData.teamName, playerData.lastWeekOverallPoints)),
+				(newFantasyPlayer = new FantasyPlayer(
+					playerData.activeChip,
+					playerData.bank,
+					playerData.value,
+					playerData.countryImage,
+					0,
+					playerData.gameweekTransfers,
+					playerData.gameweekTransfersCost,
+					id,
+					playerData.leagues,
+					playerData.name,
+					playerData.overallRank,
+					team
+				));
+			this.storage.set(key, {
+				userGameweekData,
+				previousGameweeksHistory,
+				playerData,
+				team,
+				newFantasyPlayer
+			});
+		} else {
+			userGameweekData = stored.userGameweekData;
+			previousGameweeksHistory = stored.previousGameweeksHistory;
+			playerData = stored.playerData;
+			team = new Team(id, playerData.teamName, playerData.lastWeekOverallPoints);
+			newFantasyPlayer = stored.newFantasyPlayer;
+			newFantasyPlayer.team = team;
+		}
 
 		this.populateSquad(playerData.picks, newFantasyPlayer, liveData, soccerPlayers);
 		return newFantasyPlayer;
@@ -88,7 +113,8 @@ export class FantasyPlayerService {
 				(gameweek) => gameweek.event === currentGameweek - 1
 			).total_points,
 			picks = userGameweekData.picks,
-			bank = userGameweekData.entry_history.value,
+			value = userGameweekData.entry_history.value,
+			bank = userGameweekData.entry_history.bank,
 			gameweekTransfers = userGameweekData.entry_history.event_transfers,
 			gameweekTransfersCost = userGameweekData.entry_history.event_transfers_cost,
 			overallRank = previousGameweekHistory.history.pop().overall_rank;
@@ -102,6 +128,7 @@ export class FantasyPlayerService {
 			lastWeekOverallPoints,
 			picks,
 			bank,
+			value,
 			gameweekTransfers,
 			gameweekTransfersCost,
 			overallRank
@@ -144,6 +171,7 @@ export class FantasyPlayerService {
 			}
 
 			if (pick.is_captain) {
+				newPlayer.gameweekPoints *= pick.multiplier;
 				fantasyPlayer.team.captainId = pick.element;
 				fantasyPlayer.team.captainName = newPlayer.name;
 			}

@@ -1,3 +1,5 @@
+$grid-font-size: 11px;
+
 .toolbar-container {
     background-color: #3772FF;
     color: white;
@@ -13,9 +15,32 @@
     &__member {
         font-weight: 800;
         font-size: 1em;
+        // box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.4);
+        margin: 1em .8em;
+        overflow: auto;
+        border-radius: 1em;
+        transition: all .1s linear;
 
         &__details {
             text-align: right;
+
+            h6, h4 {
+                margin:  0;
+            }
+        }
+
+        &:active {
+            transform: scale(1.05);
+        }
+
+        &__data {
+            h6 {
+                font-size: $grid-font-size;
+            }
+
+            p {
+                font-size: $grid-font-size;
+            }
         }
     }
 
@@ -42,6 +67,10 @@
             font-weight: 400;
             line-height: 1.2;
         }
+    }
+
+    &__list {
+        // background: rgba(204, 204, 204, 0.151)
     }
 }
 

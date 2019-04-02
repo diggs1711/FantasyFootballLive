@@ -1,47 +1,51 @@
-<app-header [title]="'LEAGUE'"></app-header>
+<!-- <app-header [title]="'LEAGUE'"></app-header> -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="closeModal()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-label class="main-logo">LEAGUES</ion-label>
+  </ion-toolbar>
+</ion-header>
 <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
 
 <ion-content *ngIf="!showSpinner">
-  <app-refresher></app-refresher>
+  <ion-refresher slot="fixed" (ionRefresh)="refreshPulldown($event)">
+    <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
+  </ion-refresher>
 
-  <ion-list inset lines="none" *ngIf="league.members.size > 0">
+  <ion-list class="league__list" *ngIf="league.members.size > 0">
     <ion-list-header>
       <ion-label text-wrap>
-        <h3>
+        <h2>
           {{ league.name }}
-        </h3>
+        </h2>
       </ion-label>
     </ion-list-header>
 
-    <ion-item detail class="league__member" *ngFor="let member of leagueStanding; let i = index;"
+    <ion-item class="league__member" *ngFor="let member of leagueStanding; let i = index;"
       (click)="onPlayerSelected(member.team.id)">
-      <div class="rank__number">
-        {{ i + 1 }}
-      </div>
+      <ion-avatar slot="start">
+        <img [src]="member.countryImage">
+      </ion-avatar>
       <ion-label text-wrap>
-        <h6>{{ member.team.name }}
-        </h6>
-        <p>{{ member.name }}</p>
+        <h2>{{ i + 1 }}. {{ member.team.name }}</h2>
+        <h3>{{ member.name }}</h3>
         <p>
-          <ion-text color="danger">
-            {{ member.team.overallPoints }}
-          </ion-text>
+          {{ member.team.captainName }} (C)
         </p>
-        <ion-badge size="small" color="danger">{{ member.activeChip }}</ion-badge>
+        <ion-badge *ngIf="member.activeChip.length > 0" color="danger">{{ member.activeChip }}</ion-badge>
       </ion-label>
 
       <ion-note class="league__member__details" slot="end">
-        <ion-text *ngIf="member.gameweekTransfers >= 0"> {{ member.gameweekTransfers }} Transfer<ion-text
-            *ngIf="member.gameweekTransfers > 1">s</ion-text>
-        </ion-text>
-        <ion-text color="danger" *ngIf="member.gameweekTransfersCost > 0">
-          (-{{ member.gameweekTransfersCost }})</ion-text>
-        <p>
-          <strong>{{ member.team.captainName }} (C)</strong>
-        </p>
-        <p>
+        <h4>
+          {{ member.team.overallPoints }}
+        </h4>
+        <h6>
           {{ member.team.gameweekPoints }}
-        </p>
+        </h6>
       </ion-note>
     </ion-item>
   </ion-list>

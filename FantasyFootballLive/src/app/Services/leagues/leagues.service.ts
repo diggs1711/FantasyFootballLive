@@ -23,33 +23,47 @@ export class LeaguesService {
 		const leagueData = await this.httpRequestService.fetch(
 			`https://fantasy.premierleague.com/drf/leagues-classic-standings/${id}`
 		);
+		let currentGameweek = null,
+			soccerPlayers = null;
 
-		const currentGameweek = await this.staticDataService.getCurrentGameweek();
-		const liveData = await this.liveDataService.fetch(currentGameweek);
-		const soccerPlayers = await this.soccerPlayerService.getPlayers();
-
-		return Promise.all(
-			leagueData.standings.results.map((player: any) =>
-				this.fantasyPlayerService
-					.createPlayer(player.entry, liveData, soccerPlayers, currentGameweek)
-					.catch(() => {
-						// create new player with just basic info
-						const p = new FantasyPlayer();
-						p.id = player.entry;
-						p.name = player.entry_name;
-						return p;
-					})
-			)
-		).then((members: any[]) => {
-			const membersMap = new Map();
-			// create map for easy retrieval of memebrs
-			for (const member of members) {
-				if (member) {
-					membersMap.set(member.id, member);
+		return Promise.all([
+			this.staticDataService.getCurrentGameweek(),
+			this.soccerPlayerService.getPlayers()
+		])
+			.then(([gameweek, players]) => {
+				currentGameweek = gameweek;
+				soccerPlayers = players;
+				return this.liveDataService.fetch(currentGameweek);
+			})
+			.then((liveData) => {
+				return Promise.all(
+					leagueData.standings.results.map((player: any) =>
+						this.fantasyPlayerService
+							.createPlayer(player.entry, liveData, soccerPlayers, currentGameweek)
+							.catch(() => {
+								// create new player with just basic info
+								const p = new FantasyPlayer();
+								p.id = player.entry;
+								p.name = player.entry_name;
+								return p;
+							})
+					)
+				);
+			})
+			.then((members: any[]) => {
+				const membersMap = new Map();
+				// create map for easy retrieval of memebrs
+				for (const member of members) {
+					if (member) {
+						membersMap.set(member.id, member);
+					}
 				}
-			}
-			const newLeague = new League(leagueData.league.id, leagueData.league.name, membersMap);
-			return newLeague;
-		});
+				const newLeague = new League(
+					leagueData.league.id,
+					leagueData.league.name,
+					membersMap
+				);
+				return newLeague;
+			});
 	}
 }

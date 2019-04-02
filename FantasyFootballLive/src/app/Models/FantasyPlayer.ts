@@ -5,6 +5,7 @@ import Team from './Team';
 export default class FantasyPlayer {
 	activeChip: string;
 	bank: number;
+	value: number;
 	countryImage: string;
 	gameweekRank = 0;
 	gameweekTransfers: number;
@@ -18,6 +19,7 @@ export default class FantasyPlayer {
 	constructor(
 		activeChip = '',
 		bank = 0,
+		value = 0,
 		countryImage = '',
 		gameweekRank = -1,
 		gameweekTransfers = 0,
@@ -39,5 +41,6 @@ export default class FantasyPlayer {
 		this.name = name;
 		this.overallRank = overallRank;
 		this.team = team;
+		this.value = value;
 	}
 }
