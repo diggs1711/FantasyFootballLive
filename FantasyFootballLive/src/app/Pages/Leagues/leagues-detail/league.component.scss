@@ -10,6 +10,77 @@ $grid-font-size: 11px;
     font-weight: 600;
 }
 
+.header {
+    text-align: center;
+}
+
+.background-content {
+    background: rgba(200, 200, 200, 0.4)
+}
+
+.league {
+    &__table {
+        &__content {
+            font-size: $grid-font-size;
+
+            &__member {
+                margin-bottom: 1em;
+                padding: 1.3em;
+                box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.4), inset 2px -2px 3px 0px rgba(0, 0, 0, 0.4);
+                border-radius: 1em;
+                min-height: 7em;
+                transition: all .2s linear;
+
+                &__name {
+
+                    h4,
+                    h6 {
+                        margin: 0;
+                        padding: 0;
+                        font-size: 1em;
+                    }
+
+                    h6 {
+                        font-weight: 800;
+                        color: #989898;
+                        margin-bottom: 0.4em;
+                    }
+
+                    h4 {
+                        font-size: 1.3em;
+                        font-weight: bold;
+                    }
+                }
+
+                &__captain {
+                    display: flex;
+                    justify-content: space-between;
+                    flex-direction: column;
+                    align-items: center;
+                    font-weight: 800;
+                    font-size: 0.8em;
+                    color: rgba(0, 0, 0, 0.7);
+
+                    img {
+                        height: 4em;
+                        width: 4em;
+                        border-radius: 50%;
+                        object-fit: contain;
+                        object-position: center;
+                        margin-bottom: .6em;
+                    }
+                }
+
+                &:active {
+                    transform: scale(1.05);
+                    box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.4)
+                }
+            }
+        }
+
+    }
+}
+
 .league {
 
     &__member {
@@ -24,8 +95,9 @@ $grid-font-size: 11px;
         &__details {
             text-align: right;
 
-            h6, h4 {
-                margin:  0;
+            h6,
+            h4 {
+                margin: 0;
             }
         }
 

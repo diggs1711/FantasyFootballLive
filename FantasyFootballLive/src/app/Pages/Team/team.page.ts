@@ -19,12 +19,9 @@ export class TeamPage implements OnInit {
 	) {}
 
 	ngOnInit() {
-		this.loadUpcomingFixtures().then(() => (this.showSpinner = false));
-
-		// this.mainUserService.loadSavedUser().then(() => {
-		// 	this.loadUpcomingFixtures();
-		// 	this.showSpinner = false;
-		// });
+		if (this.mainUserService.user) {
+			this.loadUpcomingFixtures().then(() => (this.showSpinner = false));
+		}
 	}
 
 	async loadFixtures(players: SoccerPlayer[]) {
@@ -34,6 +31,7 @@ export class TeamPage implements OnInit {
 		for (let index = 0; index < players.length; index++) {
 			players[index].fixtures = playerFixtures[index];
 		}
+		return players;
 	}
 
 	async loadUpcomingFixtures() {
@@ -43,7 +41,14 @@ export class TeamPage implements OnInit {
 			this.loadFixtures(this.mainUserService.user.team.Midfielders),
 			this.loadFixtures(this.mainUserService.user.team.Forwards),
 			this.loadFixtures(this.mainUserService.user.team.Bench)
-		]);
+		]).then(([ g, d, m, f, b ]) => {
+			this.mainUserService.user.team.Goalkeepers = g;
+			this.mainUserService.user.team.Defenders = d;
+			this.mainUserService.user.team.Midfielders = m;
+			this.mainUserService.user.team.Forwards = f;
+			this.mainUserService.user.team.Bench = b;
+			this.mainUserService.save();
+		});
 	}
 
 	refreshUser(event: { target: { complete: () => void } }) {

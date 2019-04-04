@@ -6,47 +6,54 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-label class="main-logo">LEAGUES</ion-label>
+    <ion-label class="header">LEAGUE</ion-label>
+    <ion-buttons slot="secondary">
+      <ion-button href="/tabs/settings">
+        <ion-icon slot="icon-only" src="../../assets/icons/tools.svg"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <app-loading-spinner *ngIf="showSpinner"></app-loading-spinner>
 
-<ion-content *ngIf="!showSpinner">
+<ion-content class="background-content" padding *ngIf="!showSpinner">
   <ion-refresher slot="fixed" (ionRefresh)="refreshPulldown($event)">
     <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
   </ion-refresher>
 
-  <ion-list class="league__list" *ngIf="league.members.size > 0">
+  <div class="league__table">
     <ion-list-header>
-      <ion-label text-wrap>
-        <h2>
-          {{ league.name }}
-        </h2>
-      </ion-label>
+      {{ league.name }}
     </ion-list-header>
-
-    <ion-item class="league__member" *ngFor="let member of leagueStanding; let i = index;"
-      (click)="onPlayerSelected(member.team.id)">
-      <ion-avatar slot="start">
-        <img [src]="member.countryImage">
-      </ion-avatar>
-      <ion-label text-wrap>
-        <h2>{{ i + 1 }}. {{ member.team.name }}</h2>
-        <h3>{{ member.name }}</h3>
-        <p>
-          {{ member.team.captainName }} (C)
-        </p>
+  </div>
+  <ion-grid class="league__table__content" align-items-center justify-content-center>
+    <ion-row (click)="onPlayerSelected(member.team.id)" class="league__table__content__member"
+      *ngFor="let member of leagueStanding; let i = index; " align-items-center justify-content-center>
+      <ion-col size="1">
+        {{ i + 1}}
+      </ion-col>
+      <ion-col class="league__table__content__member__name" size="4" text-wrap>
+        <h4>{{ member.team.name }}</h4>
+        <h6>{{ member.name }}</h6>
         <ion-badge *ngIf="member.activeChip.length > 0" color="danger">{{ member.activeChip }}</ion-badge>
-      </ion-label>
-
-      <ion-note class="league__member__details" slot="end">
+      </ion-col>
+      <ion-col class="league__table__content__member__name">
         <h4>
           {{ member.team.overallPoints }}
         </h4>
         <h6>
           {{ member.team.gameweekPoints }}
         </h6>
-      </ion-note>
-    </ion-item>
-  </ion-list>
+      </ion-col>
+      <ion-col class="league__table__content__member__name">
+        <h4>{{member.gameweekTransfers}} <ion-text *ngIf="member.gameweekTransfersCost > 0" color="danger" style="font-size: 0.7em;">-({{ member.gameweekTransfersCost }})</ion-text>
+        </h4>
+        <h6>Transfers</h6>
+      </ion-col>
+      <ion-col class="league__table__content__member__captain">
+        <img [src]="member.team.captainImage" [alt]="member.team.captainName">
+        {{ member.team.captainName }} (C)
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

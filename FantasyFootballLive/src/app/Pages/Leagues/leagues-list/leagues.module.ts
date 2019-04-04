@@ -9,6 +9,7 @@ import { LeaguesPage } from './leagues.page';
 import { ComponentsModule } from '../../../Components/components.module';
 import { LeagueComponent } from '../leagues-detail/league.component';
 import { TeamPageComponent } from 'src/app/Components/team-page/team-page.component';
+import { CustomLeaguesComponent } from '../custom-leagues/custom-leagues.component';
 
 const routes: Routes = [
 	{
@@ -18,8 +19,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-	entryComponents: [ LeagueComponent, TeamPageComponent ],
-	imports: [ CommonModule, FormsModule, IonicModule, ComponentsModule, RouterModule.forChild(routes) ],
-	declarations: [ LeaguesPage, LeagueComponent ]
+	entryComponents: [ LeagueComponent, TeamPageComponent, CustomLeaguesComponent ],
+	imports: [
+		CommonModule,
+		FormsModule,
+		IonicModule,
+		ComponentsModule,
+		RouterModule.forChild(routes)
+	],
+	declarations: [ LeaguesPage, LeagueComponent, CustomLeaguesComponent ]
 })
 export class LeaguesPageModule {}

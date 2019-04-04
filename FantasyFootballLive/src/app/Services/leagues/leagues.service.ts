@@ -66,4 +66,8 @@ export class LeaguesService {
 				return newLeague;
 			});
 	}
+
+	createCustomLeague(name: string, members: any[]) {
+		
+	}
 }

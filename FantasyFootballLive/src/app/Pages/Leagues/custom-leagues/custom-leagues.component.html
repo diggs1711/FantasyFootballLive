@@ -1,0 +1,25 @@
+<app-header [title]="'Add League'"></app-header>
+<ion-content padding>
+  <p>
+    This allows you to create a custom league thats just within this app.
+    Simply just add in the FPL Id of the people you wish to add in.
+  </p>
+
+  <ion-item>
+    <ion-label position="stacked">
+      League Name
+    </ion-label>
+    <ion-input type="text"></ion-input>
+  </ion-item>
+  <ion-list *ngFor="let member of newCustomLeagues">
+    <ion-list-header>
+      Members
+    </ion-list-header>
+    <ion-item>
+
+    </ion-item>
+  </ion-list>
+  <ion-button color="danger">Add</ion-button>
+
+  <ion-button color="danger" expand="block">Create League</ion-button>
+</ion-content>

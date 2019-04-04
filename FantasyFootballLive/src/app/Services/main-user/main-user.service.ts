@@ -33,6 +33,10 @@ export class MainUserService {
 		return user.id;
 	}
 
+	save() {
+		this.storage.set(this.userKey, this.user);
+	}
+
 	/**
 	 * @description creates the main user of the app
 	 * @param id fpl id of user
@@ -58,6 +62,7 @@ export class MainUserService {
 
 	async updateUser(id: number) {
 		// just re create user to get live data
+		this.storage.clear();
 		return await this.createUser(id);
 	}
 

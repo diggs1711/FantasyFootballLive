@@ -26,7 +26,6 @@ import config from 'src/firebase.config';
 
 // cookie
 import { CookieService } from 'ngx-cookie-service';
-
 @NgModule({
 	declarations: [ AppComponent ],
 	entryComponents: [],

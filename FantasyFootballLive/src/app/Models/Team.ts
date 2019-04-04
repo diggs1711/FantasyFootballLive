@@ -12,6 +12,7 @@ export default class Team {
 	name: string;
 	captainId: number;
 	captainName: string;
+	captainImage: string;
 	value: number;
 	bank = 0;
 

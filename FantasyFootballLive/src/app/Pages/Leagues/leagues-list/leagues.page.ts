@@ -2,20 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { LeagueComponent } from 'src/app/Pages/Leagues/leagues-detail/league.component';
 import { MainUserService } from 'src/app/Services/main-user/main-user.service';
+import { CustomLeaguesComponent } from '../custom-leagues/custom-leagues.component';
 
 
 @Component({
 	selector: 'app-leagues',
 	templateUrl: './leagues.page.html',
-	styleUrls: [ './leagues.page.scss' ]
+	styleUrls: ['./leagues.page.scss']
 })
 export class LeaguesPage implements OnInit {
 	constructor(
 		private modalController: ModalController,
 		public mainUserService: MainUserService
-	) {}
+	) { }
 
-	ngOnInit() {}
+	ngOnInit() { }
 
 	/**
 	 * @param leagueId id of league
@@ -32,6 +33,16 @@ export class LeaguesPage implements OnInit {
 			componentProps: {
 				leagueId: leagueId
 			}
+		});
+
+		return await modal.present();
+	}
+
+	async openAddCustomLeagueModal() {
+
+		const modal = await this.modalController.create({
+			component: CustomLeaguesComponent,
+			animated: true,
 		});
 
 		return await modal.present();

@@ -12,6 +12,7 @@ export default class FantasyPlayer {
 	gameweekTransfersCost: number;
 	id: number;
 	leagues: League[];
+	customLeagues: League[];
 	name: string;
 	overallRank = 0;
 	team: Team;
@@ -42,5 +43,6 @@ export default class FantasyPlayer {
 		this.overallRank = overallRank;
 		this.team = team;
 		this.value = value;
+		this.customLeagues = [];
 	}
 }

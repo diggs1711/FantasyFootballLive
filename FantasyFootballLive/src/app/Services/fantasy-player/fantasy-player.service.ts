@@ -7,6 +7,7 @@ import { GameweekDataService } from '../gameweek-data/gameweek-data.service';
 import { GameweekHistoryService } from '../gameweek-history/gameweek-history.service';
 import { SoccerPlayerService } from '../soccer-player/soccerplayer.service';
 import { Storage } from '@ionic/storage';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -24,7 +25,8 @@ export class FantasyPlayerService {
 		private gameweekDataService: GameweekDataService,
 		private gameweekHistoryService: GameweekHistoryService,
 		private soccerPlayerService: SoccerPlayerService,
-		private storage: Storage
+ 		private storage: Storage,
+		private storageService: StorageService
 	) {}
 
 	/**
@@ -49,6 +51,7 @@ export class FantasyPlayerService {
 			newFantasyPlayer = null;
 
 		if (!stored) {
+			await this.storageService.clear();
 			userGameweekData = await this.gameweekDataService.getGameweekData(id, currentGameweek);
 			previousGameweeksHistory = await this.gameweekHistoryService.fetch(id);
 			(playerData = this.parsePlayerData(
@@ -147,11 +150,12 @@ export class FantasyPlayerService {
 		for (const pick of picks) {
 			const currentPlayer = players.get(pick.element),
 				position = this.positionMap[currentPlayer.element_type],
+				image = this.soccerPlayerService.getPhotoUrl(currentPlayer.id, players),
 				currentPlayerGWPoints =
 					liveData['elements'][currentPlayer.id]['stats']['total_points'],
 				newPlayer = new SoccerPlayer(
 					pick.element,
-					this.soccerPlayerService.getPhotoUrl(currentPlayer.id, players),
+					image,
 					null,
 					currentPlayerGWPoints,
 					currentPlayer.web_name,
@@ -174,6 +178,7 @@ export class FantasyPlayerService {
 				newPlayer.gameweekPoints *= pick.multiplier;
 				fantasyPlayer.team.captainId = pick.element;
 				fantasyPlayer.team.captainName = newPlayer.name;
+				fantasyPlayer.team.captainImage = image;
 			}
 		}
 		fantasyPlayer.team.gameweekPoints = totalPoints;
