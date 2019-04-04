@@ -19,13 +19,17 @@ import { Device } from '@ionic-native/device/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
 // Firebase
-import { AngularFireModule } from 'angularfire2';
+import {
+	AngularFireModule,
+	FirebaseOptionsToken,
+} from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import config from 'src/firebase.config';
 
 // cookie
 import { CookieService } from 'ngx-cookie-service';
+
 @NgModule({
 	declarations: [ AppComponent ],
 	entryComponents: [],
@@ -36,7 +40,7 @@ import { CookieService } from 'ngx-cookie-service';
 		HttpClientModule,
 		HttpModule,
 		IonicStorageModule.forRoot(),
-		AngularFireModule.initializeApp(config),
+		AngularFireModule,
 		AngularFirestoreModule
 	],
 	providers: [
@@ -46,7 +50,8 @@ import { CookieService } from 'ngx-cookie-service';
 		SplashScreen,
 		Firebase,
 		CookieService,
-		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+		{ provide: FirebaseOptionsToken, useValue: config }
 	],
 	bootstrap: [ AppComponent ]
 })

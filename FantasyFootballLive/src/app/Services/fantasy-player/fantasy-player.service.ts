@@ -25,7 +25,7 @@ export class FantasyPlayerService {
 		private gameweekDataService: GameweekDataService,
 		private gameweekHistoryService: GameweekHistoryService,
 		private soccerPlayerService: SoccerPlayerService,
- 		private storage: Storage,
+		private storage: Storage,
 		private storageService: StorageService
 	) {}
 
@@ -146,13 +146,17 @@ export class FantasyPlayerService {
 	) {
 		// tslint:disable-next-line: prefer-const
 		let totalPoints = 0;
-
+		const livePlayerData = liveData['elements'];
+		const liveFixturesData = liveData['fixtures'];
 		for (const pick of picks) {
 			const currentPlayer = players.get(pick.element),
 				position = this.positionMap[currentPlayer.element_type],
 				image = this.soccerPlayerService.getPhotoUrl(currentPlayer.id, players),
+				playerStats = livePlayerData[currentPlayer.id]['stats'],
 				currentPlayerGWPoints =
-					liveData['elements'][currentPlayer.id]['stats']['total_points'],
+					playerStats['total_points'] -
+					playerStats['bonus'] +
+					this.getLiveBonusPoints(liveFixturesData, currentPlayer.id),
 				newPlayer = new SoccerPlayer(
 					pick.element,
 					image,
@@ -184,5 +188,28 @@ export class FantasyPlayerService {
 		fantasyPlayer.team.gameweekPoints = totalPoints;
 		fantasyPlayer.team.overallPoints += totalPoints - fantasyPlayer.gameweekTransfersCost;
 		return null;
+	}
+
+	private getLiveBonusPoints(fixtures: any, id: number): number {
+		let totalBonus = 0;
+
+		for (const fixture of fixtures) {
+			for (const stat of fixture.stats) {
+				if (stat.bonus) {
+					for (const player of stat.bonus.a) {
+						if (player.element === id) {
+							totalBonus += player.value;
+						}
+					}
+
+					for (const player of stat.bonus.h) {
+						if (player.element === id) {
+							totalBonus += player.value;
+						}
+					}
+				}
+			}
+		}
+		return totalBonus;
 	}
 }

@@ -12,6 +12,7 @@ export class TeamPageComponent implements OnInit {
 	@Input() fantasyPlayer: FantasyPlayer;
 	gameweekTransfers: any[] = [];
 	showSpinner = true;
+	showCloseButton = false;
 
 	constructor(
 		private transferService: TransferService,
