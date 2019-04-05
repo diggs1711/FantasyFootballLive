@@ -19,10 +19,7 @@ export class LeaguesService {
 		private soccerPlayerService: SoccerPlayerService
 	) {}
 
-	async getLeague(id: number): Promise<League> {
-		const leagueData = await this.httpRequestService.fetch(
-			`https://fantasy.premierleague.com/drf/leagues-classic-standings/${id}`
-		);
+	async createLeague(members: number[], name: string, id: number = null) {
 		let currentGameweek = null,
 			soccerPlayers = null;
 
@@ -30,44 +27,47 @@ export class LeaguesService {
 			this.staticDataService.getCurrentGameweek(),
 			this.soccerPlayerService.getPlayers()
 		])
-			.then(([gameweek, players]) => {
+			.then(([ gameweek, players ]) => {
 				currentGameweek = gameweek;
 				soccerPlayers = players;
 				return this.liveDataService.fetch(currentGameweek);
 			})
 			.then((liveData) => {
 				return Promise.all(
-					leagueData.standings.results.map((player: any) =>
+					members.map((memberId: number) =>
 						this.fantasyPlayerService
-							.createPlayer(player.entry, liveData, soccerPlayers, currentGameweek)
+							.createPlayer(memberId, liveData, soccerPlayers, currentGameweek)
 							.catch(() => {
 								// create new player with just basic info
 								const p = new FantasyPlayer();
-								p.id = player.entry;
-								p.name = player.entry_name;
+								p.id = id;
+								p.name = 'failed';
 								return p;
 							})
 					)
 				);
 			})
-			.then((members: any[]) => {
+			.then((fantasyPlayers: any[]) => {
 				const membersMap = new Map();
 				// create map for easy retrieval of memebrs
-				for (const member of members) {
-					if (member) {
-						membersMap.set(member.id, member);
+				for (const player of fantasyPlayers) {
+					if (player) {
+						membersMap.set(player.id, player);
 					}
 				}
 				const newLeague = new League(
-					leagueData.league.id,
-					leagueData.league.name,
+					id,
+					name,
 					membersMap
 				);
 				return newLeague;
 			});
 	}
-
-	createCustomLeague(name: string, members: any[]) {
-		
+	async getLeague(id: number): Promise<League> {
+		const leagueData = await this.httpRequestService.fetch(
+			`https://fantasy.premierleague.com/drf/leagues-classic-standings/${id}`
+		);
+		const membersIds = leagueData.standings.results.map(member => member.entry);
+		return this.createLeague(membersIds, leagueData.league.name, leagueData.league.id);
 	}
 }

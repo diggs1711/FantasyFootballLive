@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import League from 'src/app/Models/League';
+import { FantasyPlayerService } from 'src/app/Services/fantasy-player/fantasy-player.service';
+import { ModalController } from '@ionic/angular';
+import { LeaguesService } from 'src/app/Services/leagues/leagues.service';
+import { CustomLeagueService } from 'src/app/Services/leagues/custom-league.service';
 
 @Component({
 	selector: 'app-custom-leagues',
@@ -6,12 +11,48 @@ import { Component, OnInit } from '@angular/core';
 	styleUrls: [ './custom-leagues.component.scss' ]
 })
 export class CustomLeaguesComponent implements OnInit {
-	newCustomLeague = [];
+	newMembers = [];
+	customLeagues = [];
 	newLeagueName = '';
+	memberId = null;
 
-	constructor() {}
+	constructor(
+		private customLeagueService: CustomLeagueService,
+		private modalController: ModalController
+	) {}
 
 	ngOnInit() {}
 
-	createLeague() {}
+	async createLeague() {
+		if (!this.newLeagueName || this.newMembers.length === 0) {
+			return;
+		}
+		await this.customLeagueService.create(this.newLeagueName, this.newMembers);
+
+		this.closeModal();
+		return null;
+	}
+
+	addMember(id: number) {
+		if (id == null || id > 70000000) {
+			// display toast saying id is too big!
+		} else if (!this.isMemberPresent(id)) {
+			this.newMembers.push(id);
+		}
+		this.memberId = null;
+	}
+
+	isMemberPresent(id) {
+		return this.newMembers.includes(id);
+	}
+	closeModal() {
+		this.modalController.dismiss();
+	}
+
+	removeMember(memberId) {
+		if (memberId == null) {
+			return;
+		}
+		this.newMembers = this.newMembers.filter((member) => member !== memberId);
+	}
 }

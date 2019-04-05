@@ -5,6 +5,7 @@ $white: rgb(255, 255, 255);
 $border-radius: 0.5em;
 $badge-size: 3em;
 $font-size: 1.5em;
+$text-shadow: 4px 3px 4px rgba(0, 0, 0, 0.5);
 
 .input-container {
     display: flex;
@@ -55,6 +56,7 @@ $font-size: 1.5em;
             color: $white;
             font-weight: 600;
             font-size: $font-size / 2;
+            text-shadow: $text-shadow;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -92,6 +94,7 @@ $font-size: 1.5em;
             flex-direction: column;
             justify-content: flex-end;
             align-items: flex-end;
+            text-shadow: $text-shadow;
 
             p {
                 margin: 0;
@@ -113,6 +116,10 @@ $font-size: 1.5em;
 
     &__divider {
         padding-right: 16px;
+
+        &__rank {
+            overflow: inherit;
+        }
     }
 
     &__fixture {

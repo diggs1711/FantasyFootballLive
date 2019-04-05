@@ -27,4 +27,27 @@ export class BonusPointService implements OnInit {
 	updateSetting(val: boolean): void {
 		this.storage.set('include-bonus-points', val);
 	}
+
+	getBPSBonusForLiveGames(fixtures: any[]) {
+		const matches = [];
+
+		for (const fixture of fixtures) {
+			for (const stat of fixture.stats) {
+				// change to bps from stat and calculate top 3 players
+				if (stat && stat.bps) {
+					const matchBPS = [];
+					for (const player of stat.bps.a) {
+						matchBPS.push(player);
+					}
+
+					for (const player of stat.bps.h) {
+						matchBPS.push(player);
+					}
+
+					matchBPS.sort((a, b) => b.value - a.value);
+					console.log(matchBPS);
+				}
+			}
+		}
+	}
 }

@@ -1,12 +1,16 @@
 import FantasyPlayer from './FantasyPlayer';
-export default class League {
-	id: number;
-	name: string;
+import BaseLeague from './BaseLeague';
+export default class League extends BaseLeague {
 	members: Map<number, FantasyPlayer>;
 
 	constructor(id = -1, name = '', members = new Map<number, FantasyPlayer>()) {
-		this.id = id;
-		this.name = name;
+		super(id, name);
 		this.members = members;
+	}
+
+	sort() {
+		return Array.from(this.members.values()).sort(
+			(a, b) => b.team.overallPoints - a.team.overallPoints
+		);
 	}
 }

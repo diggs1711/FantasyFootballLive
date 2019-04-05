@@ -24,6 +24,9 @@
   <div class="league__table">
     <ion-list-header>
       {{ league.name }}
+      <ion-button color="danger" *ngIf="isCustom" (click)="deleteLeague()">
+        Delete
+      </ion-button>
     </ion-list-header>
 
     <ion-grid class="league__table__content" align-items-center justify-content-center>
@@ -32,7 +35,7 @@
         <ion-col size="1">
           {{ i + 1}}
         </ion-col>
-        <ion-col class="league__table__content__member__name" size="4" text-wrap>
+        <ion-col class="league__table__content__member__name" size="5" text-wrap>
           <h4>{{ member.team.name }}</h4>
           <h6>{{ member.name }}</h6>
           <ion-badge *ngIf="member.activeChip.length > 0" color="danger">{{ member.activeChip }}</ion-badge>
@@ -47,13 +50,13 @@
         </ion-col>
         <ion-col class="league__table__content__member__name">
           <h4>{{member.gameweekTransfers}} <ion-text *ngIf="member.gameweekTransfersCost > 0" color="danger"
-              style="font-size: 0.7em;">-({{ member.gameweekTransfersCost }})</ion-text>
+              style="font-size: 0.7em;">(-{{ member.gameweekTransfersCost }})</ion-text>
           </h4>
           <h6>Transfers</h6>
         </ion-col>
         <ion-col class="league__table__content__member__captain">
           <img [src]="member.team.captainImage" [alt]="member.team.captainName">
-          {{ member.team.captainName }} (C)
+          <ion-text text-wrap>{{ member.team.captainName }} (C)</ion-text>
         </ion-col>
       </ion-row>
     </ion-grid>

@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 import { Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
 import { MainUserService } from '../Services/main-user/main-user.service';
+import { CustomLeagueService } from '../Services/leagues/custom-league.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -11,7 +12,8 @@ export class LoginGuard implements CanActivate {
 	constructor(
 		private storage: Storage,
 		private router: Router,
-		private mainUserService: MainUserService
+		private mainUserService: MainUserService,
+		private customLeagueService: CustomLeagueService
 	) {}
 
 	canActivate(
@@ -20,7 +22,10 @@ export class LoginGuard implements CanActivate {
 	): Observable<boolean> | Promise<boolean> | boolean {
 		return this.storage.get('user').then((user) => {
 			if (user) {
-				return this.mainUserService.loadSavedUser().then(() => true);
+				return this.mainUserService
+					.loadSavedUser()
+					.then(() => this.customLeagueService.getLeagues())
+					.then(() => true);
 			} else {
 				this.router.navigateByUrl(`/tabs/home`);
 				return false;

@@ -6,6 +6,8 @@ import FantasyPlayer from '../../../Models/FantasyPlayer';
 import League from '../../../Models/League';
 import { LeaguesService } from 'src/app/Services/leagues/leagues.service';
 import { TeamPageComponent } from 'src/app/Components/team-page/team-page.component';
+import { MainUserService } from 'src/app/Services/main-user/main-user.service';
+import { CustomLeagueService } from 'src/app/Services/leagues/custom-league.service';
 
 @Component({
 	selector: 'app-league',
@@ -13,20 +15,39 @@ import { TeamPageComponent } from 'src/app/Components/team-page/team-page.compon
 	styleUrls: [ './league.component.scss' ]
 })
 export class LeagueComponent implements OnInit {
-	league: League;
+	league: League = null;
 	fantasyPlayer: FantasyPlayer;
 	showSpinner = true;
 	maxTries = 5;
 	leagueStanding = [];
+	isCustom = false;
 
 	constructor(
 		public modalController: ModalController,
 		private navParams: NavParams,
-		private leaguesService: LeaguesService
+		private leaguesService: LeaguesService,
+		private mainUserService: MainUserService,
+		private customLeagueService: CustomLeagueService
 	) {}
 
 	ngOnInit() {
-		this.load(this.navParams.data.leagueId);
+		this.isCustom = this.navParams.data.isCustom;
+		if (!this.isCustom) {
+			this.load(this.navParams.data.leagueId).then((league) => this.onLeagueLoaded(league));
+		} else {
+			this.customLeagueService.getLeague(this.navParams.data.leagueId).then((custLeague) => {
+				this.customLeagueService
+					.loadLeague(custLeague)
+					.then((league) => this.onLeagueLoaded(league));
+			});
+		}
+	}
+
+	onLeagueLoaded(league) {
+		this.league = league;
+		this.leagueStanding = this.league.sort();
+		this.showSpinner = false;
+		return this.league;
 	}
 
 	/**
@@ -34,25 +55,8 @@ export class LeagueComponent implements OnInit {
 	 * @param id id of the league to be loaded
 	 * @description loads the all the data needed to display the league
 	 */
-	async load(id: number, maxTries = 5) {
-		this.league = await this.leaguesService.getLeague(id);
-		// sometimes the league returns undefined for some users and they need to
-		// fetched again. this checks if any are undefined and loads the league again
-		// can be optimised to just fetch undefined users but this works for now
-		// if (this.league.members.has(undefined) && maxTries > 0) {
-		// 	this.load(this.league.id, maxTries - 1);
-		// 	return;
-		// }
-		this.leagueStanding = this.sortLeagueInDescendingOrder(this.league);
-		this.showSpinner = false;
-	}
-
-	/**
-	 *
-	 * @param league league object to sorted
-	 */
-	sortLeagueInDescendingOrder(league: League) {
-		return Array.from(league.members.values()).sort((a, b) => b.team.overallPoints - a.team.overallPoints);
+	async load(id: number) {
+		return this.leaguesService.getLeague(id);
 	}
 
 	/**
@@ -68,7 +72,7 @@ export class LeagueComponent implements OnInit {
 	 * @description refreshes the league by loading it again
 	 */
 	async refresh(id: number) {
-		await this.load(id);
+		return this.load(id).then((league) => this.onLeagueLoaded(league));
 	}
 
 	/**
@@ -93,5 +97,15 @@ export class LeagueComponent implements OnInit {
 			}
 		});
 		return await modal.present();
+	}
+
+	/**
+	 * deletes a custom league
+	 */
+	deleteLeague() {
+		this.customLeagueService.remove(this.league);
+		this.customLeagueService.saveToDatabase();
+		this.modalController.dismiss();
+		return;
 	}
 }

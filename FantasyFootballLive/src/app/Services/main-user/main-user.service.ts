@@ -6,6 +6,7 @@ import { FcmService } from '../Firebase/fcm.service';
 import { LiveDataService } from '../live-data/live.data.service';
 import { StaticDataService } from '../static-data/static.data.service';
 import { SoccerPlayerService } from '../soccer-player/soccerplayer.service';
+import { CustomLeagueService } from '../leagues/custom-league.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -20,7 +21,8 @@ export class MainUserService {
 		private liveDataService: LiveDataService,
 		private staticDataService: StaticDataService,
 		private fcmService: FcmService,
-		private soccerPlayerService: SoccerPlayerService
+		private soccerPlayerService: SoccerPlayerService,
+		private customLeagueService: CustomLeagueService
 	) {}
 
 	async loadSavedUser() {
@@ -61,8 +63,13 @@ export class MainUserService {
 	}
 
 	async updateUser(id: number) {
-		// just re create user to get live data
+
+		// keep custom league and clear rest of the data
+		const customLeagues = await this.customLeagueService.getLeagues();
 		this.storage.clear();
+		this.customLeagueService.customLeagues = customLeagues;
+		this.customLeagueService.saveToDatabase();
+
 		return await this.createUser(id);
 	}
 

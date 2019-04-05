@@ -18,15 +18,7 @@ export class SettingsPage implements OnInit {
 		public mainUserService: MainUserService
 	) {}
 
-	ngOnInit() {
-		this.bonusPointService.getUserSetting().then((include) => {
-			this.includeBonusPoints = include;
-		});
-	}
-
-	updateSetting(val: boolean): void {
-		this.bonusPointService.updateSetting(val);
-	}
+	ngOnInit() {}
 
 	toggleIdInput() {
 		this.canEnterNewId = !this.canEnterNewId;

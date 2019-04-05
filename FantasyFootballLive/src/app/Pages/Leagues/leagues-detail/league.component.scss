@@ -1,5 +1,5 @@
 $grid-font-size: 11px;
-$background-color:rgba(204, 204, 204, 0.4);
+$background-color:rgba(204, 204, 204, 0.15);
 
 .header {
     text-align: center;
@@ -9,15 +9,17 @@ $background-color:rgba(204, 204, 204, 0.4);
     &__table {
         background: $background-color;
         padding: 1em;
+        height: 100vh;
+
         &__content {
             font-size: $grid-font-size;
 
             &__member {
                 margin-bottom: 1em;
-                padding: 1.3em;
+                padding: 0 1.3em;
                 box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.15), inset 2px -2px 3px 0px rgba(0, 0, 0, 0.4);
-                border-radius: 1em;
-                min-height: 10em;
+                border-radius: 2em;
+                min-height: 8.75em;
                 background-color: #fff;
                 transition: all .2s linear;
 
@@ -37,7 +39,7 @@ $background-color:rgba(204, 204, 204, 0.4);
                     }
 
                     h4 {
-                        font-size: 1.3em;
+                        font-size: 1.15em;
                         font-weight: bold;
                     }
                 }
@@ -50,6 +52,7 @@ $background-color:rgba(204, 204, 204, 0.4);
                     font-weight: 800;
                     font-size: 0.8em;
                     color: rgba(0, 0, 0, 0.7);
+                    text-align: center;
 
                     img {
                         height: 4em;
@@ -58,6 +61,7 @@ $background-color:rgba(204, 204, 204, 0.4);
                         object-fit: contain;
                         object-position: center;
                         margin-bottom: .6em;
+                        box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
                     }
                 }
 

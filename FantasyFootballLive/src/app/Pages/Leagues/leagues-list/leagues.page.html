@@ -16,14 +16,14 @@
   </ion-list>
 
   <!-- Custom Leagues -->
-  <ion-list *ngIf="mainUserService.user.customLeagues.length > 0">
+  <ion-list *ngIf="customLeagueService.customLeagues.length > 0">
     <ion-list-header>
       <ion-label>
         Custom Leagues
       </ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let league of mainUserService.user.customLeagues" lines="inset" inset
-      (click)="openLeague(league.id)" detail>
+    <ion-item *ngFor="let league of customLeagueService.customLeagues" lines="inset" inset
+      (click)="openLeague(league.id, true)" detail>
       <ion-label class="leagues" text-wrap>
         <h2>
           <strong> {{ league.name }}</strong>
@@ -32,9 +32,9 @@
     </ion-item>
   </ion-list>
 
-  <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button color="danger" (click)="openAddCustomLeagueModal()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
-  </ion-fab> -->
+  </ion-fab>
 </ion-content>
