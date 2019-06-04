@@ -19,7 +19,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/build-ng-packagr": "^0.13.8",
+    "@angular-devkit/build-ng-packagr": "^0.13.9",
     "@angular/common": "~8.0.0",
     "@angular/core": "~8.0.0",
     "@angular/fire": "^5.2.1",
