@@ -13,7 +13,6 @@ exports.checkDeadline = functions.https.onRequest((req, res) => {
 	return null;
 });
 
-
 function checkTimeOfNextDeadline() {
 	database
 		.ref('fantasy-football-live')
@@ -21,8 +20,8 @@ function checkTimeOfNextDeadline() {
 		.once('value')
 		.then((value) => value)
 		.then((time) => {
-			if (!time ||isPastDeadline(time)) {
-				getDeadline()
+			if (!time || isPastDeadline(time)) {
+				getDeadline();
 			} else if (lessThanSixtyMinutesToDeadline(time)) {
 				//if less than 60 mins before deadline, check if the notification has been sent already, if not send it
 				database
@@ -32,10 +31,11 @@ function checkTimeOfNextDeadline() {
 					.then((sent) => {
 						if (!sent.val()) {
 							sendReminder();
-							database.ref('fantasy-football-live')
-							.child('reminder-sent')
-							.set(true)
-							.catch((err) => console.log(err))
+							database
+								.ref('fantasy-football-live')
+								.child('reminder-sent')
+								.set(true)
+								.catch((err) => console.log(err));
 						}
 						return null;
 					})
@@ -69,35 +69,37 @@ function sendReminder() {
 		.listDocuments()
 		.then((docs) => {
 			for (const doc of docs) {
-				const notification : admin.messaging.Notification = {
+				const notification: admin.messaging.Notification = {
 					title: 'Deadline Approaching',
-					body: 'Less than 60 minutes until the deadline, make your transfers soon!',
-				}
-			
+					body: 'Less than 60 minutes until the deadline, make your transfers soon!'
+				};
+
 				const payload: admin.messaging.Message = {
 					notification,
 					webpush: {
 						notification: {
-							vibrate: [200, 100, 200],
-							icon: "notification_icon"
+							vibrate: [ 200, 100, 200 ],
+							icon: 'notification_icon'
 						}
 					},
 					android: {
 						notification: {
-							icon: "notification_icon",
-							color: "#BF4035"
+							icon: 'notification_icon',
+							color: '#BF4035'
 						}
 					},
 					token: doc.id
+				};
+				if (payload.token !== 'BLACKLISTED') {
+					admin.messaging().send(payload).catch((err) => console.log(err, doc, doc.id));
 				}
-				if (payload.token != 'BLACKLISTED') admin.messaging().send(payload).catch(err => console.log(err, doc, doc.id));
 			}
 		})
 		.catch((err) => console.log(err));
 }
 
 /**
- * 
+ *
  * @param time string
  */
 function isPastDeadline(time: any) {
@@ -105,7 +107,7 @@ function isPastDeadline(time: any) {
 }
 
 /**
- * 
+ *
  * @param time string with UTC time
  */
 function lessThanSixtyMinutesToDeadline(time: any) {
