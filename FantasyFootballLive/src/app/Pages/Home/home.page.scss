@@ -16,6 +16,10 @@ $text-shadow: 4px 3px 4px rgba(0, 0, 0, 0.5);
     height: 100%;
 }
 
+.privacy__link {
+    font-size: 0.7em;
+}
+
 .home {
     &__square {
         box-shadow: $shadow;

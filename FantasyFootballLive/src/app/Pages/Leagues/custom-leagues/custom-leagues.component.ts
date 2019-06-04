@@ -25,6 +25,7 @@ export class CustomLeaguesComponent implements OnInit {
 
 	async createLeague() {
 		if (!this.newLeagueName || this.newMembers.length === 0) {
+			// NEED TO ADD ALERT/TOAST 
 			return;
 		}
 		await this.customLeagueService.create(this.newLeagueName, this.newMembers);

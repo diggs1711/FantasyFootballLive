@@ -15,9 +15,14 @@ export class CustomLeagueService {
 	constructor(private storage: Storage, private leagueService: LeaguesService) {}
 
 	async create(leagueName: string, members: number[]) {
-		const leagues = (await this.storage.get(this.customLeaguesKey)) || [];
-		const newCustomLeague = new CustomLeague(leagues.length + 1, leagueName, members);
+		const id = this.generateId();
+		const newCustomLeague = new CustomLeague(id, leagueName, members);
 		this.saveLeague(newCustomLeague);
+	}
+
+	generateId() {
+		const d = new Date();
+		return d.getTime();
 	}
 
 	saveLeague(customLeague: CustomLeague) {
@@ -25,7 +30,7 @@ export class CustomLeagueService {
 		this.storage.set(this.customLeaguesKey, this.customLeagues);
 	}
 
-	async loadLeague(league: CustomLeague) {
+	async fetchLeagueData(league: CustomLeague) {
 		// recreates league so data is fresh
 		return await this.leagueService.createLeague(league.members, league.name, league.id);
 	}
@@ -46,10 +51,17 @@ export class CustomLeagueService {
 	}
 
 	remove(league: League) {
-		this.customLeagues = this.customLeagues.filter(custom => custom.id !== league.id);
+		this.customLeagues = this.customLeagues.filter((custom) => custom.id !== league.id);
 	}
 
 	saveToDatabase() {
 		this.storage.set(this.customLeaguesKey, this.customLeagues);
+	}
+
+	async addMemberToLeague(id: number, leagueId: number) {
+		const custLeague = this.customLeagues.find(league => league.id === leagueId);
+		custLeague.members.push(id);
+		await this.saveToDatabase();
+		return custLeague;
 	}
 }

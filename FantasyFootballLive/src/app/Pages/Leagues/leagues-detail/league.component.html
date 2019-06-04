@@ -21,12 +21,22 @@
     <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
   </ion-refresher>
 
+  <div class="new-member-id__input__container">
+    <ion-input [(ngModel)]="newMemberId" type="number" placeholder="Enter new Id..."></ion-input>
+    <ion-button color="danger" (click)="addMember(newMemberId, league.id)">Add</ion-button>
+  </div>
+
   <div class="league__table">
-    <ion-list-header>
-      {{ league.name }}
-      <ion-button color="danger" *ngIf="isCustom" (click)="deleteLeague()">
+    <ion-item lines="none" *ngIf="isCustom" class="custom-league__controls">
+      <ion-button slot="start" color="danger" (click)="openAddMemberModal()">
+        Add Member
+      </ion-button>
+      <ion-button slot="end" color="danger" (click)="deleteLeague()">
         Delete
       </ion-button>
+    </ion-item>
+    <ion-list-header>
+      {{ league.name }}
     </ion-list-header>
 
     <ion-grid class="league__table__content" align-items-center justify-content-center>
