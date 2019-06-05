@@ -1,15 +1,16 @@
 import { Device } from '@ionic-native/device/ngx';
 import { Injectable } from '@angular/core';
-import { Http, RequestOptions } from '@angular/http';
-import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
+import { HttpClient } from '@angular/common/http';
+import { HTTP } from '@ionic-native/http/ngx';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class HttpRequestService {
 	constructor(
-		private testHttp: Http,
+		private testHttp: HttpClient,
 		private http: HTTP,
 		private device: Device,
 		private router: Router
@@ -20,7 +21,11 @@ export class HttpRequestService {
 	 * @param url string
 	 */
 	public async fetch(url: string, params: {} = {}, header: {} = {}) {
-		return this.parseJsonData(await this.fetchData(url, params, header));
+		return await this.fetchData(
+			url,
+			params,
+			header
+		).catch(err => console.log(err));
 	}
 
 	/**
@@ -45,10 +50,11 @@ export class HttpRequestService {
 	 * @description makes http calls
 	 * @param url {string}
 	 */
-	private fetchData(url: string, param: {} = null, header: {} = null): Promise<HTTPResponse> {
+	private fetchData(url: string, param: {} = null, header: {} = null): Promise<any> {
 		if (this.device.cordova) {
 			return this.http.get(url, param, header);
 		}
+
 		return this.testHttp.get(url).toPromise();
 	}
 }

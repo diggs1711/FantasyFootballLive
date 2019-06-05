@@ -44,7 +44,6 @@ $text-shadow: 4px 3px 4px rgba(0, 0, 0, 0.5);
         border-radius: $border-radius;
         background: linear-gradient($yellow, $red), url('../../../assets/stadium.webp');
         background-size: cover;
-        background-origin: padding-box;
         display: grid;
         padding: 1em;
         grid-auto-rows: 1fr;
