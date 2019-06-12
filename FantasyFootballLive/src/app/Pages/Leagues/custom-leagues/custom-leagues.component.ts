@@ -25,7 +25,7 @@ export class CustomLeaguesComponent implements OnInit {
 
 	async createLeague() {
 		if (!this.newLeagueName || this.newMembers.length === 0) {
-			// NEED TO ADD ALERT/TOAST 
+			// NEED TO ADD ALERT/TOAST
 			return;
 		}
 		await this.customLeagueService.create(this.newLeagueName, this.newMembers);
@@ -35,8 +35,8 @@ export class CustomLeaguesComponent implements OnInit {
 	}
 
 	addMember(id: number) {
-		if (id == null || id > 70000000) {
-			// display toast saying id is too big!
+		if (id == null) {
+			return;
 		} else if (!this.isMemberPresent(id)) {
 			this.newMembers.push(id);
 		}

@@ -22,10 +22,7 @@ export class LoginGuard implements CanActivate {
 	): Observable<boolean> | Promise<boolean> | boolean {
 		return this.storage.get('user').then((user) => {
 			if (user) {
-				return this.mainUserService
-					.loadSavedUser()
-					.then(() => this.customLeagueService.getLeagues())
-					.then(() => true);
+				return true;
 			} else {
 				this.router.navigateByUrl(`/tabs/home`);
 				return false;

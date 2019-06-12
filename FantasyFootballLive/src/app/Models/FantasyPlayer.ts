@@ -1,5 +1,4 @@
 import League from './League';
-import SoccerPlayer from './SoccerPlayer';
 import Team from './Team';
 import CustomLeague from './CustomLeague';
 
@@ -40,9 +39,6 @@ export default class FantasyPlayer {
 		this.gameweekTransfersCost = gameweekTransfersCost;
 		this.id = id;
 		this.leagues = leagues;
-		this.leagues.sort((a, b) =>
-			a.name.localeCompare(b.name, 'en', { ignorePunctuation: true })
-		);
 		this.name = name;
 		this.overallRank = overallRank;
 		this.team = team;
